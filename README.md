@@ -6,15 +6,15 @@ A library to interact with Amazon Bedrock models
 Install the library with
 
 ```
-pnpm add @mirai/bedrock-fm
+pnpm add @mirai73/bedrock-fm
 ```
 
 ```
-npm install @mirai/bedrock-fm
+npm install @mirai73/bedrock-fm
 ```
 
 ```
-yarn add @mirai/bedrock-fm
+yarn add @mirai73/bedrock-fm
 ```
 
 ## Usage
@@ -24,7 +24,7 @@ yarn add @mirai/bedrock-fm
 Full response
 
 ```ts
-import { fromModelId } from "@mirai/bedrcok-fm";
+import { fromModelId } from "@mirai73/bedrcok-fm";
 
 const fm = fromModelId("amazon.titan-text-express-v1", { credentials: { }, region: "us-east-1"});
 
@@ -38,7 +38,7 @@ const fm = fromModelId("amazon.titan-text-express-v1", { credentials: { }, regio
 Streaming response
 
 ```ts
-import { fromModelId } from "@mirai/bedrcok-fm";
+import { fromModelId } from "@mirai73/bedrcok-fm";
 
 const fm = fromModelId("amazon.titan-text-express-v1", { credentials: { }, region: "us-east-1"});
 

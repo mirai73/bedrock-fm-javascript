@@ -1,14 +1,18 @@
 {
-	"name": "bedrock-fm",
+	"name": "@mirai73/bedrock-fm",
 	"author": "Massimiliano Angelino",
 	"version": "0.1.0",
 	"license": "MIT",
 	"maintainers": [
 		"mangelino"
 	],
+	"scripts": {
+		"build": "tsc",
+		"test": "pnpm jest"
+	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/mirai/bedrock-fm"
+		"url": "https://github.com/mirai73/bedrock-fm-javascript"
 	},
 	"main": "./lib/main.js",
 	"types": "./lib/main.d.ts",
