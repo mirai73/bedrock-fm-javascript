@@ -79,11 +79,6 @@ export abstract class BedrockFoundationModel {
   readonly client: BedrockRuntimeClient;
   public readonly modelId: string;
 
-  static fromModelId(params: BedrockFoundationModelParams & GenerationParams) {
-    const model = new (this as any)(params);
-    return model;
-  }
-
   constructor(params: BedrockFoundationModelParams & GenerationParams) {
     this.extraArgs = params.modelArgs;
     this.topP = params.topP ?? 0.9;
