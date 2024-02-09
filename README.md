@@ -1,3 +1,5 @@
+[![Node.js Package](https://github.com/mirai73/bedrock-fm-javascript/actions/workflows/npm-publish.yml/badge.svg)](https://github.com/mirai73/bedrock-fm-javascript/actions/workflows/npm-publish.yml)
+
 # bedrock-fm
 A library to interact with Amazon Bedrock models
 
