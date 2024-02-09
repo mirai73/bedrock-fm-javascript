@@ -1,6 +1,5 @@
 import { BedrockRuntimeClient } from "@aws-sdk/client-bedrock-runtime";
-import { Claude } from "../src/anthropic";
-import { Titan } from "../src/amazon";
+import { Command, Jurassic, fromModelId, Claude, Titan} from "../src/main";
 
 //@ts-ignore
 const claudeMockClient: BedrockRuntimeClient = {
@@ -28,17 +27,14 @@ const titanMockClient: BedrockRuntimeClient = {
 it("returns results for valid prompt and input", async () => {
   // Arrange
   const prompt = "Sample prompt";
-  const input = {
-    /* valid input params */
-  };
 
-  const fm = new Claude({
-    modelId: "anthropic.claude-v2",
+
+  const fm = new Claude("anthropic.claude-v2", {
     client: claudeMockClient,
   });
 
   // Act
-  const results = await fm.generate(prompt, input);
+  const results = await fm.generate(prompt);
 
   // Assert
   expect(results).toEqual(["result1"]);
@@ -47,18 +43,56 @@ it("returns results for valid prompt and input", async () => {
 it("returns results for valid prompt and input", async () => {
   // Arrange
   const prompt = "Sample prompt";
-  const input = {
-    /* valid input params */
-  };
 
-  const fm = new Titan({
-    modelId: "amazon.titan-text-express-v1",
+  const fm = new Titan("amazon.titan-text-express-v1", {
     client: titanMockClient,
   });
 
   // Act
-  const results = await fm.generate(prompt, input);
+  const results = await fm.generate(prompt);
 
   // Assert
   expect(results).toEqual(["result1"]);
 });
+
+
+it("returns Titan class based on the model", async () => {
+
+  const fm = fromModelId("amazon.titan-text-express-v1", {
+    client: titanMockClient,
+  });
+
+  // Assert
+  expect(fm).toBeInstanceOf(Titan);
+});
+
+it("return Claude class based on the model", async () => {
+
+  const fm = fromModelId("anthropic.claude-v1", {
+    client: titanMockClient,
+  });
+
+  // Assert
+  expect(fm).toBeInstanceOf(Claude);
+});
+
+it("return Jurassic class based on the model", async () => {
+
+  const fm = fromModelId("ai21.j2-ultra", {
+    client: titanMockClient,
+  });
+
+  // Assert
+  expect(fm).toBeInstanceOf(Jurassic);
+});
+
+it("return Claude class based on the model", async () => {
+
+  const fm = fromModelId("cohere.command-light-text-v14", {
+    client: titanMockClient,
+  });
+
+  // Assert
+  expect(fm).toBeInstanceOf(Command);
+});
+

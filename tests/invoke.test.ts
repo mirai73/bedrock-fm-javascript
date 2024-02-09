@@ -6,8 +6,7 @@ import { Command } from "../src/cohere";
 
 describe("test claude", () => {
   it("should return true", async () => {
-    const m = new Claude({
-      modelId: "anthropic.claude-instant-v1",
+    const m = new Claude("anthropic.claude-instant-v1", {
       region: "us-west-2",
     });
 
@@ -18,8 +17,7 @@ describe("test claude", () => {
 
 describe("test titan", () => {
   it("should return true", async () => {
-    const m = new Titan({
-      modelId: "amazon.titan-text-express-v1",
+    const m = new Titan( "amazon.titan-text-express-v1", {
       region: "us-west-2",
     });
 
@@ -30,8 +28,7 @@ describe("test titan", () => {
 
 describe("test jurassic", () => {
   it("should return true", async () => {
-    const m = new Jurassic({
-      modelId: "ai21.j2-ultra",
+    const m = new Jurassic("ai21.j2-ultra", {
       region: "us-west-2",
     });
 
@@ -42,8 +39,7 @@ describe("test jurassic", () => {
 
 describe("test cohere command", () => {
   it("should return true", async () => {
-    const m = new Command({
-      modelId: "cohere.command-text-v14",
+    const m = new Command("cohere.command-text-v14", {
       region: "us-west-2",
     });
 
@@ -54,8 +50,7 @@ describe("test cohere command", () => {
 
 describe("test async claude", () => {
   it("should return true", async () => {
-    const m = new Claude({
-      modelId: "anthropic.claude-instant-v1",
+    const m = new Claude("anthropic.claude-instant-v1", {
       region: "us-west-2",
     });
 
@@ -71,8 +66,7 @@ describe("test async claude", () => {
 
 describe("test async titan", () => {
   it("should return true", async () => {
-    const m = new Titan({
-      modelId: "amazon.titan-text-express-v1",
+    const m = new Titan("amazon.titan-text-express-v1", {
       region: "us-west-2",
     });
 
@@ -88,8 +82,7 @@ describe("test async titan", () => {
 
 describe("test async command", () => {
   it("should return true", async () => {
-    const m = new Command({
-      modelId: "cohere.command-light-text-v14",
+    const m = new Command("cohere.command-light-text-v14", {
       region: "us-west-2",
     });
 

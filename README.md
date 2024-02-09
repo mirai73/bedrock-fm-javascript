@@ -1,9 +1,8 @@
-# bedrock-fm-javascript
+# bedrock-fm
 A library to interact with Amazon Bedrock models
 
 ## Installation
 
-Install the library with
 
 ```
 pnpm add @mirai73/bedrock-fm
@@ -19,14 +18,24 @@ yarn add @mirai73/bedrock-fm
 
 ## Usage
 
+You can use the models to get full responses or streaming responses. Both APIs are asynchronous.
 
+While it is possible to create models using the model family class, eg
 
-Full response
+```ts
+const claude = new Claude("...")
+```
+
+there is currently no type check that the modelId specified is compatible with the model class, and an error will be raised only at runtime. 
+
+I strongly advice to use the `fromModelId()` method that returns the correct class from the model id.
+
+### Full response
 
 ```ts
 import { fromModelId } from "@mirai73/bedrcok-fm";
 
-const fm = fromModelId("amazon.titan-text-express-v1", { credentials: { }, region: "us-east-1"});
+const fm = fromModelId("amazon.titan-text-express-v1", { credentials: { }, region: "us-east-1" });
 
 (async () => {
     const resp = await fm.generate("Hello!");
@@ -35,7 +44,7 @@ const fm = fromModelId("amazon.titan-text-express-v1", { credentials: { }, regio
 ```
 
 
-Streaming response
+### Streaming response
 
 ```ts
 import { fromModelId } from "@mirai73/bedrcok-fm";

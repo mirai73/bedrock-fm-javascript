@@ -5,23 +5,25 @@ import { Command } from "./cohere";
 import {
   BedrockFoundationModel,
   BedrockFoundationModelParams,
+  GenerationParams,
+  Models,
 } from "./bedrock";
 
 export { Claude, Jurassic, Titan, Command };
 
-export function fromModelId(
-  params: BedrockFoundationModelParams
+export function fromModelId(modelId: Models, 
+  params?: BedrockFoundationModelParams & GenerationParams
 ): BedrockFoundationModel {
-  switch (params.modelId.split("-")[0]) {
+  switch (modelId.split("-")[0]) {
     case "anthropic.claude":
-      return new Claude(params);
+      return new Claude(modelId, params);
     case "ai21.j2":
-      return new Jurassic(params);
+      return new Jurassic(modelId, params);
     case "amazon.titan":
-      return new Titan(params);
+      return new Titan(modelId, params);
     case "cohere.command":
-      return new Command(params);
+      return new Command(modelId, params);
     default:
-      throw new Error(`Unknown model ID: ${params.modelId}`);
+      throw new Error(`Unknown model ID: ${modelId}`);
   }
 }

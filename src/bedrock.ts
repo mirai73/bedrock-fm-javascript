@@ -64,10 +64,6 @@ export interface BedrockFoundationModelParams {
    * Credentials to be used by client
    */
   credentials?: any;
-  /**
-   * Model ID
-   */
-  modelId: Models;
 }
 
 export abstract class BedrockFoundationModel {
@@ -79,16 +75,16 @@ export abstract class BedrockFoundationModel {
   readonly client: BedrockRuntimeClient;
   public readonly modelId: string;
 
-  constructor(params: BedrockFoundationModelParams & GenerationParams) {
-    this.extraArgs = params.modelArgs;
-    this.topP = params.topP ?? 0.9;
-    this.temperature = params.temperature ?? 0.7;
-    this.maxTokenCount = params.maxTokenCount ?? 512;
-    this.stopSequences = params.stopSequences ?? [];
-    this.modelId = params.modelId;
+  constructor(modelId: Models, params?: BedrockFoundationModelParams & GenerationParams) {
+    this.extraArgs = params?.modelArgs;
+    this.topP = params?.topP ?? 0.9;
+    this.temperature = params?.temperature ?? 0.7;
+    this.maxTokenCount = params?.maxTokenCount ?? 512;
+    this.stopSequences = params?.stopSequences ?? [];
+    this.modelId = modelId;
 
     this.client =
-      params.client ??
+      params?.client ??
       new BedrockRuntimeClient({
         region: params?.region,
         credentials: params?.credentials,
@@ -97,9 +93,9 @@ export abstract class BedrockFoundationModel {
 
   public async generateStream(
     prompt: string,
-    input: GenerationParams
+    input?: GenerationParams
   ): Promise<AsyncIterable<string>> {
-    const body = this.prepareBody(prompt, input);
+    const body = this.prepareBody(prompt, input ?? {});
     const command = new InvokeModelWithResponseStreamCommand({
       modelId: this.modelId,
       contentType: "application/json",
@@ -118,9 +114,9 @@ export abstract class BedrockFoundationModel {
 
   public async generate(
     prompt: string,
-    input: GenerationParams
+    input?: GenerationParams
   ): Promise<string[]> {
-    const body = this.prepareBody(prompt, input);
+    const body = this.prepareBody(prompt, input ?? {});
 
     const command = new InvokeModelCommand({
       modelId: this.modelId,
