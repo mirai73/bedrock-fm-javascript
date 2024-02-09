@@ -36,7 +36,6 @@ jobs:
 
       - name: Install dependencies
         run: pnpm ci
-      - run: pnpm ci
       - run: pnpm test
 
   publish-npm:
@@ -69,6 +68,7 @@ jobs:
 
       - name: Install dependencies
         run: pnpm ci
+      - run: pnpm build
       - run: pnpm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
