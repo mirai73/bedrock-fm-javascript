@@ -66,6 +66,31 @@ export interface BedrockFoundationModelParams {
   credentials?: any;
 }
 
+export interface ChatMessage {
+  role: "system" | "ai" | "human";
+  message: string;
+}
+
+function validateChatMessages(messages: ChatMessage[]): boolean {
+  if (messages.length === 0) {
+    return false;
+  }
+
+  let idx = messages[0]!.role === "system" ? 1 : 0;
+  if ((messages.length - idx - 1) % 2 !== 0) return false;
+  for (let i = idx; i < messages.length; i++) {
+    console.log(messages[i]?.role);
+    // Human
+    if ((i - idx) % 2 === 0) {
+      if (messages[i]?.role !== "human") return false;
+    } else {
+      // AI
+      if (messages[i]?.role !== "ai") return false;
+    }
+  }
+  return true;
+}
+
 export abstract class BedrockFoundationModel {
   public readonly topP: number;
   public readonly temperature: number;
@@ -75,7 +100,10 @@ export abstract class BedrockFoundationModel {
   readonly client: BedrockRuntimeClient;
   public readonly modelId: string;
 
-  constructor(modelId: Models, params?: BedrockFoundationModelParams & GenerationParams) {
+  constructor(
+    modelId: Models,
+    params?: BedrockFoundationModelParams & GenerationParams,
+  ) {
     this.extraArgs = params?.modelArgs;
     this.topP = params?.topP ?? 0.9;
     this.temperature = params?.temperature ?? 0.7;
@@ -91,9 +119,25 @@ export abstract class BedrockFoundationModel {
       });
   }
 
+  public async generate(
+    prompt: string,
+    input?: GenerationParams,
+  ): Promise<string> {
+    const body = this.prepareBody(prompt, input ?? {});
+
+    const command = new InvokeModelCommand({
+      modelId: this.modelId,
+      contentType: "application/json",
+      body: body,
+      accept: "application/json",
+    });
+    const result = await this.client.send(command);
+    return this.getResults(result.body.transformToString("utf8"));
+  }
+
   public async generateStream(
     prompt: string,
-    input?: GenerationParams
+    input?: GenerationParams,
   ): Promise<AsyncIterable<string>> {
     const body = this.prepareBody(prompt, input ?? {});
     const command = new InvokeModelWithResponseStreamCommand({
@@ -112,22 +156,43 @@ export abstract class BedrockFoundationModel {
     })();
   }
 
-  public async generate(
-    prompt: string,
-    input?: GenerationParams
-  ): Promise<string[]> {
-    const body = this.prepareBody(prompt, input ?? {});
+  public async chat(
+    messages: ChatMessage[],
+    input?: GenerationParams,
+  ): Promise<string> {
+    if (!validateChatMessages(messages)) {
+      throw new Error("Wrong message alternation");
+    }
+    const prompt = this.getChatPrompt(messages);
+    return this.generate(prompt, input);
+  }
 
-    const command = new InvokeModelCommand({
-      modelId: this.modelId,
-      contentType: "application/json",
-      body: body,
-      accept: "application/json",
-    });
-    const result = await this.client.send(command);
-    return this.getResults(result.body.transformToString("utf8"));
+  public async chatStream(
+    messages: ChatMessage[],
+    input?: GenerationParams,
+  ): Promise<AsyncIterable<string>> {
+    if (!validateChatMessages(messages)) {
+      throw new Error("Wrong message alternation");
+    }
+    const prompt = this.getChatPrompt(messages);
+    return this.generateStream(prompt, input);
   }
 
   abstract prepareBody(prompt: string, input: GenerationParams): string;
-  abstract getResults(body: string): string[];
+
+  getChatPrompt(messages: ChatMessage[]): string {
+    let prompt = "";
+    if (messages[0]?.role === "system") {
+      prompt += messages[0].message + "\n";
+      messages = messages.slice(1);
+    }
+    let human = true;
+    messages.forEach((m) => {
+      prompt += `${human ? "Human" : "AI"}: ${m}`;
+      human = !human;
+    });
+    return prompt;
+  }
+
+  abstract getResults(body: string): string;
 }

@@ -1,29 +1,29 @@
 {
-	"name": "@mirai73/bedrock-fm",
-	"author": "Massimiliano Angelino",
-	"version": "0.2.0",
-	"license": "MIT",
-	"maintainers": [
-		"mangelino"
-	],
-	"scripts": {
-		"build": "tsc",
-		"test": "pnpm jest"
-	},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/mirai73/bedrock-fm-javascript"
-	},
-	"main": "./lib/main.js",
-	"types": "./lib/main.d.ts",
-	"devDependencies": {
-		"@types/jest": "^29.5.12",
-		"jest": "^29.7.0",
-		"prettier": "^3.2.5",
-		"ts-jest": "^29.1.2",
-		"typescript": "^5.3.3"
-	},
-	"dependencies": {
-		"@aws-sdk/client-bedrock-runtime": "^3.507.0"
-	}
+  "name": "@mirai73/bedrock-fm",
+  "author": "Massimiliano Angelino",
+  "version": "0.2.0",
+  "license": "MIT",
+  "maintainers": [
+    "mangelino"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "pnpm jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mirai73/bedrock-fm-javascript"
+  },
+  "main": "./lib/main.js",
+  "types": "./lib/main.d.ts",
+  "devDependencies": {
+    "@types/jest": "^29.5.12",
+    "jest": "^29.7.0",
+    "prettier": "^3.2.5",
+    "ts-jest": "^29.1.2",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "@aws-sdk/client-bedrock-runtime": "^3.507.0"
+  }
 }

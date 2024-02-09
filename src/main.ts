@@ -2,6 +2,7 @@ import { Claude } from "./anthropic";
 import { Jurassic } from "./ai21";
 import { Titan } from "./amazon";
 import { Command } from "./cohere";
+import { Llama2Chat } from "./meta";
 import {
   BedrockFoundationModel,
   BedrockFoundationModelParams,
@@ -9,9 +10,10 @@ import {
   Models,
 } from "./bedrock";
 
-export { Claude, Jurassic, Titan, Command };
+export { Claude, Jurassic, Titan, Command, Llama2Chat };
 
-export function fromModelId(modelId: Models, 
+export function fromModelId(
+  modelId: Models,
   params?: BedrockFoundationModelParams & GenerationParams
 ): BedrockFoundationModel {
   switch (modelId.split("-")[0]) {
@@ -23,6 +25,8 @@ export function fromModelId(modelId: Models,
       return new Titan(modelId, params);
     case "cohere.command":
       return new Command(modelId, params);
+    case "meta.llama2":
+      return new Llama2Chat(modelId, params);
     default:
       throw new Error(`Unknown model ID: ${modelId}`);
   }

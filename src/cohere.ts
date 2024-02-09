@@ -30,7 +30,7 @@ export class Command extends BedrockFoundationModel {
     });
   }
 
-  getResults(body: string): string[] {
+  getResults(body: string): string {
     return JSON.parse(body).generations.map((g: any) => {
       if (g.is_finished) {
         const t = g.text;
@@ -39,6 +39,6 @@ export class Command extends BedrockFoundationModel {
         return g.text;
       }
       return "";
-    });
+    })[0];
   }
 }

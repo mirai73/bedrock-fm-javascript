@@ -7,11 +7,11 @@ export class Jurassic extends BedrockFoundationModel {
       numResults,
     }))((input.modelArgs as any) ?? {});
     return JSON.stringify({
-      prompt: prompt, //@ts-ignore
+      prompt: prompt,
       maxTokens:
         input.modelArgs?.get("maxTokens") ??
         input.maxTokenCount ??
-        this.maxTokenCount, //@ts-ignore
+        this.maxTokenCount,
       stopSequences:
         input.modelArgs?.get("stopSequences") ??
         input.stopSequences ??
@@ -19,13 +19,13 @@ export class Jurassic extends BedrockFoundationModel {
       temperature:
         input.modelArgs?.get("temperature") ??
         input.temperature ??
-        this.temperature, //@ts-ignore
+        this.temperature,
       topP: input.modelArgs?.get("topP") ?? input.topP ?? this.topP,
       ...modelArgs,
     });
   }
 
-  getResults(body: string): string[] {
-    return JSON.parse(body).completions.map((c: any) => c.data.text);
+  getResults(body: string): string {
+    return JSON.parse(body).completions.map((c: any) => c.data.text)[0];
   }
 }

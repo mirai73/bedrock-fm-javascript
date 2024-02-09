@@ -17,7 +17,7 @@ describe("test claude", () => {
 
 describe("test titan", () => {
   it("should return true", async () => {
-    const m = new Titan( "amazon.titan-text-express-v1", {
+    const m = new Titan("amazon.titan-text-express-v1", {
       region: "us-west-2",
     });
 
