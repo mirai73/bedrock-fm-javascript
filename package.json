@@ -25,5 +25,11 @@
 	},
 	"dependencies": {
 		"@aws-sdk/client-bedrock-runtime": "^3.507.0"
-	}
+	},
+  "files": [
+    "lib/**",
+    "LICENSE",
+    "README.md",
+    "package.json"
+  ]
 }
