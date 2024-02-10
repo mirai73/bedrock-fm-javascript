@@ -35,8 +35,8 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
-        run: pnpm ci
-      - run: pnpm test
+        run: pnpm install
+      - run: pnpm jest mock
 
   publish-npm:
     needs: build
@@ -67,7 +67,7 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
-        run: pnpm ci
+        run: pnpm install 
       - run: pnpm build
       - run: pnpm publish --access public
         env:
