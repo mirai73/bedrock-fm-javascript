@@ -1,7 +1,7 @@
 {
 	"name": "@mirai73/bedrock-fm",
 	"author": "Massimiliano Angelino",
-	"version": "0.2.0",
+	"version": "0.2.1",
 	"license": "MIT",
 	"maintainers": [
 		"mangelino"
@@ -26,10 +26,10 @@
 	"dependencies": {
 		"@aws-sdk/client-bedrock-runtime": "^3.507.0"
 	},
-  "files": [
-    "lib/**",
-    "LICENSE",
-    "README.md",
-    "package.json"
-  ]
+	"files": [
+		"lib/**",
+		"LICENSE",
+		"README.md",
+		"package.json"
+	]
 }
