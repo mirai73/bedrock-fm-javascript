@@ -1,4 +1,4 @@
-[![Npm Package](https://github.com/mirai73/bedrock-fm-javascript/actions/workflows/npm-publish.yml/badge.svg)](https://github.com/mirai73/bedrock-fm-javascript/actions/workflows/npm-publish.yml) [![Test](https://github.com/mirai73/bedrock-fm-javascript/actions/workflows/push.yml/badge.svg)](https://github.com/mirai73/bedrock-fm-javascript/actions/workflows/push.yml)
+[![Npm Package](https://github.com/mirai73/bedrock-fm-javascript/actions/workflows/npm-publish.yml/badge.svg)](https://github.com/mirai73/bedrock-fm-javascript/actions/workflows/npm-publish.yml) [![Test](https://github.com/mirai73/bedrock-fm-javascript/actions/workflows/push.yml/badge.svg)](https://github.com/mirai73/bedrock-fm-javascript/actions/workflows/push.yml) [![CodeQL](https://github.com/mirai73/bedrock-fm-javascript/actions/workflows/github-code-scanning/codeql/badge.svg?branch=main)](https://github.com/mirai73/bedrock-fm-javascript/actions/workflows/github-code-scanning/codeql)
 
 # bedrock-fm
 
