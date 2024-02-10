@@ -61,13 +61,13 @@ export class Claude extends BedrockFoundationModel {
 
   override getChatPrompt(messages: ChatMessage[]): string {
     let prompt = "";
-    if (messages[0]?.role === "system") {
-      prompt += messages[0].message;
+    if (messages[0]?.role === "system" ) {
+      if (this.modelId.endsWith("2:1")) prompt += messages[0].message;
       messages = messages.slice(1);
     }
     let human = true;
     messages.forEach((m) => {
-      prompt += `${human ? HUMAN_TOKEN : AI_TOKEN}: ${m}`;
+      prompt += `${human ? HUMAN_TOKEN : AI_TOKEN} ${m.message}`;
       human = !human;
     });
     return prompt;

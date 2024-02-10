@@ -36,7 +36,7 @@ it("returns results for valid prompt and input", async () => {
   const results = await fm.generate(prompt);
 
   // Assert
-  expect(results).toEqual(["result1"]);
+  expect(results).toEqual("result1");
 });
 
 it("returns results for valid prompt and input", async () => {
@@ -51,7 +51,7 @@ it("returns results for valid prompt and input", async () => {
   const results = await fm.generate(prompt);
 
   // Assert
-  expect(results).toEqual(["result1"]);
+  expect(results).toEqual("result1");
 });
 
 it("returns Titan class based on the model", async () => {

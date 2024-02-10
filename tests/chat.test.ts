@@ -117,3 +117,59 @@ it("it fails validating the messages", async () => {
     expect(e.message).toBe("Wrong message alternation");
   }
 });
+
+it("validates the messages", async () => {
+  const messages: ChatMessage[] = [];
+  messages.push({ role: "system", message: "You are a conversational bot" });
+  messages.push({ role: "human", message: "What is your name?" });
+  messages.push({ role: "ai", message: "My name is Bean" });
+  messages.push({ role: "human", message: "What did you say your name was?" });
+  const fm = fromModelId("amazon.titan-text-express-v1", {
+    region: "us-east-1",
+  });
+  const resp = await fm.chat(messages);
+  console.log(resp);
+  expect(resp.length).toBeGreaterThan(0);
+});
+
+it("validates the bot with Llama", async () => {
+  const messages: ChatMessage[] = [];
+  messages.push({ role: "system", message: "You are a conversational bot" });
+  messages.push({ role: "human", message: "What is your name?" });
+  messages.push({ role: "ai", message: "My name is Bean" });
+  messages.push({ role: "human", message: "What did you say your name was?" });
+  const fm = fromModelId("meta.llama2-13b-chat-v1", {
+    region: "us-east-1",
+  });
+  const resp = await fm.chat(messages);
+  console.log(resp);
+  expect(resp.length).toBeGreaterThan(0);
+});
+
+it("validates the bot with Claude", async () => {
+  const messages: ChatMessage[] = [];
+  messages.push({ role: "system", message: "You are a conversational bot" });
+  messages.push({ role: "human", message: "What is your name?" });
+  messages.push({ role: "ai", message: "My name is Bean" });
+  messages.push({ role: "human", message: "What did you say your name was?" });
+  const fm = fromModelId("anthropic.claude-v2", {
+    region: "us-east-1",
+  });
+  const resp = await fm.chat(messages);
+  console.log(resp);
+  expect(resp.length).toBeGreaterThan(0);
+});
+
+it("validates the bot with Claude 2.1", async () => {
+  const messages: ChatMessage[] = [];
+  messages.push({ role: "system", message: "You are a conversational bot and you answer as funny as possible" });
+  messages.push({ role: "human", message: "What is your name?" });
+  messages.push({ role: "ai", message: "My name is Bean" });
+  messages.push({ role: "human", message: "What did you say your name was?" });
+  const fm = fromModelId("anthropic.claude-v2:1", {
+    region: "us-east-1",
+  });
+  const resp = await fm.chat(messages);
+  console.log(resp);
+  expect(resp.length).toBeGreaterThan(0);
+});

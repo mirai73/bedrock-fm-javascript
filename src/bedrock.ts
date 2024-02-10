@@ -20,6 +20,7 @@ export type Models =
   | "anthropic.claude-instant-v1"
   | "anthropic.claude-v1"
   | "anthropic.claude-v2"
+  | "anthropic.claude-v2:1"
   | "cohere.command-text-v14"
   | "cohere.command-light-text-v14"
   | "meta.llama2-13b-chat-v1"
@@ -79,7 +80,6 @@ function validateChatMessages(messages: ChatMessage[]): boolean {
   let idx = messages[0]!.role === "system" ? 1 : 0;
   if ((messages.length - idx - 1) % 2 !== 0) return false;
   for (let i = idx; i < messages.length; i++) {
-    console.log(messages[i]?.role);
     // Human
     if ((i - idx) % 2 === 0) {
       if (messages[i]?.role !== "human") return false;
@@ -124,7 +124,7 @@ export abstract class BedrockFoundationModel {
     input?: GenerationParams,
   ): Promise<string> {
     const body = this.prepareBody(prompt, input ?? {});
-
+    console.log(body);
     const command = new InvokeModelCommand({
       modelId: this.modelId,
       contentType: "application/json",
@@ -188,7 +188,7 @@ export abstract class BedrockFoundationModel {
     }
     let human = true;
     messages.forEach((m) => {
-      prompt += `${human ? "Human" : "AI"}: ${m}`;
+      prompt += `${human ? "Human" : "AI"}: ${m.message}`;
       human = !human;
     });
     return prompt;

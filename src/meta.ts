@@ -21,7 +21,6 @@ export class Llama2Chat extends BedrockFoundationModel {
     if (!llamaChatPrompt.endsWith(E_INST)) {
       llamaChatPrompt += E_INST;
     }
-
     return JSON.stringify({
       prompt: llamaChatPrompt,
       max_gen_len:
@@ -41,8 +40,6 @@ export class Llama2Chat extends BedrockFoundationModel {
     let llama2ChatPrompt = "";
     if (messages[0]?.role === "system") {
       llama2ChatPrompt +=
-        BOS +
-        B_INST +
         B_SYS +
         messages[0].message +
         E_SYS +
@@ -51,7 +48,7 @@ export class Llama2Chat extends BedrockFoundationModel {
       messages = messages.slice(2);
     }
     messages.forEach((m, idx) => {
-      idx % 2 === 0
+      idx % 2 === 1
         ? (llama2ChatPrompt += EOS + BOS + B_INST + m.message + E_INST)
         : (llama2ChatPrompt += m.message);
     });
