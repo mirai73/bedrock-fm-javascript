@@ -16,7 +16,7 @@ export class Llama2Chat extends BedrockFoundationModel {
       // at the moment this model does not support any extra args
     }))((input.modelArgs as any) ?? {});
 
-    let llamaChatPrompt = `${BOS} ${B_INST} ${prompt.trim()}`;
+    let llamaChatPrompt = `${B_INST} ${prompt.trim()}`;
 
     if (!llamaChatPrompt.trimEnd().endsWith(E_INST)) {
       llamaChatPrompt += ` ${E_INST}`;
@@ -45,7 +45,7 @@ export class Llama2Chat extends BedrockFoundationModel {
     }
     messages.forEach((m, idx) => {
       idx % 2 === 1
-        ? (llama2ChatPrompt += `${EOS}${BOS} ${B_INST} ${m.message.trim()} ${E_INST} `)
+        ? (llama2ChatPrompt += `${EOS}${BOS}${B_INST} ${m.message.trim()} ${E_INST} `)
         : (llama2ChatPrompt += `${m.message.trim()} `);
     });
     return llama2ChatPrompt;
