@@ -16,11 +16,12 @@ export class Llama2Chat extends BedrockFoundationModel {
       // at the moment this model does not support any extra args
     }))((input.modelArgs as any) ?? {});
 
-    let llamaChatPrompt = BOS + B_INST + prompt;
+    let llamaChatPrompt = `${BOS} ${B_INST} ${prompt.trim()}`;
 
-    if (!llamaChatPrompt.endsWith(E_INST)) {
-      llamaChatPrompt += E_INST;
+    if (!llamaChatPrompt.trimEnd().endsWith(E_INST)) {
+      llamaChatPrompt += ` ${E_INST}`;
     }
+
     return JSON.stringify({
       prompt: llamaChatPrompt,
       max_gen_len:
@@ -39,14 +40,13 @@ export class Llama2Chat extends BedrockFoundationModel {
   override getChatPrompt(messages: ChatMessage[]): string {
     let llama2ChatPrompt = "";
     if (messages[0]?.role === "system") {
-      llama2ChatPrompt +=
-        B_SYS + messages[0].message + E_SYS + messages[1]?.message + E_INST;
+      llama2ChatPrompt += `${B_SYS}${messages[0].message.trim()}${E_SYS} ${messages[1]?.message.trim()} ${E_INST} `;
       messages = messages.slice(2);
     }
     messages.forEach((m, idx) => {
       idx % 2 === 1
-        ? (llama2ChatPrompt += EOS + BOS + B_INST + m.message + E_INST)
-        : (llama2ChatPrompt += m.message);
+        ? (llama2ChatPrompt += `${EOS}${BOS} ${B_INST} ${m.message.trim()} ${E_INST} `)
+        : (llama2ChatPrompt += `${m.message.trim()} `);
     });
     return llama2ChatPrompt;
   }
