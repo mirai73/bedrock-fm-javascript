@@ -8,9 +8,10 @@ import {
   BedrockFoundationModelParams,
   GenerationParams,
   Models,
+  ChatMessage,
 } from "./bedrock";
 
-export { Claude, Jurassic, Titan, Command, Llama2Chat };
+export { Claude, Jurassic, Titan, Command, Llama2Chat, ChatMessage };
 
 export function fromModelId(
   modelId: Models,
