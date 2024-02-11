@@ -129,7 +129,7 @@ it("validates the messages", async () => {
   });
   const resp = await fm.chat(messages);
   console.log(resp);
-  expect(resp.length).toBeGreaterThan(0);
+  expect(resp.message.length).toBeGreaterThan(0);
 });
 
 it("validates the bot with Llama", async () => {
@@ -142,8 +142,8 @@ it("validates the bot with Llama", async () => {
     region: "us-east-1",
   });
   const resp = await fm.chat(messages);
-  console.log(resp);
-  expect(resp.length).toBeGreaterThan(0);
+  console.log(resp.message);
+  expect(resp.message.length).toBeGreaterThan(0);
 });
 
 it("validates the bot with Claude", async () => {
@@ -156,8 +156,8 @@ it("validates the bot with Claude", async () => {
     region: "us-east-1",
   });
   const resp = await fm.chat(messages);
-  console.log(resp);
-  expect(resp.length).toBeGreaterThan(0);
+  console.log(resp.message);
+  expect(resp.message.length).toBeGreaterThan(0);
 });
 
 it("validates the bot with Claude 2.1", async () => {
@@ -170,6 +170,23 @@ it("validates the bot with Claude 2.1", async () => {
     region: "us-east-1",
   });
   const resp = await fm.chat(messages);
-  console.log(resp);
-  expect(resp.length).toBeGreaterThan(0);
+  console.log(resp.message);
+  expect(resp.message.length).toBeGreaterThan(0);
+});
+
+it("validates the bot with Claude stream", async () => {
+  const messages: ChatMessage[] = [];
+  messages.push({ role: "system", message: "You are a conversational bot" });
+  messages.push({ role: "human", message: "What is your name?" });
+  messages.push({ role: "ai", message: "My name is Bean" });
+  messages.push({ role: "human", message: "What did you say your name was?" });
+  const fm = fromModelId("anthropic.claude-v2", {
+    region: "us-east-1",
+  });
+  const stream = await fm.chatStream(messages)
+  let c = 0
+  for await (const resp of stream) {
+    c+=1
+  }
+  expect(c).toBeGreaterThan(0);
 });

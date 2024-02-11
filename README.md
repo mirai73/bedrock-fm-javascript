@@ -74,3 +74,35 @@ const fm = fromModelId("amazon.titan-text-express-v1", {
   }
 })();
 ```
+
+## Chat
+
+Certain models, like Llama2 Chat or Claude require specific prompts structures when dealing with chat usecases. 
+The `chat` completion method allows to easily interact with models when chatting.
+
+A chat is set up via a sequence of `ChatMessages`:
+
+```ts
+const messages: ChatMessage[] = [];
+messages.push({ role: "system", message: "You are a conversational bot" });
+messages.push({ role: "human", message: "What is your name?" });
+messages.push({ role: "ai", message: "My name is Bean" });
+messages.push({ role: "human", message: "What did you say your name was?" });
+```
+
+The last message role should always be `"humamn"`.
+
+Call the foundation model with
+
+```ts
+const aiResponse = await fm.chat(messages);
+console.log(aiReponse.message);
+```
+
+To continue the conversation, just add the response to the chat history followed by the new user query:
+
+```ts
+messages.push(aiResponse);
+// collect userQuery
+messages.push({role:"ai", message: userQuery });
+```

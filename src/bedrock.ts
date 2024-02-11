@@ -159,12 +159,12 @@ export abstract class BedrockFoundationModel {
   public async chat(
     messages: ChatMessage[],
     input?: GenerationParams,
-  ): Promise<string> {
+  ): Promise<ChatMessage> {
     if (!validateChatMessages(messages)) {
       throw new Error("Wrong message alternation");
     }
     const prompt = this.getChatPrompt(messages);
-    return this.generate(prompt, input);
+    return { role: "ai", message: await this.generate(prompt, input)}
   }
 
   public async chatStream(
