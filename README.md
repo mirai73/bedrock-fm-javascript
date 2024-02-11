@@ -8,6 +8,7 @@ A library to interact with Amazon Bedrock models
 ## Why this library?
 
 Amazon Bedrock provides a generic API to invoke models, but let's the user to correctly format prompts and know all the names and formats for the parameters to be passed to the model. This library provide utility functions to simplify working with the model exposed via Bedrock in the following way:
+
 1. Idiomatic APIs
 2. Generic builder function to create the correct instance of the model class based on model id
 3. Formatting of prompts according to model requirements (eg Claude and Llama2Chat)
@@ -78,7 +79,7 @@ const fm = fromModelId("amazon.titan-text-express-v1", {
 
 ## Chat
 
-Certain models, like Llama2 Chat or Claude require specific prompts structures when dealing with chat usecases. 
+Certain models, like Llama2 Chat or Claude require specific prompts structures when dealing with chat usecases.
 The `chat` completion method allows to easily interact with models when chatting.
 
 A chat is set up via a sequence of `ChatMessages`:
@@ -105,5 +106,5 @@ To continue the conversation, just add the response to the chat history followed
 ```ts
 messages.push(aiResponse);
 // collect userQuery
-messages.push({role:"ai", message: userQuery });
+messages.push({ role: "ai", message: userQuery });
 ```

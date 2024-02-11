@@ -1,9 +1,9 @@
-export default [
-    {
-        rules: {
-            semi: "error",
-            "prefer-const": "error"
-        },
-        extends: "eslint:recommended"
-    }
+module.exports = [
+  {
+    rules: {
+      semi: "error",
+      "prefer-const": "error",
+    },
+    extends: "eslint:recommended",
+  },
 ];

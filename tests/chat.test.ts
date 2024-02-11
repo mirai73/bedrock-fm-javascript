@@ -162,7 +162,10 @@ it("validates the bot with Claude", async () => {
 
 it("validates the bot with Claude 2.1", async () => {
   const messages: ChatMessage[] = [];
-  messages.push({ role: "system", message: "You are a conversational bot and you answer as funny as possible" });
+  messages.push({
+    role: "system",
+    message: "You are a conversational bot and you answer as funny as possible",
+  });
   messages.push({ role: "human", message: "What is your name?" });
   messages.push({ role: "ai", message: "My name is Bean" });
   messages.push({ role: "human", message: "What did you say your name was?" });
@@ -183,10 +186,11 @@ it("validates the bot with Claude stream", async () => {
   const fm = fromModelId("anthropic.claude-v2", {
     region: "us-east-1",
   });
-  const stream = await fm.chatStream(messages)
-  let c = 0
+  const stream = await fm.chatStream(messages);
+  let c = 0;
+  //@ts-ignore
   for await (const resp of stream) {
-    c+=1
+    c += 1;
   }
   expect(c).toBeGreaterThan(0);
 });

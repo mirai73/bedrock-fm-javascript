@@ -40,11 +40,7 @@ export class Llama2Chat extends BedrockFoundationModel {
     let llama2ChatPrompt = "";
     if (messages[0]?.role === "system") {
       llama2ChatPrompt +=
-        B_SYS +
-        messages[0].message +
-        E_SYS +
-        messages[1]?.message +
-        E_INST;
+        B_SYS + messages[0].message + E_SYS + messages[1]?.message + E_INST;
       messages = messages.slice(2);
     }
     messages.forEach((m, idx) => {

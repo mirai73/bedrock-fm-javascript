@@ -163,7 +163,7 @@ export abstract class BedrockFoundationModel {
       throw new Error("Wrong message alternation");
     }
     const prompt = this.getChatPrompt(messages);
-    return { role: "ai", message: await this.generate(prompt, input)}
+    return { role: "ai", message: await this.generate(prompt, input) };
   }
 
   public async chatStream(

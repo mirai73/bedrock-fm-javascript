@@ -61,7 +61,7 @@ export class Claude extends BedrockFoundationModel {
 
   override getChatPrompt(messages: ChatMessage[]): string {
     let prompt = "";
-    if (messages[0]?.role === "system" ) {
+    if (messages[0]?.role === "system") {
       if (this.modelId.endsWith("2:1")) prompt += messages[0].message;
       messages = messages.slice(1);
     }

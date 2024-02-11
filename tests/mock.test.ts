@@ -1,5 +1,12 @@
 import { BedrockRuntimeClient } from "@aws-sdk/client-bedrock-runtime";
-import { Command, Jurassic, fromModelId, Claude, Titan, Llama2Chat } from "../src/main";
+import {
+  Command,
+  Jurassic,
+  fromModelId,
+  Claude,
+  Titan,
+  Llama2Chat,
+} from "../src/main";
 
 //@ts-ignore
 const claudeMockClient: BedrockRuntimeClient = {
@@ -89,7 +96,6 @@ it("return Claude class based on the model", async () => {
   // Assert
   expect(fm).toBeInstanceOf(Command);
 });
-
 
 it("return LLama2Chat class based on the model", async () => {
   const fm = fromModelId("meta.llama2-13b-chat-v1", {

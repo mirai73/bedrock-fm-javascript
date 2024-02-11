@@ -11,7 +11,7 @@ describe("test claude", () => {
     });
 
     expect(m).toBeTruthy();
-    const resp = await m.generate("Hello")
+    const resp = await m.generate("Hello");
     expect(resp.length).toBeGreaterThan(0);
   });
 });
