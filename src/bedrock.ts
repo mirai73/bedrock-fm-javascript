@@ -124,7 +124,6 @@ export abstract class BedrockFoundationModel {
     input?: GenerationParams,
   ): Promise<string> {
     const body = this.prepareBody(prompt, input ?? {});
-    console.log(body);
     const command = new InvokeModelCommand({
       modelId: this.modelId,
       contentType: "application/json",
