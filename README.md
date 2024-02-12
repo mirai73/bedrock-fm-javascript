@@ -92,7 +92,7 @@ messages.push({ role: "ai", message: "My name is Bean" });
 messages.push({ role: "human", message: "What did you say your name was?" });
 ```
 
-The last message role should always be `"humamn"`.
+The last message role should always be `"human"`.
 
 Call the foundation model with
 
