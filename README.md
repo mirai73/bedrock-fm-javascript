@@ -46,7 +46,7 @@ I strongly advice to use the `fromModelId()` method that returns the correct cla
 ### Full response
 
 ```ts
-import { fromModelId } from "@mirai73/bedrcok-fm";
+import { fromModelId } from "@mirai73/bedrock-fm";
 
 const fm = fromModelId("amazon.titan-text-express-v1", {
   credentials: {},
@@ -62,7 +62,7 @@ const fm = fromModelId("amazon.titan-text-express-v1", {
 ### Streaming response
 
 ```ts
-import { fromModelId } from "@mirai73/bedrcok-fm";
+import { fromModelId } from "@mirai73/bedrock-fm";
 
 const fm = fromModelId("amazon.titan-text-express-v1", {
   credentials: {},
@@ -79,7 +79,7 @@ const fm = fromModelId("amazon.titan-text-express-v1", {
 
 ## Chat
 
-Certain models, like Llama2 Chat or Claude require specific prompts structures when dealing with chat usecases.
+Certain models, like Llama2 Chat or Claude require specific prompts structures when dealing with chat usecases. Creating the correct prompt for hand can be tedious and error prone.
 The `chat` completion method allows to easily interact with models when chatting.
 
 A chat is set up via a sequence of `ChatMessages`:
