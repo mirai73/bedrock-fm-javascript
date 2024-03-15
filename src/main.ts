@@ -16,7 +16,7 @@ export { Claude, Jurassic, Titan, Command, Llama2Chat, ChatMessage };
 
 export function fromModelId(
   modelId: Models,
-  params?: BedrockFoundationModelParams & GenerationParams
+  params?: BedrockFoundationModelParams & GenerationParams,
 ): BedrockFoundationModel {
   switch (modelId.split("-")[0]) {
     case "anthropic.claude":
