@@ -18,13 +18,16 @@ export type Models =
   | "ai21.j2-ultra"
   | "ai21.j2-ultra-v1"
   | "anthropic.claude-instant-v1"
-  | "anthropic.claude-v1"
   | "anthropic.claude-v2"
   | "anthropic.claude-v2:1"
+  | "anthropic.claude-3-sonnet-20240229-v1:0"
+  | "anthropic.claude-3-haiku-20240307-v1:0"
   | "cohere.command-text-v14"
   | "cohere.command-light-text-v14"
   | "meta.llama2-13b-chat-v1"
-  | "meta.llama2-70b-chat-v1";
+  | "meta.llama2-70b-chat-v1"
+  | "mistral.mistral-7b-instruct-v0:2"
+  | "mistral.mixtral-8x7b-instruct-v0:1";
 
 /**
  * Parameters that can modify the way completions are generated
@@ -102,7 +105,7 @@ export abstract class BedrockFoundationModel {
 
   constructor(
     modelId: Models,
-    params?: BedrockFoundationModelParams & GenerationParams,
+    params?: BedrockFoundationModelParams & GenerationParams
   ) {
     this.extraArgs = params?.modelArgs;
     this.topP = params?.topP ?? 0.9;
@@ -121,9 +124,14 @@ export abstract class BedrockFoundationModel {
 
   public async generate(
     prompt: string,
-    input?: GenerationParams,
+    input?: GenerationParams
   ): Promise<string> {
-    const body = this.prepareBody(prompt, input ?? {});
+    const messages: ChatMessage[] = [{ role: "human", message: prompt }];
+    return (await this._generate(messages, input)) ?? "";
+  }
+
+  private async _generate(messages: ChatMessage[], input?: GenerationParams) {
+    const body = this.prepareBody(messages, input ?? {});
     const command = new InvokeModelCommand({
       modelId: this.modelId,
       contentType: "application/json",
@@ -136,9 +144,19 @@ export abstract class BedrockFoundationModel {
 
   public async generateStream(
     prompt: string,
-    input?: GenerationParams,
+    input?: GenerationParams
   ): Promise<AsyncIterable<string>> {
-    const body = this.prepareBody(prompt, input ?? {});
+    return await this._generateStream(
+      [{ role: "human", message: prompt }],
+      input
+    );
+  }
+
+  public async _generateStream(
+    messages: ChatMessage[],
+    input?: GenerationParams
+  ): Promise<AsyncIterable<string>> {
+    const body = this.prepareBody(messages, input ?? {});
     const command = new InvokeModelWithResponseStreamCommand({
       modelId: this.modelId,
       contentType: "application/json",
@@ -150,48 +168,44 @@ export abstract class BedrockFoundationModel {
     const resp = await this.client.send(command);
     return (async function* () {
       for await (const x of resp.body!) {
-        yield self.getResults(decoder.decode(x.chunk?.bytes))[0] ?? "";
+        yield self.getResults(decoder.decode(x.chunk?.bytes)) ?? "";
       }
     })();
   }
 
   public async chat(
     messages: ChatMessage[],
-    input?: GenerationParams,
+    input?: GenerationParams
   ): Promise<ChatMessage> {
     if (!validateChatMessages(messages)) {
       throw new Error("Wrong message alternation");
     }
-    const prompt = this.getChatPrompt(messages);
-    return { role: "ai", message: await this.generate(prompt, input) };
+    const chat_messages = this.getChatPrompt(messages);
+    return {
+      role: "ai",
+      message: (await this._generate(chat_messages, input)) ?? "",
+    };
   }
 
   public async chatStream(
     messages: ChatMessage[],
-    input?: GenerationParams,
+    input?: GenerationParams
   ): Promise<AsyncIterable<string>> {
     if (!validateChatMessages(messages)) {
       throw new Error("Wrong message alternation");
     }
-    const prompt = this.getChatPrompt(messages);
-    return this.generateStream(prompt, input);
+    const chat_messages = this.getChatPrompt(messages);
+    return this._generateStream(chat_messages, input);
   }
 
-  abstract prepareBody(prompt: string, input: GenerationParams): string;
+  abstract prepareBody(
+    messages: ChatMessage[],
+    input: GenerationParams
+  ): string;
 
-  getChatPrompt(messages: ChatMessage[]): string {
-    let prompt = "";
-    if (messages[0]?.role === "system") {
-      prompt += messages[0].message + "\n";
-      messages = messages.slice(1);
-    }
-    let human = true;
-    messages.forEach((m) => {
-      prompt += `${human ? "Human" : "AI"}: ${m.message}`;
-      human = !human;
-    });
-    return prompt;
+  getChatPrompt(messages: ChatMessage[]): ChatMessage[] {
+    return messages;
   }
 
-  abstract getResults(body: string): string;
+  abstract getResults(body: string): string | undefined;
 }

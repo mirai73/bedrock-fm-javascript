@@ -1,17 +1,17 @@
-import { BedrockFoundationModel, GenerationParams } from "./bedrock";
+import { BedrockFoundationModel, ChatMessage, GenerationParams } from "./bedrock";
 
 /**
  * Instantiates a new instance to interact with Command foundation model via Amazon Bedrock
  *
  */
 export class Command extends BedrockFoundationModel {
-  prepareBody(prompt: string, input: GenerationParams): string {
+  prepareBody(messages: ChatMessage[], input: GenerationParams): string {
     const modelArgs = (({ k, num_generations }) => ({
       num_generations,
       k,
     }))((input.modelArgs as any) ?? {});
     return JSON.stringify({
-      prompt: prompt,
+      prompt: messages.filter(m => m.role === "human")[0]?.message,
       max_tokens:
         input.modelArgs?.get("max_tokens") ??
         input.maxTokenCount ??

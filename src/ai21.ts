@@ -1,13 +1,17 @@
-import { BedrockFoundationModel, GenerationParams } from "./bedrock";
+import {
+  BedrockFoundationModel,
+  ChatMessage,
+  GenerationParams,
+} from "./bedrock";
 
 export class Jurassic extends BedrockFoundationModel {
-  prepareBody(prompt: string, input: GenerationParams): string {
+  prepareBody(messages: ChatMessage[], input: GenerationParams): string {
     const modelArgs = (({ minTokens, numResults }) => ({
       minTokens,
       numResults,
     }))((input.modelArgs as any) ?? {});
     return JSON.stringify({
-      prompt: prompt,
+      prompt: messages.filter((m) => m.role === "human")[0]?.message,
       maxTokens:
         input.modelArgs?.get("maxTokens") ??
         input.maxTokenCount ??

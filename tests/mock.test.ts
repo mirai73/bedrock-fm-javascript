@@ -7,12 +7,14 @@ import {
   Titan,
   Llama2Chat,
 } from "../src/main";
+import { Mistral } from "../src/mistral";
 
 //@ts-ignore
 const claudeMockClient: BedrockRuntimeClient = {
   send: () => ({
     body: {
-      transformToString: () => JSON.stringify({ completion: "result1" }),
+      transformToString: () =>
+        JSON.stringify({ type: "message", content: [{ text: "result1" }] }),
     },
   }),
   destroy: () => null,
@@ -71,7 +73,7 @@ it("returns Titan class based on the model", async () => {
 });
 
 it("return Claude class based on the model", async () => {
-  const fm = fromModelId("anthropic.claude-v1", {
+  const fm = fromModelId("anthropic.claude-3-haiku-20240307-v1:0", {
     client: titanMockClient,
   });
 
@@ -86,6 +88,15 @@ it("return Jurassic class based on the model", async () => {
 
   // Assert
   expect(fm).toBeInstanceOf(Jurassic);
+});
+
+it("return Mistral class based on the model", async () => {
+  const fm = fromModelId("mistral.mistral-7b-instruct-v0:2", {
+    client: titanMockClient,
+  });
+
+  // Assert
+  expect(fm).toBeInstanceOf(Mistral);
 });
 
 it("return Claude class based on the model", async () => {

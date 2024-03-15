@@ -1,9 +1,13 @@
-import { BedrockFoundationModel, GenerationParams } from "./bedrock";
+import {
+  BedrockFoundationModel,
+  ChatMessage,
+  GenerationParams,
+} from "./bedrock";
 
 export class Titan extends BedrockFoundationModel {
-  prepareBody(prompt: string, input: GenerationParams): string {
+  prepareBody(messages: ChatMessage[], input: GenerationParams): string {
     return JSON.stringify({
-      inputText: prompt,
+      inputText: messages.filter((m) => m.role === "human")[0]?.message,
       textGenerationConfig: {
         maxTokenCount:
           input.modelArgs?.get("maxTokenCount") ??

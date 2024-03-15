@@ -51,7 +51,7 @@ describe("test cohere command", () => {
 
 describe("test async claude", () => {
   it("should return true", async () => {
-    const m = new Claude("anthropic.claude-instant-v1", {
+    const m = new Claude("anthropic.claude-3-haiku-20240307-v1:0", {
       region: "us-west-2",
     });
 

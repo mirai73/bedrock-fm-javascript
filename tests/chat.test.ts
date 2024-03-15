@@ -38,7 +38,7 @@ it("validates the messages", async () => {
   expect(1).toBe(1);
 });
 
-it("it fails validating the messages", async () => {
+it("it fails validating the messages - 1", async () => {
   const messages: ChatMessage[] = [];
   messages.push({ role: "system", message: "You are a bot" });
   messages.push({ role: "human", message: "human" });
@@ -56,7 +56,7 @@ it("it fails validating the messages", async () => {
   }
 });
 
-it("it fails validating the messages", async () => {
+it("it fails validating the messages - 2", async () => {
   const messages: ChatMessage[] = [];
   const fm = fromModelId("amazon.titan-text-express-v1", {
     client: titanMockClient,
@@ -69,7 +69,7 @@ it("it fails validating the messages", async () => {
   }
 });
 
-it("it fails validating the messages", async () => {
+it("it fails validating the messages - 3", async () => {
   const messages: ChatMessage[] = [];
   messages.push({ role: "system", message: "You are a bot" });
   messages.push({ role: "human", message: "human" });
@@ -86,7 +86,7 @@ it("it fails validating the messages", async () => {
   }
 });
 
-it("it fails validating the messages", async () => {
+it("it fails validating the messages - 4", async () => {
   const messages: ChatMessage[] = [];
   messages.push({ role: "system", message: "You are a bot" });
   messages.push({ role: "human", message: "human" });
@@ -102,7 +102,7 @@ it("it fails validating the messages", async () => {
   }
 });
 
-it("it fails validating the messages", async () => {
+it("it fails validating the messages - 5", async () => {
   const messages: ChatMessage[] = [];
   messages.push({ role: "system", message: "You are a bot" });
   messages.push({ role: "ai", message: "ai" });
@@ -118,7 +118,7 @@ it("it fails validating the messages", async () => {
   }
 });
 
-it("validates the messages", async () => {
+it("validates the messages - 2", async () => {
   const messages: ChatMessage[] = [];
   messages.push({ role: "system", message: "You are a conversational bot" });
   messages.push({ role: "human", message: "What is your name?" });
@@ -146,13 +146,13 @@ it("validates the bot with Llama", async () => {
   expect(resp.message.length).toBeGreaterThan(0);
 });
 
-it("validates the bot with Claude", async () => {
+it("validates the bot with Claude Sonnet", async () => {
   const messages: ChatMessage[] = [];
   messages.push({ role: "system", message: "You are a conversational bot" });
   messages.push({ role: "human", message: "What is your name?" });
   messages.push({ role: "ai", message: "My name is Bean" });
   messages.push({ role: "human", message: "What did you say your name was?" });
-  const fm = fromModelId("anthropic.claude-v2", {
+  const fm = fromModelId("anthropic.claude-3-sonnet-20240229-v1:0", {
     region: "us-east-1",
   });
   const resp = await fm.chat(messages);
@@ -177,13 +177,13 @@ it("validates the bot with Claude 2.1", async () => {
   expect(resp.message.length).toBeGreaterThan(0);
 });
 
-it("validates the bot with Claude stream", async () => {
+it("validates the bot with Claude Haiku stream", async () => {
   const messages: ChatMessage[] = [];
   messages.push({ role: "system", message: "You are a conversational bot" });
   messages.push({ role: "human", message: "What is your name?" });
   messages.push({ role: "ai", message: "My name is Bean" });
   messages.push({ role: "human", message: "What did you say your name was?" });
-  const fm = fromModelId("anthropic.claude-v2", {
+  const fm = fromModelId("anthropic.claude-3-haiku-20240307-v1:0", {
     region: "us-east-1",
   });
   const stream = await fm.chatStream(messages);

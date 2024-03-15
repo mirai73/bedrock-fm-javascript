@@ -11,11 +11,11 @@ const [B_SYS, E_SYS] = ["<<SYS>>\n", "\n<</SYS>>\n\n"];
 const [BOS, EOS] = ["<s>", "</s>"];
 
 export class Llama2Chat extends BedrockFoundationModel {
-  prepareBody(prompt: string, input: GenerationParams): string {
+  prepareBody(messages: ChatMessage[], input: GenerationParams): string {
     const modelArgs = (({}) => ({
       // at the moment this model does not support any extra args
     }))((input.modelArgs as any) ?? {});
-
+    const prompt = messages.filter((m) => m.role === "human")[0]?.message ?? "";
     let llamaChatPrompt = `${B_INST} ${prompt.trim()}`;
 
     if (!llamaChatPrompt.trimEnd().endsWith(E_INST)) {
@@ -37,7 +37,7 @@ export class Llama2Chat extends BedrockFoundationModel {
     });
   }
 
-  override getChatPrompt(messages: ChatMessage[]): string {
+  override getChatPrompt(messages: ChatMessage[]): ChatMessage[] {
     let llama2ChatPrompt = "";
     if (messages[0]?.role === "system") {
       llama2ChatPrompt += `${B_SYS}${messages[0].message.trim()}${E_SYS} ${messages[1]?.message.trim()} ${E_INST} `;
@@ -48,7 +48,7 @@ export class Llama2Chat extends BedrockFoundationModel {
         ? (llama2ChatPrompt += `${EOS}${BOS}${B_INST} ${m.message.trim()} ${E_INST} `)
         : (llama2ChatPrompt += `${m.message.trim()} `);
     });
-    return llama2ChatPrompt;
+    return [{ role: "human", message: llama2ChatPrompt }];
   }
 
   getResults(body: string): string {

@@ -4,8 +4,6 @@ import {
   GenerationParams,
 } from "./bedrock";
 
-const HUMAN_TOKEN = "\n\nHuman:";
-const AI_TOKEN = "\n\nAssistant:";
 /**
  * Instantiates a new instance to interact with Claude models via Amazon Bedrock API
  *
@@ -17,39 +15,28 @@ const AI_TOKEN = "\n\nAssistant:";
  * }```
  */
 export class Claude extends BedrockFoundationModel {
-  prepareBody(prompt: string, input: GenerationParams): string {
+  prepareBody(messages: ChatMessage[], input: GenerationParams): string {
     const s = [...(input.stopSequences ?? [])];
-
-    if (!s.includes(HUMAN_TOKEN)) {
-      s.push(HUMAN_TOKEN);
-    }
-
-    // checking for Claude 2.1
-    if (this.modelId.endsWith("2:1")) {
-      const h_i = prompt.indexOf(HUMAN_TOKEN);
-      if (prompt.substring(0, h_i).includes(AI_TOKEN)) {
-        prompt = HUMAN_TOKEN + prompt;
-      } // else there is a system prompt which is ok
-    } else if (!prompt.startsWith(HUMAN_TOKEN)) prompt = HUMAN_TOKEN + prompt;
-
-    const a_i = prompt.lastIndexOf(AI_TOKEN);
-    if (a_i < 0 || (a_i > 0 && prompt.indexOf(HUMAN_TOKEN, a_i) > -1))
-      prompt = prompt + AI_TOKEN;
 
     const modelArgs = (({ top_k }) => ({
       top_k,
     }))((input.modelArgs as any) ?? {});
 
     return JSON.stringify({
-      prompt: prompt,
-      max_tokens_to_sample:
-        input.modelArgs?.get("max_tokens_to_sample") ??
+      messages: messages
+        .filter((m) => m.role !== "system")
+        .map((m) => ({
+          role: m.role === "human" ? "user" : "assistant",
+          content: m.message,
+        })),
+      system: messages.filter((m) => m.role === "system")[0]?.message,
+      anthropic_version: "bedrock-2023-05-31",
+      max_tokens:
+        input.modelArgs?.get("max_tokens") ??
         input.maxTokenCount ??
         this.maxTokenCount,
       stop_sequences:
-        input.modelArgs?.get("stop_sequences") ??
-        input.stopSequences ??
-        this.stopSequences,
+        input.modelArgs?.get("stop_sequences") ?? s ?? this.stopSequences,
       top_p: input.modelArgs?.get("top_p") ?? input.topP ?? this.topP,
       temperature:
         input.modelArgs?.get("temperature") ??
@@ -59,21 +46,14 @@ export class Claude extends BedrockFoundationModel {
     });
   }
 
-  override getChatPrompt(messages: ChatMessage[]): string {
-    let prompt = "";
-    if (messages[0]?.role === "system") {
-      if (this.modelId.endsWith("2:1")) prompt += messages[0].message;
-      messages = messages.slice(1);
+  getResults(body: string): string | undefined {
+    const jbody = JSON.parse(body);
+    console.log(jbody);
+    if (jbody.type === "message") {
+      return jbody.content[0].text;
+    } else if (jbody.type === "content_block_delta") {
+      return jbody.delta.text;
     }
-    let human = true;
-    messages.forEach((m) => {
-      prompt += `${human ? HUMAN_TOKEN : AI_TOKEN} ${m.message}`;
-      human = !human;
-    });
-    return prompt;
-  }
-
-  getResults(body: string): string {
-    return JSON.parse(body).completion;
+    return undefined;
   }
 }

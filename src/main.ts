@@ -10,12 +10,13 @@ import {
   Models,
   ChatMessage,
 } from "./bedrock";
+import { Mistral } from "./mistral";
 
 export { Claude, Jurassic, Titan, Command, Llama2Chat, ChatMessage };
 
 export function fromModelId(
   modelId: Models,
-  params?: BedrockFoundationModelParams & GenerationParams,
+  params?: BedrockFoundationModelParams & GenerationParams
 ): BedrockFoundationModel {
   switch (modelId.split("-")[0]) {
     case "anthropic.claude":
@@ -28,6 +29,9 @@ export function fromModelId(
       return new Command(modelId, params);
     case "meta.llama2":
       return new Llama2Chat(modelId, params);
+    case "mistral.mistral":
+    case "mistral.mixtral":
+      return new Mistral(modelId, params);
     default:
       throw new Error(`Unknown model ID: ${modelId}`);
   }
