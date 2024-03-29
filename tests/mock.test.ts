@@ -4,6 +4,7 @@ import {
   Jurassic,
   fromModelId,
   Claude,
+  Claude3,
   Titan,
   Llama2Chat,
 } from "../src/main";
@@ -73,12 +74,21 @@ it("returns Titan class based on the model", async () => {
 });
 
 it("return Claude class based on the model", async () => {
-  const fm = fromModelId("anthropic.claude-3-haiku-20240307-v1:0", {
+  const fm = fromModelId("anthropic.claude-instant-v1", {
     client: titanMockClient,
   });
 
   // Assert
   expect(fm).toBeInstanceOf(Claude);
+});
+
+it("return Claude3 class based on the model", async () => {
+  const fm = fromModelId("anthropic.claude-3-haiku-20240307-v1:0", {
+    client: titanMockClient,
+  });
+
+  // Assert
+  expect(fm).toBeInstanceOf(Claude3);
 });
 
 it("return Jurassic class based on the model", async () => {
