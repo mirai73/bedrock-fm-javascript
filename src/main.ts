@@ -12,7 +12,7 @@ import {
 } from "./bedrock";
 import { Mistral } from "./mistral";
 
-export { Claude, Jurassic, Titan, Command, Llama2Chat, ChatMessage };
+export { Claude, Claude3, Jurassic, Titan, Command, Llama2Chat, ChatMessage };
 
 export function fromModelId(
   modelId: Models,
