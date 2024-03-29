@@ -1,4 +1,4 @@
-import { Claude } from "./anthropic";
+import { Claude, Claude3 } from "./anthropic";
 import { Jurassic } from "./ai21";
 import { Titan } from "./amazon";
 import { Command } from "./cohere";
@@ -16,10 +16,13 @@ export { Claude, Jurassic, Titan, Command, Llama2Chat, ChatMessage };
 
 export function fromModelId(
   modelId: Models,
-  params?: BedrockFoundationModelParams & GenerationParams,
+  params?: BedrockFoundationModelParams & GenerationParams
 ): BedrockFoundationModel {
   switch (modelId.split("-")[0]) {
     case "anthropic.claude":
+      if (modelId.includes("claude-3")) {
+        return new Claude3(modelId, params);
+      }
       return new Claude(modelId, params);
     case "ai21.j2":
       return new Jurassic(modelId, params);

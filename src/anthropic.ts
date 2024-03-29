@@ -48,7 +48,6 @@ export class Claude extends BedrockFoundationModel {
 
   getResults(body: string): string | undefined {
     const jbody = JSON.parse(body);
-    console.log(jbody);
     if (jbody.type === "message") {
       return jbody.content[0].text;
     } else if (jbody.type === "content_block_delta") {
@@ -126,7 +125,6 @@ export class Claude3 extends BedrockFoundationModel {
 
   getResults(body: string): string | undefined {
     const jbody = JSON.parse(body);
-    console.log(jbody);
     if (jbody.type === "message") {
       return jbody.content[0].text;
     } else if (jbody.type === "content_block_delta") {
