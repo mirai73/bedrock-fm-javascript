@@ -6,22 +6,25 @@ import {
 
 export class Titan extends BedrockFoundationModel {
   prepareBody(messages: ChatMessage[], input: GenerationParams): string {
+    const modelArgs = (({}) => ({
+      // at the moment this model does not support any extra args
+    }))((input.modelArgs as any) ?? {});
+
     return JSON.stringify({
       inputText: messages.filter((m) => m.role === "human")[0]?.message,
       textGenerationConfig: {
         maxTokenCount:
-          input.modelArgs?.get("maxTokenCount") ??
+          input.modelArgs?.maxTokenCount ??
           input.maxTokenCount ??
           this.maxTokenCount,
         stopSequences:
-          input.modelArgs?.get("stopSequences") ??
+          input.modelArgs?.stopSequences ??
           input.stopSequences ??
           this.stopSequences,
-        topP: input.modelArgs?.get("topP") ?? input.topP ?? this.topP,
+        topP: input.modelArgs?.topP ?? input.topP ?? this.topP,
         temperature:
-          input.modelArgs?.get("temperature") ??
-          input.temperature ??
-          this.temperature,
+          input.modelArgs?.temperature ?? input.temperature ?? this.temperature,
+        ...modelArgs,
       },
     });
   }

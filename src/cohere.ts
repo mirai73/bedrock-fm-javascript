@@ -17,18 +17,16 @@ export class Command extends BedrockFoundationModel {
     return JSON.stringify({
       prompt: messages.filter((m) => m.role === "human")[0]?.message,
       max_tokens:
-        input.modelArgs?.get("max_tokens") ??
+        input.modelArgs?.max_tokens ??
         input.maxTokenCount ??
         this.maxTokenCount,
       stop_sequences:
-        input.modelArgs?.get("stop_sequences") ??
+        input.modelArgs?.stop_sequences ??
         input.stopSequences ??
         this.stopSequences,
-      p: input.modelArgs?.get("p") ?? input.topP ?? this.topP,
+      p: input.modelArgs?.p ?? input.topP ?? this.topP,
       temperature:
-        input.modelArgs?.get("temperature") ??
-        input.temperature ??
-        this.temperature,
+        input.modelArgs?.temperature ?? input.temperature ?? this.temperature,
       stream: false,
       ...modelArgs,
     });

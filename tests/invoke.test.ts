@@ -20,6 +20,7 @@ describe("test titan", () => {
   it("should return true", async () => {
     const m = new Titan("amazon.titan-text-express-v1", {
       region: "us-west-2",
+      stopSequences: [],
     });
 
     expect(m).toBeTruthy();
@@ -31,6 +32,7 @@ describe("test jurassic", () => {
   it("should return true", async () => {
     const m = new Jurassic("ai21.j2-ultra", {
       region: "us-west-2",
+      stopSequences: ["assistant"],
     });
 
     expect(m).toBeTruthy();

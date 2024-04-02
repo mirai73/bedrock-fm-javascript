@@ -52,7 +52,7 @@ export interface GenerationParams {
   /**
    * Extra arguments to pass to the model
    */
-  modelArgs?: Map<string, any>;
+  modelArgs?: Record<string, any>;
 }
 
 export interface BedrockFoundationModelParams {
@@ -105,7 +105,7 @@ export abstract class BedrockFoundationModel {
   public readonly temperature: number;
   public readonly maxTokenCount: number;
   public readonly stopSequences: string[];
-  public readonly extraArgs?: Map<string, any>;
+  public readonly extraArgs?: Record<string, any>;
   readonly client: BedrockRuntimeClient;
   public readonly modelId: string;
 

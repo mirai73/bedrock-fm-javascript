@@ -25,14 +25,12 @@ export class Llama2Chat extends BedrockFoundationModel {
     return JSON.stringify({
       prompt: llamaChatPrompt,
       max_gen_len:
-        input.modelArgs?.get("max_gen_len") ??
+        input.modelArgs?.max_gen_len ??
         input.maxTokenCount ??
         this.maxTokenCount,
       temperature:
-        input.modelArgs?.get("temperature") ??
-        input.temperature ??
-        this.temperature,
-      top_p: input.modelArgs?.get("top_p") ?? input.topP ?? this.topP,
+        input.modelArgs?.temperature ?? input.temperature ?? this.temperature,
+      top_p: input.modelArgs?.top_p ?? input.topP ?? this.topP,
       ...modelArgs,
     });
   }
@@ -40,7 +38,7 @@ export class Llama2Chat extends BedrockFoundationModel {
   override getChatPrompt(messages: ChatMessage[]): ChatMessage[] {
     let llama2ChatPrompt = "";
     if (messages[0]?.role === "system") {
-      llama2ChatPrompt += `${B_SYS}${messages[0].message.trim()}${E_SYS} ${messages[1]?.message.trim()} ${E_INST} `;
+      llama2ChatPrompt += `${B_INST} ${B_SYS}${messages[0].message.trim()}${E_SYS}${messages[1]?.message.trim()} ${E_INST} `;
       messages = messages.slice(2);
     }
     messages.forEach((m, idx) => {
