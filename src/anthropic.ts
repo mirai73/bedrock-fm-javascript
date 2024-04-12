@@ -32,16 +32,14 @@ export class Claude extends BedrockFoundationModel {
       system: messages.filter((m) => m.role === "system")[0]?.message,
       anthropic_version: "bedrock-2023-05-31",
       max_tokens:
-        input.modelArgs?.get("max_tokens") ??
+        input.modelArgs?.max_tokens ??
         input.maxTokenCount ??
         this.maxTokenCount,
       stop_sequences:
-        input.modelArgs?.get("stop_sequences") ?? s ?? this.stopSequences,
-      top_p: input.modelArgs?.get("top_p") ?? input.topP ?? this.topP,
+        input.modelArgs?.stop_sequences ?? s ?? this.stopSequences,
+      top_p: input.modelArgs?.top_p ?? input.topP ?? this.topP,
       temperature:
-        input.modelArgs?.get("temperature") ??
-        input.temperature ??
-        this.temperature,
+        input.modelArgs?.temperature ?? input.temperature ?? this.temperature,
       ...modelArgs,
     });
   }
