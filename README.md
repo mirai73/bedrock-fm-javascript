@@ -43,6 +43,9 @@ there is currently no type check that the modelId specified is compatible with t
 
 I strongly advice to use the `fromModelId()` method that returns the correct class from the model id.
 
+**Models**
+Since Amazon Bedrock might add new models at any time, we decided that was better to let `modelId` be any string as long as they are compatible with existing providers, that is their input/output invocation format is the same. We are also providing an helper `Model` that defines constants for all models and gets updated on a regular basis.
+
 ### Full response
 
 ```ts
