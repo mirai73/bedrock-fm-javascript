@@ -1,6 +1,6 @@
 import { BedrockRuntimeClient } from "@aws-sdk/client-bedrock-runtime";
 import { fromModelId } from "../src/main";
-import { ChatMessage } from "../src/bedrock";
+import { ChatMessage, ModelList } from "../src/bedrock";
 
 //@ts-ignore
 const claudeMockClient: BedrockRuntimeClient = {
@@ -193,4 +193,18 @@ it("validates the bot with Claude Haiku stream", async () => {
     c += 1;
   }
   expect(c).toBeGreaterThan(0);
+});
+
+it("validates the bot with Llama3", async () => {
+  const messages: ChatMessage[] = [];
+  messages.push({ role: "system", message: "You are a conversational bot" });
+  messages.push({ role: "human", message: "What is your name?" });
+  messages.push({ role: "ai", message: "My name is Bean" });
+  messages.push({ role: "human", message: "What did you say your name was?" });
+  const fm = fromModelId(ModelList.META_LLAMA3_8B_INSTRUCT_V1_0, {
+    region: "us-east-1",
+  });
+  const resp = await fm.chat(messages);
+  console.log(resp.message);
+  expect(resp.message.length).toBeGreaterThan(0);
 });

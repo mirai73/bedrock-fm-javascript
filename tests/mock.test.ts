@@ -7,8 +7,10 @@ import {
   Claude3,
   Titan,
   Llama2Chat,
+  Llama3Chat,
+  Mistral,
 } from "../src/main";
-import { Mistral } from "../src/mistral";
+import { ModelList } from "../src/bedrock";
 
 //@ts-ignore
 const claudeMockClient: BedrockRuntimeClient = {
@@ -533,4 +535,43 @@ it("return chat prompt for mistral - chat", async () => {
     role: "human",
     message: "<s>[INST] H [/INST] A</s>[INST] H1 [/INST]",
   });
+});
+
+it("return chat prompt for llama3 - chat", async () => {
+  const fm = fromModelId(ModelList.META_LLAMA3_8B_INSTRUCT_V1_0, {
+    client: titanMockClient,
+  });
+  const msg = fm.getChatPrompt([
+    { role: "system", message: "S" },
+    { role: "human", message: "H" },
+    { role: "ai", message: "A" },
+    { role: "human", message: "H1" },
+  ])[0];
+  // Assert
+  expect(msg).toStrictEqual({
+    role: "human",
+    message:
+      "<|begin_of_text|><|start_header_id|>system<|end_header_id|>" +
+      "\n\nS<|eot_id|><|start_header_id|>user<|end_header_id|>" +
+      "\n\nH<|eot_id|><|start_header_id|>assistant<|end_header_id|>" +
+      "\n\nA<|eot_id|><|start_header_id|>user<|end_header_id|>" +
+      "\n\nH1<|eot_id|><|start_header_id|>assistant<|end_header_id|>",
+  });
+});
+
+it("return chat prompt for llama3 - chat", async () => {
+  const fm = new Llama3Chat(ModelList.META_LLAMA3_8B_INSTRUCT_V1_0, {
+    client: titanMockClient,
+  });
+
+  try {
+    fm.getChatPrompt([
+      { role: "system", message: "S" },
+      { role: "human", message: "H" },
+      { role: "ai", message: "A" },
+    ]);
+    expect(1).toBe(0);
+  } catch (e) {
+    expect(1).toBe(1);
+  }
 });

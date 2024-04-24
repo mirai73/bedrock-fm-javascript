@@ -34,6 +34,10 @@ export class ModelList {
     "cohere.command-light-text-v14";
   public static readonly META_LLAMA2_13B_CHAT_V1 = "meta.llama2-13b-chat-v1";
   public static readonly META_LLAMA2_70B_CHAT_V1 = "meta.llama2-70b-chat-v1";
+  public static readonly META_LLAMA3_8B_INSTRUCT_V1_0 =
+    "meta.llama3-8b-instruct-v1:0";
+  public static readonly META_LLAMA3_70B_INSTRUCT_V1_0 =
+    "meta.llama3-70b-instruct-v1:0";
   public static readonly MISTRAL_MISTRAL_7B_INSTRUCT_V0_2 =
     "mistral.mistral-7b-instruct-v0:2";
   public static readonly MISTRAL_MIXTRAL_8X7B_INSTRUCT_V0_1 =
