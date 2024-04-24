@@ -2,7 +2,7 @@ import { Claude, Claude3 } from "./anthropic";
 import { Jurassic } from "./ai21";
 import { Titan } from "./amazon";
 import { Command } from "./cohere";
-import { Llama2Chat } from "./meta";
+import { Llama2Chat, Llama3Chat } from "./meta";
 import {
   BedrockFoundationModel,
   BedrockFoundationModelParams,
@@ -12,7 +12,17 @@ import {
 } from "./bedrock";
 import { Mistral } from "./mistral";
 
-export { Claude, Claude3, Jurassic, Titan, Command, Llama2Chat, ChatMessage };
+export {
+  Claude,
+  Claude3,
+  Jurassic,
+  Titan,
+  Command,
+  Llama2Chat,
+  Llama3Chat,
+  Mistral,
+  ChatMessage,
+};
 
 export function fromModelId(
   modelId: Models,
@@ -32,6 +42,8 @@ export function fromModelId(
       return new Command(modelId, params);
     case "meta.llama2":
       return new Llama2Chat(modelId, params);
+    case "meta.llama3":
+      return new Llama3Chat(modelId, params);
     case "mistral.mistral":
     case "mistral.mixtral":
       return new Mistral(modelId, params);
