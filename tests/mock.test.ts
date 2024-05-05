@@ -10,7 +10,7 @@ import {
   Llama3Chat,
   Mistral,
 } from "../src/main";
-import { ModelList } from "../src/bedrock";
+import { Models } from "../src/bedrock";
 
 //@ts-ignore
 const claudeMockClient: BedrockRuntimeClient = {
@@ -143,11 +143,11 @@ it("return body for LLama2", async () => {
       temperature: 1.0,
       topP: 1,
       stopSequences: [],
-    }
+    },
   );
   // Assert
   expect(body).toBe(
-    '{"prompt":"[INST] H [/INST]","max_gen_len":512,"temperature":1,"top_p":1}'
+    '{"prompt":"[INST] H [/INST]","max_gen_len":512,"temperature":1,"top_p":1}',
   );
 });
 
@@ -165,7 +165,7 @@ it("return body for Titan", async () => {
       temperature: 1.0,
       topP: 1,
       stopSequences: [],
-    }
+    },
   );
   // Assert
   expect(JSON.parse(body)).toStrictEqual({
@@ -199,7 +199,7 @@ it("return body for Titan - args override", async () => {
         stopSequences: ["A"],
         temperature: 0.1,
       },
-    }
+    },
   );
   // Assert
   expect(JSON.parse(body)).toStrictEqual({
@@ -227,7 +227,7 @@ it("return body for Claude 3", async () => {
       temperature: 1.0,
       topP: 1,
       stopSequences: [],
-    }
+    },
   );
   // Assert
   expect(JSON.parse(body)).toStrictEqual({
@@ -257,7 +257,7 @@ it("return body for Claude 3 - override args", async () => {
       temperature: 1.0,
       topP: 1,
       stopSequences: [],
-    }
+    },
   );
   // Assert
   expect(JSON.parse(body)).toStrictEqual({
@@ -292,7 +292,7 @@ it("return body for Claude 3 - override args", async () => {
         max_tokens: 200,
         system: "S1",
       },
-    }
+    },
   );
   // Assert
   expect(JSON.parse(body)).toStrictEqual({
@@ -323,7 +323,7 @@ it("return body for Claude < 3", async () => {
       temperature: 1.0,
       topP: 1,
       stopSequences: [],
-    }
+    },
   );
   // Assert
   expect(JSON.parse(body)).toStrictEqual({
@@ -356,7 +356,7 @@ it("return body for ai21", async () => {
       maxTokenCount: 50,
       stopSequences: ["A", "B"],
       modelArgs: { minTokens: 20 },
-    }
+    },
   );
   // Assert
   expect(JSON.parse(body)).toStrictEqual({
@@ -394,7 +394,7 @@ it("return body for ai21 - override common params", async () => {
           applyToNumber: true,
         },
       },
-    }
+    },
   );
   // Assert
   expect(JSON.parse(body)).toStrictEqual({
@@ -426,7 +426,7 @@ it("return body for cohere", async () => {
       temperature: 1.0,
       topP: 1,
       stopSequences: ["A", "B"],
-    }
+    },
   );
   // Assert
   expect(JSON.parse(body)).toStrictEqual({
@@ -458,7 +458,7 @@ it("return body for cohere - model args", async () => {
         max_tokens: 200,
         k: 4,
       },
-    }
+    },
   );
   // Assert
   expect(JSON.parse(body)).toStrictEqual({
@@ -491,7 +491,7 @@ it("return body for Mistral", async () => {
         max_tokens: 200,
         k: 4,
       },
-    }
+    },
   );
   // Assert
   expect(JSON.parse(body)).toStrictEqual({
@@ -538,7 +538,7 @@ it("return chat prompt for mistral - chat", async () => {
 });
 
 it("return chat prompt for llama3 - chat", async () => {
-  const fm = fromModelId(ModelList.META_LLAMA3_8B_INSTRUCT_V1_0, {
+  const fm = fromModelId(Models.META_LLAMA3_8B_INSTRUCT_V1_0, {
     client: titanMockClient,
   });
   const msg = fm.getChatPrompt([
@@ -560,7 +560,7 @@ it("return chat prompt for llama3 - chat", async () => {
 });
 
 it("return chat prompt for llama3 - chat", async () => {
-  const fm = new Llama3Chat(ModelList.META_LLAMA3_8B_INSTRUCT_V1_0, {
+  const fm = new Llama3Chat(Models.META_LLAMA3_8B_INSTRUCT_V1_0, {
     client: titanMockClient,
   });
 

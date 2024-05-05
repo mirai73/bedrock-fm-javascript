@@ -7,9 +7,9 @@ import {
 /**
  * Supported models
  */
-export type Models = string;
+export type ModelID = string;
 
-export class ModelList {
+export class Models {
   public static readonly AMAZON_TITAN_TG1_LARGE = "amazon.titan-tg1-large";
   public static readonly AMAZON_TITAN_TEXT_LITE_V1 =
     "amazon.titan-text-lite-v1";
@@ -127,8 +127,8 @@ export abstract class BedrockFoundationModel {
   public readonly modelId: string;
 
   constructor(
-    modelId: Models,
-    params?: BedrockFoundationModelParams & GenerationParams
+    modelId: ModelID,
+    params?: BedrockFoundationModelParams & GenerationParams,
   ) {
     this.extraArgs = params?.modelArgs;
     this.topP = params?.topP ?? 0.9;
@@ -147,7 +147,7 @@ export abstract class BedrockFoundationModel {
 
   public async generate(
     prompt: string,
-    input?: GenerationParams
+    input?: GenerationParams,
   ): Promise<string> {
     const messages: ChatMessage[] = [{ role: "human", message: prompt }];
     return (await this._generate(messages, input)) ?? "";
@@ -167,17 +167,17 @@ export abstract class BedrockFoundationModel {
 
   public async generateStream(
     prompt: string,
-    input?: GenerationParams
+    input?: GenerationParams,
   ): Promise<AsyncIterable<string>> {
     return await this._generateStream(
       [{ role: "human", message: prompt }],
-      input
+      input,
     );
   }
 
   public async _generateStream(
     messages: ChatMessage[],
-    input?: GenerationParams
+    input?: GenerationParams,
   ): Promise<AsyncIterable<string>> {
     const body = this.prepareBody(messages, input ?? {});
     const command = new InvokeModelWithResponseStreamCommand({
@@ -198,7 +198,7 @@ export abstract class BedrockFoundationModel {
 
   public async chat(
     messages: ChatMessage[],
-    input?: GenerationParams
+    input?: GenerationParams,
   ): Promise<ChatMessage> {
     if (!validateChatMessages(messages)) {
       throw new Error("Wrong message alternation");
@@ -212,7 +212,7 @@ export abstract class BedrockFoundationModel {
 
   public async chatStream(
     messages: ChatMessage[],
-    input?: GenerationParams
+    input?: GenerationParams,
   ): Promise<AsyncIterable<string>> {
     if (!validateChatMessages(messages)) {
       throw new Error("Wrong message alternation");
@@ -223,7 +223,7 @@ export abstract class BedrockFoundationModel {
 
   abstract prepareBody(
     messages: ChatMessage[],
-    input: GenerationParams
+    input: GenerationParams,
   ): string;
 
   getChatPrompt(messages: ChatMessage[]): ChatMessage[] {

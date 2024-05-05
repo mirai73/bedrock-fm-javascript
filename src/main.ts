@@ -7,8 +7,9 @@ import {
   BedrockFoundationModel,
   BedrockFoundationModelParams,
   GenerationParams,
-  Models,
+  ModelID,
   ChatMessage,
+  Models,
 } from "./bedrock";
 import { Mistral } from "./mistral";
 
@@ -22,11 +23,13 @@ export {
   Llama3Chat,
   Mistral,
   ChatMessage,
+  BedrockFoundationModel,
+  Models,
 };
 
 export function fromModelId(
-  modelId: Models,
-  params?: BedrockFoundationModelParams & GenerationParams
+  modelId: ModelID,
+  params?: BedrockFoundationModelParams & GenerationParams,
 ): BedrockFoundationModel {
   switch (modelId.split("-")[0]) {
     case "anthropic.claude":

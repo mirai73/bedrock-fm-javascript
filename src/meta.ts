@@ -93,7 +93,7 @@ export class Llama3Chat extends BedrockFoundationModel {
     }
     if (messages.length % 2 != 1)
       throw new Error(
-        "Messages should be alternating [SYSTEM], USER, ASSISTANT. Last message should be USER"
+        "Messages should be alternating [SYSTEM], USER, ASSISTANT. Last message should be USER",
       );
     messages.forEach((m, idx) => {
       idx % 2 === 0
