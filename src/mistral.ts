@@ -9,7 +9,7 @@ const [BOS, EOS] = ["<s>", "</s>"];
 export class Mistral extends Llama2Chat {
   override prepareBody(
     messages: ChatMessage[],
-    input: GenerationParams
+    input: GenerationParams,
   ): string {
     const modelArgs = (({}) => ({
       // at the moment this model does not support any extra args
