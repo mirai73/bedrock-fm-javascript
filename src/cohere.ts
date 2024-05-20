@@ -287,7 +287,6 @@ export class CommandR extends BedrockFoundationModel {
   }
 
   getResults(body: string): string {
-    console.log(body);
     return JSON.parse(body).text;
   }
 }

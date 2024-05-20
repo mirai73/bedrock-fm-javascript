@@ -35,7 +35,7 @@ export {
 
 export function fromModelId(
   modelId: ModelID,
-  params?: BedrockFoundationModelParams & GenerationParams,
+  params?: BedrockFoundationModelParams & GenerationParams
 ): BedrockFoundationModel {
   switch (modelId.split("-")[0]) {
     case "anthropic.claude":

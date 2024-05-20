@@ -7,6 +7,9 @@ import {
 
 export interface ClaudeParams {
   top_k?: number;
+  top_p?: number;
+  max_tokens?: number;
+  stop_sequences?: string[];
 }
 
 /**
