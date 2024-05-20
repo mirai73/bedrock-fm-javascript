@@ -1,7 +1,7 @@
 import { Claude, Claude3 } from "./anthropic";
 import { Jurassic } from "./ai21";
 import { Titan } from "./amazon";
-import { Command } from "./cohere";
+import { Command, CommandR, CommandRParams } from "./cohere";
 import { Llama2Chat, Llama3Chat } from "./meta";
 import {
   BedrockFoundationModel,
@@ -19,6 +19,8 @@ export {
   Jurassic,
   Titan,
   Command,
+  CommandR,
+  CommandRParams,
   Llama2Chat,
   Llama3Chat,
   Mistral,
@@ -29,7 +31,7 @@ export {
 
 export function fromModelId(
   modelId: ModelID,
-  params?: BedrockFoundationModelParams & GenerationParams,
+  params?: BedrockFoundationModelParams & GenerationParams
 ): BedrockFoundationModel {
   switch (modelId.split("-")[0]) {
     case "anthropic.claude":
@@ -42,6 +44,9 @@ export function fromModelId(
     case "amazon.titan":
       return new Titan(modelId, params);
     case "cohere.command":
+      if (modelId.includes("command-r")) {
+        return new CommandR(modelId, params);
+      }
       return new Command(modelId, params);
     case "meta.llama2":
       return new Llama2Chat(modelId, params);

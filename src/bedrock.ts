@@ -32,6 +32,9 @@ export class Models {
   public static readonly COHERE_COMMAND_TEXT_V14 = "cohere.command-text-v14";
   public static readonly COHERE_COMMAND_LIGHT_TEXT_V14 =
     "cohere.command-light-text-v14";
+  public static readonly COHERE_COMMAND_R_V1_0 = "cohere.command-r-v1:0";
+  public static readonly COHERE_COMMAND_R_PLUS_V1_0 =
+    "cohere.command-r-plus-v1:0";
   public static readonly META_LLAMA2_13B_CHAT_V1 = "meta.llama2-13b-chat-v1";
   public static readonly META_LLAMA2_70B_CHAT_V1 = "meta.llama2-70b-chat-v1";
   public static readonly META_LLAMA3_8B_INSTRUCT_V1_0 =
@@ -96,6 +99,7 @@ export interface ChatMessage {
   role: "system" | "ai" | "human";
   message: string;
   images?: string[];
+  metadata?: Record<string, unknown>;
 }
 
 function validateChatMessages(messages: ChatMessage[]): boolean {
@@ -128,7 +132,7 @@ export abstract class BedrockFoundationModel {
 
   constructor(
     modelId: ModelID,
-    params?: BedrockFoundationModelParams & GenerationParams,
+    params?: BedrockFoundationModelParams & GenerationParams
   ) {
     this.extraArgs = params?.modelArgs;
     this.topP = params?.topP ?? 0.9;
@@ -148,12 +152,21 @@ export abstract class BedrockFoundationModel {
   public async generate(
     prompt: string,
     input?: GenerationParams,
+    rawResponse = false
   ): Promise<string> {
     const messages: ChatMessage[] = [{ role: "human", message: prompt }];
-    return (await this._generate(messages, input)) ?? "";
+    const response = await this._generateRaw(messages, input);
+    if (rawResponse) {
+      return response;
+    } else {
+      return this.getResults(response) ?? "";
+    }
   }
 
-  private async _generate(messages: ChatMessage[], input?: GenerationParams) {
+  private async _generateRaw(
+    messages: ChatMessage[],
+    input?: GenerationParams
+  ): Promise<string> {
     const body = this.prepareBody(messages, input ?? {});
     const command = new InvokeModelCommand({
       modelId: this.modelId,
@@ -162,22 +175,22 @@ export abstract class BedrockFoundationModel {
       accept: "application/json",
     });
     const result = await this.client.send(command);
-    return this.getResults(result.body.transformToString("utf8"));
+    return result.body.transformToString("utf8");
   }
 
   public async generateStream(
     prompt: string,
-    input?: GenerationParams,
+    input?: GenerationParams
   ): Promise<AsyncIterable<string>> {
     return await this._generateStream(
       [{ role: "human", message: prompt }],
-      input,
+      input
     );
   }
 
   public async _generateStream(
     messages: ChatMessage[],
-    input?: GenerationParams,
+    input?: GenerationParams
   ): Promise<AsyncIterable<string>> {
     const body = this.prepareBody(messages, input ?? {});
     const command = new InvokeModelWithResponseStreamCommand({
@@ -199,20 +212,24 @@ export abstract class BedrockFoundationModel {
   public async chat(
     messages: ChatMessage[],
     input?: GenerationParams,
+    rawResponse = false
   ): Promise<ChatMessage> {
     if (!validateChatMessages(messages)) {
       throw new Error("Wrong message alternation");
     }
     const chat_messages = this.getChatPrompt(messages);
+    const response = await this._generateRaw(chat_messages, input);
+
     return {
       role: "ai",
-      message: (await this._generate(chat_messages, input)) ?? "",
+      message: this.getResults(response) ?? "",
+      metadata: rawResponse ? JSON.parse(response) : undefined,
     };
   }
 
   public async chatStream(
     messages: ChatMessage[],
-    input?: GenerationParams,
+    input?: GenerationParams
   ): Promise<AsyncIterable<string>> {
     if (!validateChatMessages(messages)) {
       throw new Error("Wrong message alternation");
@@ -223,7 +240,7 @@ export abstract class BedrockFoundationModel {
 
   abstract prepareBody(
     messages: ChatMessage[],
-    input: GenerationParams,
+    input: GenerationParams
   ): string;
 
   getChatPrompt(messages: ChatMessage[]): ChatMessage[] {
