@@ -38,7 +38,7 @@ export class Claude extends BedrockFoundationModel {
 
   prepareBody(
     messages: ChatMessage[],
-    input: GenerationParams & JurassicParams
+    input: GenerationParams & ClaudeParams
   ): string {
     const s = [...(input.stopSequences ?? [])];
 
