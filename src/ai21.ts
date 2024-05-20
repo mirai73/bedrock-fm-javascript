@@ -6,20 +6,24 @@ import {
 
 export interface Penalty {
   scale: number;
-  applyToWhitespaces: boolean;
-  applyToPunctuations: boolean;
-  applyToNumbers: boolean;
-  applyToStopwords: boolean;
-  applyToEmojis: boolean;
+  applyToWhitespaces?: boolean;
+  applyToPunctuations?: boolean;
+  applyToNumbers?: boolean;
+  applyToStopwords?: boolean;
+  applyToEmojis?: boolean;
 }
 
 export interface JurassicParams {
-  minTokens: number;
-  numResults: number;
-  topKReturn: number;
-  countPenalty: Penalty;
-  presencePenalty: Penalty;
-  frequencyPenalty: Penalty;
+  temperature?: number;
+  maxTokens?: number;
+  stopSequences?: string[];
+  topP?: number;
+  minTokens?: number;
+  numResults?: number;
+  topKReturn?: number;
+  countPenalty?: Penalty;
+  presencePenalty?: Penalty;
+  frequencyPenalty?: Penalty;
 }
 
 /**
@@ -31,21 +35,21 @@ export interface JurassicParams {
 export class Jurassic extends BedrockFoundationModel {
   override async chat(
     messages: ChatMessage[],
-    options?: GenerationParams & { modelArgs: JurassicParams },
+    options?: GenerationParams & { modelArgs?: JurassicParams }
   ): Promise<ChatMessage> {
     return await super.chat(messages, options);
   }
 
   override async generate(
     message: string,
-    options?: GenerationParams & { modelArgs: JurassicParams },
+    options?: GenerationParams & { modelArgs?: JurassicParams }
   ): Promise<string> {
     return await super.generate(message, options);
   }
 
   prepareBody(
     messages: ChatMessage[],
-    input: GenerationParams & JurassicParams,
+    input: GenerationParams & JurassicParams
   ): string {
     const modelArgs = (({
       minTokens,

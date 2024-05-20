@@ -5,8 +5,8 @@ import {
 } from "./bedrock";
 
 export interface CommandParams {
-  k: number;
-  num_generations: number;
+  k?: number;
+  num_generations?: number;
 }
 
 /**
@@ -17,21 +17,21 @@ export interface CommandParams {
 export class Command extends BedrockFoundationModel {
   override async chat(
     messages: ChatMessage[],
-    options?: GenerationParams & { modelArgs: CommandParams },
+    options?: GenerationParams & { modelArgs?: CommandParams }
   ): Promise<ChatMessage> {
     return await super.chat(messages, options);
   }
 
   override async generate(
     message: string,
-    options?: GenerationParams & { modelArgs: CommandParams },
+    options?: GenerationParams & { modelArgs?: CommandParams }
   ): Promise<string> {
     return await super.generate(message, options);
   }
 
   prepareBody(
     messages: ChatMessage[],
-    input: GenerationParams & CommandParams,
+    input: GenerationParams & CommandParams
   ): string {
     const modelArgs = (({ k, num_generations }) => ({
       num_generations,
@@ -114,39 +114,39 @@ export interface CommandRParams {
   search_queries_only?: boolean;
 
   /**
-   * A list of relevant documents that the model can cite to generate a more accurate reply. 
+   * A list of relevant documents that the model can cite to generate a more accurate reply.
    * Each document is a string-string dictionary.
-
-Example:
-```
-[ 
-  { 
-    "title": "Tall penguins", 
-    "text": "Emperor penguins are the tallest." 
-  }, 
-  { 
-    "title": "Penguin habitats", 
-    "text": "Emperor penguins only live in Antarctica." 
-  }
-]
-```
-
-   * Keys and values from each document will be serialized to a string and passed to the model. 
+   *
+   * Example:
+   * ```
+   * [
+   *   {
+   *     "title": "Tall penguins",
+   *     "text": "Emperor penguins are the tallest."
+   *   },
+   *   {
+   *     "title": "Penguin habitats",
+   *     "text": "Emperor penguins only live in Antarctica."
+   *   }
+   * ]
+   * ```
+   *
+   * Keys and values from each document will be serialized to a string and passed to the model.
    * The resulting generation will include citations that reference some of these documents.
    *
-   * Some suggested keys are "text", "author", and "date". For better generation quality, 
+   * Some suggested keys are "text", "author", and "date". For better generation quality,
    * it is recommended to keep the total word count of the strings in the dictionary to under 300 words.
    *
-   * An `id` field (string) can be optionally supplied to identify the document in the citations. 
+   * An `id` field (string) can be optionally supplied to identify the document in the citations.
    * This field will not be passed to the model.
    *
-   * An `_excludes` field (array of strings) can be optionally supplied to omit some 
-   * key-value pairs from being shown to the model. The omitted fields will still 
+   * An `_excludes` field (array of strings) can be optionally supplied to omit some
+   * key-value pairs from being shown to the model. The omitted fields will still
    * show up in the citation object. The `"_excludes"` field will not be passed to the model.
    *
-   * See [Document Mode](https://docs.cohere.com/docs/retrieval-augmented-generation-rag#document-mode) 
+   * See [Document Mode](https://docs.cohere.com/docs/retrieval-augmented-generation-rag#document-mode)
    * in the guide for more information.
-   * 
+   *
    */
   documents?: Record<string, string>[];
 
@@ -239,14 +239,14 @@ Example:
 export class CommandR extends BedrockFoundationModel {
   override async chat(
     messages: ChatMessage[],
-    options?: GenerationParams & { modelArgs: CommandRParams },
+    options?: GenerationParams & { modelArgs?: CommandRParams }
   ): Promise<ChatMessage> {
     return await super.chat(messages, options);
   }
 
   override async generate(
     message: string,
-    options?: GenerationParams & { modelArgs: CommandRParams },
+    options?: GenerationParams & { modelArgs?: CommandRParams }
   ): Promise<string> {
     return await super.generate(message, options);
   }
@@ -259,7 +259,7 @@ export class CommandR extends BedrockFoundationModel {
       topP,
       temperature,
       modelArgs = {},
-    }: GenerationParams & { modelArgs: CommandRParams },
+    }: GenerationParams & { modelArgs: CommandRParams }
   ): string {
     const _role_map = {
       human: "USER",
