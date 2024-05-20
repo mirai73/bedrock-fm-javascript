@@ -1,7 +1,7 @@
-import { Claude, Claude3, ClaudeParams } from "./anthropic";
-import { Jurassic, JurassicParams, Penalty } from "./ai21";
+import { Claude, Claude3 } from "./anthropic";
+import { Jurassic } from "./ai21";
 import { Titan } from "./amazon";
-import { Command, CommandR, CommandParams, CommandRParams } from "./cohere";
+import { Command } from "./cohere";
 import { Llama2Chat, Llama3Chat } from "./meta";
 import {
   BedrockFoundationModel,
@@ -16,15 +16,9 @@ import { Mistral } from "./mistral";
 export {
   Claude,
   Claude3,
-  ClaudeParams,
   Jurassic,
-  JurassicParams,
-  Penalty,
   Titan,
   Command,
-  CommandParams,
-  CommandR,
-  CommandRParams,
   Llama2Chat,
   Llama3Chat,
   Mistral,
@@ -48,9 +42,6 @@ export function fromModelId(
     case "amazon.titan":
       return new Titan(modelId, params);
     case "cohere.command":
-      if (modelId.includes("command-r")) {
-        return new CommandR(modelId, params);
-      }
       return new Command(modelId, params);
     case "meta.llama2":
       return new Llama2Chat(modelId, params);

@@ -46,16 +46,6 @@ I strongly advice to use the `fromModelId()` method that returns the correct cla
 **Models**
 Since Amazon Bedrock might add new models at any time, we decided that was better to let `modelId` be any string as long as they are compatible with existing providers, that is their input/output invocation format is the same. We are also providing an helper `Model` that defines constants for all models and gets updated on a regular basis.
 
-### Model specific parameters
-
-This library exposes the most common parameters for all models, but each model might support additional specific parameters.
-
-These model specific parameters can be passed to the model via the `modelArgs` parameter, either at model creation time or at invocation time.
-
-When using `fromModelId` static method to create the model from the model id, `modelArgs` is untyped and will accept any object.
-
-When creating the model from the respective class, the `chat` and `generate` methods expose a typed `modelArgs` parameter.
-
 ### Full response
 
 ```ts
@@ -120,20 +110,4 @@ To continue the conversation, just add the response to the chat history followed
 messages.push(aiResponse);
 // collect userQuery
 messages.push({ role: "ai", message: userQuery });
-```
-
-# Obtaining raw responses from the models
-
-If you are interested in model specific output values, you can pass the parameter `rawResponse: true` either
-as part of the creation of the model or when calling `chat` or `generate` messages.
-
-```ts
-import { Models, fromModelId } from "@mirai73/bedrock-fm";
-
-const fm = fromModelId(Models.COHERE_COMMAND_R_V1_0 , {
-  region: "us-east-1",
-  rawResponse: true;
-});
-
-fm.chat([role: "user", message: "Hello"]).then((r: ChatMessage) => {console.log(r.message, r.metadata);});
 ```
