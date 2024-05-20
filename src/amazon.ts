@@ -5,7 +5,25 @@ import {
 } from "./bedrock";
 
 export class Titan extends BedrockFoundationModel {
-  prepareBody(messages: ChatMessage[], input: GenerationParams): string {
+  override async chat(
+    messages: ChatMessage[],
+    input?: GenerationParams & { modelArgs: {} },
+    rawResponse = false
+  ): Promise<ChatMessage> {
+    return await super.chat(messages, input, rawResponse);
+  }
+
+  override async generate(
+    message: string,
+    input?: GenerationParams & { modelArgs: {} }
+  ): Promise<string> {
+    return await super.generate(message, input);
+  }
+
+  prepareBody(
+    messages: ChatMessage[],
+    input: GenerationParams & { modelArgs: {} }
+  ): string {
     const modelArgs = (({}) => ({
       // at the moment this model does not support any extra args
     }))((input.modelArgs as any) ?? {});

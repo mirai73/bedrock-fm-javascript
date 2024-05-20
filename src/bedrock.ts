@@ -57,18 +57,23 @@ export interface GenerationParams {
    * Top-p sampling
    */
   topP?: number;
+
   /**
-   * Temperature
+   * Temperature. Values between 0.0 and 1.0. Some model might further restrict the range
    */
   temperature?: number;
+
   /**
-   * Maximum number of tokens to generate
+   * Maximum number of tokens to generate.
    */
   maxTokenCount?: number;
+
   /**
-   * Stop sequences
+   * A list of stop sequences to interrupt the response generation. The number of elements
+   * is model specific.
    */
   stopSequences?: string[];
+
   /**
    * Extra arguments to pass to the model
    */
@@ -80,10 +85,12 @@ export interface BedrockFoundationModelParams {
    * Region where to access Bedrock
    */
   region?: string;
+
   /**
    * An optional BedrockRuntimeClient
    */
   client?: BedrockRuntimeClient;
+
   /**
    * Credentials to be used by client
    */
@@ -96,9 +103,27 @@ export interface BedrockFoundationModelParams {
 }
 
 export interface ChatMessage {
+  /**
+   * The role of the message. Can be `system`, `ai` or `human`.
+   * It is autmatically translated to the value supported by the selected model.
+   */
   role: "system" | "ai" | "human";
+
+  /**
+   * The message text
+   */
   message: string;
+
+  /**
+   * An optional list of images for multimodal models, as image URL.
+   *
+   * It is ignored for text only models
+   */
   images?: string[];
+
+  /**
+   * Optional metadata. Used in the model answer when enabling raw responses.
+   */
   metadata?: Record<string, unknown>;
 }
 

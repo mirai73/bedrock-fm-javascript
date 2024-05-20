@@ -1,7 +1,7 @@
-import { Claude, Claude3 } from "./anthropic";
-import { Jurassic } from "./ai21";
+import { Claude, Claude3, ClaudeParams } from "./anthropic";
+import { Jurassic, JurassicParams, Penalty } from "./ai21";
 import { Titan } from "./amazon";
-import { Command, CommandR, CommandRParams } from "./cohere";
+import { Command, CommandR, CommandParams, CommandRParams } from "./cohere";
 import { Llama2Chat, Llama3Chat } from "./meta";
 import {
   BedrockFoundationModel,
@@ -16,9 +16,13 @@ import { Mistral } from "./mistral";
 export {
   Claude,
   Claude3,
+  ClaudeParams,
   Jurassic,
+  JurassicParams,
+  Penalty,
   Titan,
   Command,
+  CommandParams,
   CommandR,
   CommandRParams,
   Llama2Chat,

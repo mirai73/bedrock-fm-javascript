@@ -11,6 +11,21 @@ const [B_SYS, E_SYS] = ["<<SYS>>\n", "\n<</SYS>>\n\n"];
 const [BOS, EOS] = ["<s>", "</s>"];
 
 export class Llama2Chat extends BedrockFoundationModel {
+  override async chat(
+    messages: ChatMessage[],
+    input?: GenerationParams & { modelArgs: {} },
+    rawResponse = false
+  ): Promise<ChatMessage> {
+    return await super.chat(messages, input, rawResponse);
+  }
+
+  override async generate(
+    message: string,
+    input?: GenerationParams & { modelArgs: {} }
+  ): Promise<string> {
+    return await super.generate(message, input);
+  }
+
   prepareBody(messages: ChatMessage[], input: GenerationParams): string {
     const modelArgs = (({}) => ({
       // at the moment this model does not support any extra args
@@ -61,6 +76,21 @@ const ASSISTANT_HEADER = "<|start_header_id|>assistant<|end_header_id|>";
 const EOD = "<|eot_id|>";
 
 export class Llama3Chat extends BedrockFoundationModel {
+  override async chat(
+    messages: ChatMessage[],
+    input?: GenerationParams & { modelArgs: {} },
+    rawResponse = false
+  ): Promise<ChatMessage> {
+    return await super.chat(messages, input, rawResponse);
+  }
+
+  override async generate(
+    message: string,
+    input?: GenerationParams & { modelArgs: {} }
+  ): Promise<string> {
+    return await super.generate(message, input);
+  }
+
   prepareBody(messages: ChatMessage[], input: GenerationParams): string {
     const modelArgs = (({}) => ({
       // at the moment this model does not support any extra args
@@ -93,7 +123,7 @@ export class Llama3Chat extends BedrockFoundationModel {
     }
     if (messages.length % 2 != 1)
       throw new Error(
-        "Messages should be alternating [SYSTEM], USER, ASSISTANT. Last message should be USER",
+        "Messages should be alternating [SYSTEM], USER, ASSISTANT. Last message should be USER"
       );
     messages.forEach((m, idx) => {
       idx % 2 === 0

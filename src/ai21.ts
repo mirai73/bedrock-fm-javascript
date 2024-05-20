@@ -4,6 +4,24 @@ import {
   GenerationParams,
 } from "./bedrock";
 
+export interface Penalty {
+  scale: number;
+  applyToWhitespaces: boolean;
+  applyToPunctuations: boolean;
+  applyToNumbers: boolean;
+  applyToStopwords: boolean;
+  applyToEmojis: boolean;
+}
+
+export interface JurassicParams {
+  minTokens: number;
+  numResults: number;
+  topKReturn: number;
+  countPenalty: Penalty;
+  presencePenalty: Penalty;
+  frequencyPenalty: Penalty;
+}
+
 /**
  * Jurassic models
  *
@@ -11,7 +29,25 @@ import {
  * https://docs.ai21.com/reference/j2-complete-api-ref#api-parameters
  */
 export class Jurassic extends BedrockFoundationModel {
-  prepareBody(messages: ChatMessage[], input: GenerationParams): string {
+  override async chat(
+    messages: ChatMessage[],
+    input?: GenerationParams & { modelArgs: JurassicParams },
+    rawResponse = false
+  ): Promise<ChatMessage> {
+    return await super.chat(messages, input, rawResponse);
+  }
+
+  override async generate(
+    message: string,
+    input?: GenerationParams & { modelArgs: JurassicParams }
+  ): Promise<string> {
+    return await super.generate(message, input);
+  }
+
+  prepareBody(
+    messages: ChatMessage[],
+    input: GenerationParams & JurassicParams
+  ): string {
     const modelArgs = (({
       minTokens,
       numResults,

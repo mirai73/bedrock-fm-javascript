@@ -7,9 +7,24 @@ const [B_INST, E_INST] = ["[INST]", "[/INST]"];
 const [BOS, EOS] = ["<s>", "</s>"];
 
 export class Mistral extends Llama2Chat {
+  override async chat(
+    messages: ChatMessage[],
+    input?: GenerationParams & { modelArgs: {} },
+    rawResponse = false
+  ): Promise<ChatMessage> {
+    return await super.chat(messages, input, rawResponse);
+  }
+
+  override async generate(
+    message: string,
+    input?: GenerationParams & { modelArgs: {} }
+  ): Promise<string> {
+    return await super.generate(message, input);
+  }
+
   override prepareBody(
     messages: ChatMessage[],
-    input: GenerationParams,
+    input: GenerationParams
   ): string {
     const modelArgs = (({}) => ({
       // at the moment this model does not support any extra args
