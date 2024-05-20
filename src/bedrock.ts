@@ -15,6 +15,8 @@ export class Models {
     "amazon.titan-text-lite-v1";
   public static readonly AMAZON_TITAN_TEXT_EXPRESS_V1 =
     "amazon.titan-text-express-v1";
+  public static readonly AMAZON_TITAN_TEXT_PREMIER_V1_0 =
+    "amazon.titan-text-premier-v1:0";
   public static readonly AI21_J2_GRANDE_INSTRUCT = "ai21.j2-grande-instruct";
   public static readonly AI21_J2_JUMBO_INSTRUCT = "ai21.j2-jumbo-instruct";
   public static readonly AI21_J2_MID = "ai21.j2-mid";
