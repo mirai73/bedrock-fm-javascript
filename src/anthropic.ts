@@ -1,13 +1,8 @@
-import { JurassicParams } from "./ai21";
 import {
   BedrockFoundationModel,
   ChatMessage,
   GenerationParams,
 } from "./bedrock";
-
-export interface ClaudeParams {
-  top_k: number;
-}
 
 /**
  * Instantiates a new instance to interact with Claude models via Amazon Bedrock API
@@ -20,24 +15,7 @@ export interface ClaudeParams {
  * }```
  */
 export class Claude extends BedrockFoundationModel {
-  override async chat(
-    messages: ChatMessage[],
-    options?: GenerationParams & { modelArgs: ClaudeParams },
-  ): Promise<ChatMessage> {
-    return await super.chat(messages, options);
-  }
-
-  override async generate(
-    message: string,
-    options?: GenerationParams & { modelArgs: ClaudeParams },
-  ): Promise<string> {
-    return await super.generate(message, options);
-  }
-
-  prepareBody(
-    messages: ChatMessage[],
-    input: GenerationParams & JurassicParams,
-  ): string {
+  prepareBody(messages: ChatMessage[], input: GenerationParams): string {
     const s = [...(input.stopSequences ?? [])];
 
     const modelArgs = (({ top_k }) => ({
@@ -93,24 +71,7 @@ export class Claude extends BedrockFoundationModel {
 */
 
 export class Claude3 extends BedrockFoundationModel {
-  override async chat(
-    messages: ChatMessage[],
-    options?: GenerationParams & { modelArgs: ClaudeParams },
-  ): Promise<ChatMessage> {
-    return await super.chat(messages, options);
-  }
-
-  override async generate(
-    message: string,
-    options?: GenerationParams & { modelArgs: ClaudeParams },
-  ): Promise<string> {
-    return await super.generate(message, options);
-  }
-
-  prepareBody(
-    messages: ChatMessage[],
-    input: GenerationParams & ClaudeParams,
-  ): string {
+  prepareBody(messages: ChatMessage[], input: GenerationParams): string {
     const s = [...(input.stopSequences ?? [])];
 
     const modelArgs = (({ top_k }) => ({
