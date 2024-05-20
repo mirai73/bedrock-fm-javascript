@@ -17,22 +17,21 @@ export interface CommandParams {
 export class Command extends BedrockFoundationModel {
   override async chat(
     messages: ChatMessage[],
-    input?: GenerationParams & { modelArgs: CommandParams },
-    rawResponse = false
+    options?: GenerationParams & { modelArgs: CommandParams },
   ): Promise<ChatMessage> {
-    return await super.chat(messages, input, rawResponse);
+    return await super.chat(messages, options);
   }
 
   override async generate(
     message: string,
-    input?: GenerationParams & { modelArgs: CommandParams }
+    options?: GenerationParams & { modelArgs: CommandParams },
   ): Promise<string> {
-    return await super.generate(message, input);
+    return await super.generate(message, options);
   }
 
   prepareBody(
     messages: ChatMessage[],
-    input: GenerationParams & CommandParams
+    input: GenerationParams & CommandParams,
   ): string {
     const modelArgs = (({ k, num_generations }) => ({
       num_generations,
@@ -240,17 +239,16 @@ Example:
 export class CommandR extends BedrockFoundationModel {
   override async chat(
     messages: ChatMessage[],
-    input?: GenerationParams & { modelArgs: CommandRParams },
-    rawResponse = false
+    options?: GenerationParams & { modelArgs: CommandRParams },
   ): Promise<ChatMessage> {
-    return await super.chat(messages, input, rawResponse);
+    return await super.chat(messages, options);
   }
 
   override async generate(
     message: string,
-    input?: GenerationParams & { modelArgs: CommandRParams }
+    options?: GenerationParams & { modelArgs: CommandRParams },
   ): Promise<string> {
-    return await super.generate(message, input);
+    return await super.generate(message, options);
   }
 
   prepareBody(
@@ -261,7 +259,7 @@ export class CommandR extends BedrockFoundationModel {
       topP,
       temperature,
       modelArgs = {},
-    }: GenerationParams & { modelArgs: CommandRParams }
+    }: GenerationParams & { modelArgs: CommandRParams },
   ): string {
     const _role_map = {
       human: "USER",

@@ -55,28 +55,25 @@ it("validates the bot with CommandR and model params ans raw response", async ()
   const fm = new CommandR(Models.COHERE_COMMAND_R_V1_0, {
     region: "us-east-1",
   });
-  const resp = await fm.chat(
-    messages,
-    {
-      modelArgs: {
-        documents: [
-          {
-            title: "Tall penguins",
-            snippet: "Emperor penguins are the tallest.",
-          },
-          {
-            title: "Penguin habitats",
-            snippet: "Emperor penguins only live in Antarctica.",
-          },
-          {
-            title: "What are animals?",
-            snippet: "Animals are different from plants.",
-          },
-        ],
-      },
+  const resp = await fm.chat(messages, {
+    modelArgs: {
+      documents: [
+        {
+          title: "Tall penguins",
+          snippet: "Emperor penguins are the tallest.",
+        },
+        {
+          title: "Penguin habitats",
+          snippet: "Emperor penguins only live in Antarctica.",
+        },
+        {
+          title: "What are animals?",
+          snippet: "Animals are different from plants.",
+        },
+      ],
     },
-    true
-  );
+    rawResponse: true,
+  });
   console.log(resp);
   expect(resp.metadata).toBeTruthy();
 });
@@ -129,8 +126,8 @@ Unless the user asks for a different style of answer, you should answer in full 
     ],
     {
       modelArgs: {},
-    },
-    true
+      rawResponse: true,
+    }
   );
   console.log(resp);
   expect(resp.message.length).toBeGreaterThan(0);
@@ -176,8 +173,8 @@ Unless the user asks for a different style of answer, you should answer in full 
         search_queries_only: false,
         raw_prompting: false,
       },
-    },
-    true
+      rawResponse: true,
+    }
   );
   console.log(resp);
   expect(resp.message.length).toBeGreaterThan(0);
@@ -207,8 +204,8 @@ Unless the user asks for a different style of answer, you should answer in full 
       modelArgs: {
         search_queries_only: true,
       },
-    },
-    true
+      rawResponse: true,
+    }
   );
   console.log(JSON.stringify(resp), undefined, 2);
 

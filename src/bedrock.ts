@@ -80,6 +80,14 @@ export interface GenerationParams {
    * Extra arguments to pass to the model
    */
   modelArgs?: Record<string, any>;
+
+  /**
+   * Indicates if the raw response should be returned to the user.
+   *
+   * If set to `true` the raw response from the model is added as `ChatMessage.metadata` or
+   * returned as stringified JSON from the `generate` interface.
+   */
+  rawResponse?: boolean;
 }
 
 export interface BedrockFoundationModelParams {
@@ -156,10 +164,11 @@ export abstract class BedrockFoundationModel {
   public readonly extraArgs?: Record<string, any>;
   readonly client: BedrockRuntimeClient;
   public readonly modelId: string;
+  public readonly rawResponse: boolean;
 
   constructor(
     modelId: ModelID,
-    params?: BedrockFoundationModelParams & GenerationParams
+    params?: BedrockFoundationModelParams & GenerationParams,
   ) {
     this.extraArgs = params?.modelArgs;
     this.topP = params?.topP ?? 0.9;
@@ -167,6 +176,7 @@ export abstract class BedrockFoundationModel {
     this.maxTokenCount = params?.maxTokenCount ?? 512;
     this.stopSequences = params?.stopSequences ?? [];
     this.modelId = modelId;
+    this.rawResponse = params?.rawResponse ?? false;
 
     this.client =
       params?.client ??
@@ -178,12 +188,11 @@ export abstract class BedrockFoundationModel {
 
   public async generate(
     prompt: string,
-    input?: GenerationParams,
-    rawResponse = false
+    options?: GenerationParams,
   ): Promise<string> {
     const messages: ChatMessage[] = [{ role: "human", message: prompt }];
-    const response = await this._generateRaw(messages, input);
-    if (rawResponse) {
+    const response = await this._generateRaw(messages, options);
+    if (this.rawResponse || (options && options.rawResponse)) {
       return response;
     } else {
       return this.getResults(response) ?? "";
@@ -192,9 +201,9 @@ export abstract class BedrockFoundationModel {
 
   private async _generateRaw(
     messages: ChatMessage[],
-    input?: GenerationParams
+    options?: GenerationParams,
   ): Promise<string> {
-    const body = this.prepareBody(messages, input ?? {});
+    const body = this.prepareBody(messages, options ?? {});
     const command = new InvokeModelCommand({
       modelId: this.modelId,
       contentType: "application/json",
@@ -207,19 +216,19 @@ export abstract class BedrockFoundationModel {
 
   public async generateStream(
     prompt: string,
-    input?: GenerationParams
+    options?: GenerationParams,
   ): Promise<AsyncIterable<string>> {
     return await this._generateStream(
       [{ role: "human", message: prompt }],
-      input
+      options,
     );
   }
 
   public async _generateStream(
     messages: ChatMessage[],
-    input?: GenerationParams
+    options?: GenerationParams,
   ): Promise<AsyncIterable<string>> {
-    const body = this.prepareBody(messages, input ?? {});
+    const body = this.prepareBody(messages, options ?? {});
     const command = new InvokeModelWithResponseStreamCommand({
       modelId: this.modelId,
       contentType: "application/json",
@@ -238,36 +247,38 @@ export abstract class BedrockFoundationModel {
 
   public async chat(
     messages: ChatMessage[],
-    input?: GenerationParams,
-    rawResponse = false
+    options?: GenerationParams,
   ): Promise<ChatMessage> {
     if (!validateChatMessages(messages)) {
       throw new Error("Wrong message alternation");
     }
     const chat_messages = this.getChatPrompt(messages);
-    const response = await this._generateRaw(chat_messages, input);
+    const response = await this._generateRaw(chat_messages, options);
 
     return {
       role: "ai",
       message: this.getResults(response) ?? "",
-      metadata: rawResponse ? JSON.parse(response) : undefined,
+      metadata:
+        this.rawResponse || (options && options.rawResponse)
+          ? JSON.parse(response)
+          : undefined,
     };
   }
 
   public async chatStream(
     messages: ChatMessage[],
-    input?: GenerationParams
+    options?: GenerationParams,
   ): Promise<AsyncIterable<string>> {
     if (!validateChatMessages(messages)) {
       throw new Error("Wrong message alternation");
     }
     const chat_messages = this.getChatPrompt(messages);
-    return this._generateStream(chat_messages, input);
+    return this._generateStream(chat_messages, options);
   }
 
   abstract prepareBody(
     messages: ChatMessage[],
-    input: GenerationParams
+    options: GenerationParams,
   ): string;
 
   getChatPrompt(messages: ChatMessage[]): ChatMessage[] {

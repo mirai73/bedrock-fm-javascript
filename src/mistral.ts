@@ -9,22 +9,21 @@ const [BOS, EOS] = ["<s>", "</s>"];
 export class Mistral extends Llama2Chat {
   override async chat(
     messages: ChatMessage[],
-    input?: GenerationParams & { modelArgs: {} },
-    rawResponse = false
+    options?: GenerationParams & { modelArgs: {} },
   ): Promise<ChatMessage> {
-    return await super.chat(messages, input, rawResponse);
+    return await super.chat(messages, options);
   }
 
   override async generate(
     message: string,
-    input?: GenerationParams & { modelArgs: {} }
+    options?: GenerationParams & { modelArgs: {} },
   ): Promise<string> {
-    return await super.generate(message, input);
+    return await super.generate(message, options);
   }
 
   override prepareBody(
     messages: ChatMessage[],
-    input: GenerationParams
+    input: GenerationParams,
   ): string {
     const modelArgs = (({}) => ({
       // at the moment this model does not support any extra args
