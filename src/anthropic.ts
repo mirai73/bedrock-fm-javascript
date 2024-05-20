@@ -1,4 +1,3 @@
-import { JurassicParams } from "./ai21";
 import {
   BedrockFoundationModel,
   ChatMessage,
