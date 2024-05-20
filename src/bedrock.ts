@@ -15,6 +15,8 @@ export class Models {
     "amazon.titan-text-lite-v1";
   public static readonly AMAZON_TITAN_TEXT_EXPRESS_V1 =
     "amazon.titan-text-express-v1";
+  public static readonly AMAZON_TITAN_TEXT_PREMIER_V1_0 =
+    "amazon.titan-text-premier-v1:0";
   public static readonly AI21_J2_GRANDE_INSTRUCT = "ai21.j2-grande-instruct";
   public static readonly AI21_J2_JUMBO_INSTRUCT = "ai21.j2-jumbo-instruct";
   public static readonly AI21_J2_MID = "ai21.j2-mid";
@@ -32,6 +34,9 @@ export class Models {
   public static readonly COHERE_COMMAND_TEXT_V14 = "cohere.command-text-v14";
   public static readonly COHERE_COMMAND_LIGHT_TEXT_V14 =
     "cohere.command-light-text-v14";
+  public static readonly COHERE_COMMAND_R_V1_0 = "cohere.command-r-v1:0";
+  public static readonly COHERE_COMMAND_R_PLUS_V1_0 =
+    "cohere.command-r-plus-v1:0";
   public static readonly META_LLAMA2_13B_CHAT_V1 = "meta.llama2-13b-chat-v1";
   public static readonly META_LLAMA2_70B_CHAT_V1 = "meta.llama2-70b-chat-v1";
   public static readonly META_LLAMA3_8B_INSTRUCT_V1_0 =
@@ -54,22 +59,35 @@ export interface GenerationParams {
    * Top-p sampling
    */
   topP?: number;
+
   /**
-   * Temperature
+   * Temperature. Values between 0.0 and 1.0. Some model might further restrict the range
    */
   temperature?: number;
+
   /**
-   * Maximum number of tokens to generate
+   * Maximum number of tokens to generate.
    */
   maxTokenCount?: number;
+
   /**
-   * Stop sequences
+   * A list of stop sequences to interrupt the response generation. The number of elements
+   * is model specific.
    */
   stopSequences?: string[];
+
   /**
    * Extra arguments to pass to the model
    */
   modelArgs?: Record<string, any>;
+
+  /**
+   * Indicates if the raw response should be returned to the user.
+   *
+   * If set to `true` the raw response from the model is added as `ChatMessage.metadata` or
+   * returned as stringified JSON from the `generate` interface.
+   */
+  rawResponse?: boolean;
 }
 
 export interface BedrockFoundationModelParams {
@@ -77,10 +95,12 @@ export interface BedrockFoundationModelParams {
    * Region where to access Bedrock
    */
   region?: string;
+
   /**
    * An optional BedrockRuntimeClient
    */
   client?: BedrockRuntimeClient;
+
   /**
    * Credentials to be used by client
    */
@@ -93,9 +113,28 @@ export interface BedrockFoundationModelParams {
 }
 
 export interface ChatMessage {
+  /**
+   * The role of the message. Can be `system`, `ai` or `human`.
+   * It is autmatically translated to the value supported by the selected model.
+   */
   role: "system" | "ai" | "human";
+
+  /**
+   * The message text
+   */
   message: string;
+
+  /**
+   * An optional list of images for multimodal models, as image URL.
+   *
+   * It is ignored for text only models
+   */
   images?: string[];
+
+  /**
+   * Optional metadata. Used in the model answer when enabling raw responses.
+   */
+  metadata?: Record<string, unknown>;
 }
 
 function validateChatMessages(messages: ChatMessage[]): boolean {
@@ -125,6 +164,7 @@ export abstract class BedrockFoundationModel {
   public readonly extraArgs?: Record<string, any>;
   readonly client: BedrockRuntimeClient;
   public readonly modelId: string;
+  public readonly rawResponse: boolean;
 
   constructor(
     modelId: ModelID,
@@ -136,6 +176,7 @@ export abstract class BedrockFoundationModel {
     this.maxTokenCount = params?.maxTokenCount ?? 512;
     this.stopSequences = params?.stopSequences ?? [];
     this.modelId = modelId;
+    this.rawResponse = params?.rawResponse ?? false;
 
     this.client =
       params?.client ??
@@ -147,14 +188,22 @@ export abstract class BedrockFoundationModel {
 
   public async generate(
     prompt: string,
-    input?: GenerationParams,
+    options?: GenerationParams,
   ): Promise<string> {
     const messages: ChatMessage[] = [{ role: "human", message: prompt }];
-    return (await this._generate(messages, input)) ?? "";
+    const response = await this._generateRaw(messages, options);
+    if (this.rawResponse || (options && options.rawResponse)) {
+      return response;
+    } else {
+      return this.getResults(response) ?? "";
+    }
   }
 
-  private async _generate(messages: ChatMessage[], input?: GenerationParams) {
-    const body = this.prepareBody(messages, input ?? {});
+  private async _generateRaw(
+    messages: ChatMessage[],
+    options?: GenerationParams,
+  ): Promise<string> {
+    const body = this.prepareBody(messages, options ?? {});
     const command = new InvokeModelCommand({
       modelId: this.modelId,
       contentType: "application/json",
@@ -162,24 +211,24 @@ export abstract class BedrockFoundationModel {
       accept: "application/json",
     });
     const result = await this.client.send(command);
-    return this.getResults(result.body.transformToString("utf8"));
+    return result.body.transformToString("utf8");
   }
 
   public async generateStream(
     prompt: string,
-    input?: GenerationParams,
+    options?: GenerationParams,
   ): Promise<AsyncIterable<string>> {
     return await this._generateStream(
       [{ role: "human", message: prompt }],
-      input,
+      options,
     );
   }
 
   public async _generateStream(
     messages: ChatMessage[],
-    input?: GenerationParams,
+    options?: GenerationParams,
   ): Promise<AsyncIterable<string>> {
-    const body = this.prepareBody(messages, input ?? {});
+    const body = this.prepareBody(messages, options ?? {});
     const command = new InvokeModelWithResponseStreamCommand({
       modelId: this.modelId,
       contentType: "application/json",
@@ -198,32 +247,38 @@ export abstract class BedrockFoundationModel {
 
   public async chat(
     messages: ChatMessage[],
-    input?: GenerationParams,
+    options?: GenerationParams,
   ): Promise<ChatMessage> {
     if (!validateChatMessages(messages)) {
       throw new Error("Wrong message alternation");
     }
     const chat_messages = this.getChatPrompt(messages);
+    const response = await this._generateRaw(chat_messages, options);
+
     return {
       role: "ai",
-      message: (await this._generate(chat_messages, input)) ?? "",
+      message: this.getResults(response) ?? "",
+      metadata:
+        this.rawResponse || (options && options.rawResponse)
+          ? JSON.parse(response)
+          : undefined,
     };
   }
 
   public async chatStream(
     messages: ChatMessage[],
-    input?: GenerationParams,
+    options?: GenerationParams,
   ): Promise<AsyncIterable<string>> {
     if (!validateChatMessages(messages)) {
       throw new Error("Wrong message alternation");
     }
     const chat_messages = this.getChatPrompt(messages);
-    return this._generateStream(chat_messages, input);
+    return this._generateStream(chat_messages, options);
   }
 
   abstract prepareBody(
     messages: ChatMessage[],
-    input: GenerationParams,
+    options: GenerationParams,
   ): string;
 
   getChatPrompt(messages: ChatMessage[]): ChatMessage[] {
