@@ -68,6 +68,10 @@ export class Llama2Chat extends BedrockFoundationModel {
   }
 }
 
+/**
+ * Generate LLama3 prompts according to https://llama.meta.com/docs/model-cards-and-prompt-formats/meta-llama-3
+ */
+
 const BEGIN_OF_TEXT = "<|begin_of_text|>";
 const SYSTEM_HEADER = "<|start_header_id|>system<|end_header_id|>";
 const USER_HEADER = "<|start_header_id|>user<|end_header_id|>";
@@ -114,9 +118,9 @@ export class Llama3Chat extends BedrockFoundationModel {
   }
 
   override getChatPrompt(messages: ChatMessage[]): ChatMessage[] {
-    let llama2ChatPrompt = "";
+    let llama2ChatPrompt = `${BEGIN_OF_TEXT}`;
     if (messages[0]?.role === "system") {
-      llama2ChatPrompt += `${BEGIN_OF_TEXT}${SYSTEM_HEADER}\n\n${messages[0].message.trim()}${EOD}`;
+      llama2ChatPrompt += `${SYSTEM_HEADER}\n\n${messages[0].message.trim()}${EOD}`;
       messages = messages.slice(1);
     }
     if (messages.length % 2 != 1)
@@ -125,8 +129,8 @@ export class Llama3Chat extends BedrockFoundationModel {
       );
     messages.forEach((m, idx) => {
       idx % 2 === 0
-        ? (llama2ChatPrompt += `${USER_HEADER}\n\n${m.message.trim()}${EOD}${ASSISTANT_HEADER}`)
-        : (llama2ChatPrompt += `\n\n${m.message.trim()}${EOD}`);
+        ? (llama2ChatPrompt += `${USER_HEADER}\n\n${m.message.trim()}${EOD}\n${ASSISTANT_HEADER}`)
+        : (llama2ChatPrompt += `\n\n${m.message.trim()}${EOD}\n`);
     });
     return [{ role: "human", message: llama2ChatPrompt }];
   }
