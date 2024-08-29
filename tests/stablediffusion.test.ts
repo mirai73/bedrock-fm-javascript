@@ -38,7 +38,7 @@ it("validates prompt parsing 1", async () => {
     { client: mockClient }
   );
   const body = await fm.prepareBody(
-    "a new house, gothic style  (photographic scene, 1.0), golden hour (national geo style, 2)",
+    "a new house, gothic style (photographic scene:1.0), golden hour (national geo style:2)",
     { imageSize: "1024x1024" }
   );
   const bodyJson = JSON.parse(body);
@@ -46,20 +46,44 @@ it("validates prompt parsing 1", async () => {
   expect(bodyJson.height).toBe(1024);
   expect(bodyJson.text_prompts).toStrictEqual([
     {
-      text: "a new house, gothic style  ",
-      weight: 1,
-    },
-    {
-      text: "photographic scene",
-      weight: 1,
-    },
-    {
-      text: ", golden hour ",
+      text: "a new house, gothic style photographic scene, golden hour",
       weight: 1,
     },
     {
       text: "national geo style",
       weight: 2,
+    },
+  ]);
+});
+
+it("validates prompt parsing 2", async () => {
+  const fm = new StableDiffusionXL(
+    ImageModels.STABILITY_STABLE_DIFFUSION_XL_V1,
+    { client: mockClient }
+  );
+  const body = await fm.prepareBody(
+    "a new house, gothic style, golden hour (national geo style:2) NEGATIVE: low quality (bad hands:1.4)",
+    { imageSize: "1024x1024" }
+  );
+  const bodyJson = JSON.parse(body);
+  expect(bodyJson.width).toBe(1024);
+  expect(bodyJson.height).toBe(1024);
+  expect(bodyJson.text_prompts).toStrictEqual([
+    {
+      text: "a new house, gothic style, golden hour",
+      weight: 1,
+    },
+    {
+      text: "national geo style",
+      weight: 2,
+    },
+    {
+      text: "low quality",
+      weight: -1,
+    },
+    {
+      text: "bad hands",
+      weight: -1.4,
     },
   ]);
 });
