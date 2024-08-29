@@ -66,13 +66,13 @@ export class StableDiffusionXL extends BedrockImageGenerationModel {
   override getResults(body: any): string[] {
     return body.artifacts.map(
       (a: { seed: number; base64: string }) =>
-        `data:image/png;base64,${a.base64}`,
+        `data:image/png;base64,${a.base64}`
     );
   }
 
   override prepareBody(
     prompt: string,
-    options: ImageGenerationParams & StableDiffusionParams,
+    options: ImageGenerationParams & StableDiffusionParams
   ): string {
     if (options.imageSize) {
       const [width, heigth] = options.imageSize.split("x");
@@ -87,21 +87,45 @@ export class StableDiffusionXL extends BedrockImageGenerationModel {
     return JSON.stringify(body);
   }
 
-  private parsePrompt(prompt: string): { text?: string; weight?: number }[] {
-    const prompts = prompt.match(/[^\(^\)]+|\([\w\s]+,\s*\d+\.?\d*\s*\)/g);
+  private extractWeights(
+    prompt?: string,
+    stdWeight: number = 1
+  ): { text?: string; weight?: number }[] {
+    if (!prompt) {
+      return [];
+    }
+    const prompts = prompt.match(/[^\(^\)]+|\([\w\s]+\:\s*\d+\.?\d*\s*\)/g);
     if (!prompts || prompts.length == 0) {
       throw new Error("Invalid prompt for SDXL");
     }
-    return prompts.map((p) => {
+    const parts = prompts.map((p) => {
       if (p[0] === "(") {
         p = p.substring(1, p.length - 1);
-        const [text, weight] = p.split(",");
+        const [text, weight] = p.split(":");
         return {
           text: text?.trim(),
-          weight: parseFloat(weight ?? "1.0"),
+          weight: parseFloat(weight ?? "1") * stdWeight,
         };
       }
-      return { text: p, weight: 1.0 };
+      return { text: p, weight: stdWeight };
     });
+
+    const stdParts = parts.filter((p) => p.weight == stdWeight);
+
+    let agg = { text: "", weight: stdWeight };
+    stdParts.forEach((a) => {
+      agg.text += a.text;
+    });
+    agg.text = agg.text.trim();
+    const aggParts = [agg, ...parts.filter((p) => p.weight !== stdWeight)];
+
+    return aggParts;
+  }
+
+  private parsePrompt(prompt: string): { text?: string; weight?: number }[] {
+    const [positive, negative] = prompt.split("NEGATIVE:").map((x) => x.trim());
+    return this.extractWeights(positive).concat(
+      this.extractWeights(negative, -1)
+    );
   }
 }
