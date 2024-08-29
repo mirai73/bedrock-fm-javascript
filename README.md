@@ -137,3 +137,22 @@ const fm = fromModelId(Models.COHERE_COMMAND_R_V1_0 , {
 
 fm.chat([role: "user", message: "Hello"]).then((r: ChatMessage) => {console.log(r.message, r.metadata);});
 ```
+
+# Image Generation
+
+You can use this library to generate images from Text.
+
+```ts
+import { ImageModels, fromImageModelId } from "@mirai73/bedrock-fm";
+
+const fm = new StableDiffusionXL(ImageModels.STABILITY_STABLE_DIFFUSION_XL_V1, {
+  region: "us-east-1",
+});
+
+const resp = await fm.generateImage("a nice hike in a forest", {
+  width: 512,
+  height: 512,
+});
+
+// resp[0] contains an image URI with image data encoded in base64
+```
