@@ -3,6 +3,20 @@ import { Jurassic, JurassicParams, Penalty } from "./ai21";
 import { Titan } from "./amazon";
 import { Command, CommandR, CommandParams, CommandRParams } from "./cohere";
 import { Llama2Chat, Llama3Chat } from "./meta";
+import { TitanImageGenerator, TitanImageGeneratorParams } from "./amazon_image";
+import {
+  StableDiffusionXL,
+  StableDiffusionParams,
+  Sampler,
+  StylePreset,
+  ClipGuidancePreset,
+  ImageSize,
+} from "./stability";
+import {
+  BedrockImageGenerationModel,
+  ImageGenerationParams,
+  ImageModels,
+} from "./bedrock_image_generation";
 import {
   BedrockFoundationModel,
   BedrockFoundationModelParams,
@@ -31,6 +45,14 @@ export {
   ChatMessage,
   BedrockFoundationModel,
   Models,
+  StableDiffusionXL,
+  StableDiffusionParams,
+  Sampler,
+  StylePreset,
+  ClipGuidancePreset,
+  ImageSize,
+  TitanImageGenerator,
+  ImageModels,
 };
 
 export function fromModelId(
@@ -59,6 +81,24 @@ export function fromModelId(
     case "mistral.mistral":
     case "mistral.mixtral":
       return new Mistral(modelId, params);
+
+    default:
+      throw new Error(`Unknown model ID: ${modelId}`);
+  }
+}
+
+export function fromImageModelId(
+  modelId: ModelID,
+  params?: BedrockFoundationModelParams &
+    ImageGenerationParams &
+    StableDiffusionParams &
+    TitanImageGeneratorParams
+): BedrockImageGenerationModel {
+  switch (modelId.split("-")[0]) {
+    case "amazon.titan":
+      return new TitanImageGenerator(modelId, params);
+    case "stability.stable":
+      return new StableDiffusionXL(modelId, params);
     default:
       throw new Error(`Unknown model ID: ${modelId}`);
   }

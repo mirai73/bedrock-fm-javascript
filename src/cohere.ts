@@ -17,21 +17,21 @@ export interface CommandParams {
 export class Command extends BedrockFoundationModel {
   override async chat(
     messages: ChatMessage[],
-    options?: GenerationParams & { modelArgs?: CommandParams }
+    options?: GenerationParams & { modelArgs?: CommandParams },
   ): Promise<ChatMessage> {
     return await super.chat(messages, options);
   }
 
   override async generate(
     message: string,
-    options?: GenerationParams & { modelArgs?: CommandParams }
+    options?: GenerationParams & { modelArgs?: CommandParams },
   ): Promise<string> {
     return await super.generate(message, options);
   }
 
   prepareBody(
     messages: ChatMessage[],
-    input: GenerationParams & CommandParams
+    input: GenerationParams & CommandParams,
   ): string {
     const modelArgs = (({ k, num_generations }) => ({
       num_generations,
@@ -239,14 +239,14 @@ export interface CommandRParams {
 export class CommandR extends BedrockFoundationModel {
   override async chat(
     messages: ChatMessage[],
-    options?: GenerationParams & { modelArgs?: CommandRParams }
+    options?: GenerationParams & { modelArgs?: CommandRParams },
   ): Promise<ChatMessage> {
     return await super.chat(messages, options);
   }
 
   override async generate(
     message: string,
-    options?: GenerationParams & { modelArgs?: CommandRParams }
+    options?: GenerationParams & { modelArgs?: CommandRParams },
   ): Promise<string> {
     return await super.generate(message, options);
   }
@@ -259,7 +259,7 @@ export class CommandR extends BedrockFoundationModel {
       topP,
       temperature,
       modelArgs = {},
-    }: GenerationParams & { modelArgs: CommandRParams }
+    }: GenerationParams & { modelArgs: CommandRParams },
   ): string {
     const _role_map = {
       human: "USER",
@@ -279,7 +279,7 @@ export class CommandR extends BedrockFoundationModel {
       p: topP ?? this.topP,
       temperature: modelArgs.temperature ?? temperature ?? this.temperature,
       preamble:
-        modelArgs.preamble ?? messages[0]!.role === "system"
+        (modelArgs.preamble ?? messages[0]!.role === "system")
           ? messages[0]!.message
           : undefined,
       ...modelArgs,

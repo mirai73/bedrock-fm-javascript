@@ -11,7 +11,7 @@ describe("test claude models generate", () => {
       expect(m).toBeTruthy();
       const resp = await m.generate("Hello");
       expect(resp.length).toBeGreaterThan(0);
-    })
+    }),
   );
 });
 
@@ -25,7 +25,7 @@ describe("test claude models chat", () => {
       expect(m).toBeTruthy();
       const resp = await m.chat([{ role: "human", message: "Hello" }]);
       expect(resp.message.length).toBeGreaterThan(0);
-    })
+    }),
   );
 });
 
@@ -40,7 +40,7 @@ describe("test claude models raw response", () => {
       expect(m).toBeTruthy();
       const resp = await m.chat([{ role: "human", message: "Hello" }]);
       expect(resp.metadata).toBeTruthy();
-    })
+    }),
   );
 });
 

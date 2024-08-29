@@ -13,14 +13,14 @@ const [BOS, EOS] = ["<s>", "</s>"];
 export class Llama2Chat extends BedrockFoundationModel {
   override async chat(
     messages: ChatMessage[],
-    options?: GenerationParams & { modelArgs?: {} }
+    options?: GenerationParams & { modelArgs?: {} },
   ): Promise<ChatMessage> {
     return await super.chat(messages, options);
   }
 
   override async generate(
     message: string,
-    options?: GenerationParams & { modelArgs?: {} }
+    options?: GenerationParams & { modelArgs?: {} },
   ): Promise<string> {
     return await super.generate(message, options);
   }
@@ -81,14 +81,14 @@ const EOD = "<|eot_id|>";
 export class Llama3Chat extends BedrockFoundationModel {
   override async chat(
     messages: ChatMessage[],
-    options?: GenerationParams & { modelArgs: {} }
+    options?: GenerationParams & { modelArgs: {} },
   ): Promise<ChatMessage> {
     return await super.chat(messages, options);
   }
 
   override async generate(
     message: string,
-    options?: GenerationParams & { modelArgs: {} }
+    options?: GenerationParams & { modelArgs: {} },
   ): Promise<string> {
     return await super.generate(message, options);
   }
@@ -125,7 +125,7 @@ export class Llama3Chat extends BedrockFoundationModel {
     }
     if (messages.length % 2 != 1)
       throw new Error(
-        "Messages should be alternating [SYSTEM], USER, ASSISTANT. Last message should be USER"
+        "Messages should be alternating [SYSTEM], USER, ASSISTANT. Last message should be USER",
       );
     messages.forEach((m, idx) => {
       idx % 2 === 0

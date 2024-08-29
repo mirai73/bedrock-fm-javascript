@@ -35,21 +35,21 @@ export interface JurassicParams {
 export class Jurassic extends BedrockFoundationModel {
   override async chat(
     messages: ChatMessage[],
-    options?: GenerationParams & { modelArgs?: JurassicParams }
+    options?: GenerationParams & { modelArgs?: JurassicParams },
   ): Promise<ChatMessage> {
     return await super.chat(messages, options);
   }
 
   override async generate(
     message: string,
-    options?: GenerationParams & { modelArgs?: JurassicParams }
+    options?: GenerationParams & { modelArgs?: JurassicParams },
   ): Promise<string> {
     return await super.generate(message, options);
   }
 
   prepareBody(
     messages: ChatMessage[],
-    input: GenerationParams & JurassicParams
+    input: GenerationParams & JurassicParams,
   ): string {
     const modelArgs = (({
       minTokens,

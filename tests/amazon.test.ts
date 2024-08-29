@@ -22,7 +22,7 @@ describe("test titan chat", () => {
 
     expect(m).toBeTruthy();
     expect(
-      (await m.chat([{ role: "human", message: "Hello" }])).message.length
+      (await m.chat([{ role: "human", message: "Hello" }])).message.length,
     ).toBeGreaterThan(0);
   });
 });
@@ -36,7 +36,7 @@ describe("test titan premier chat", () => {
 
     expect(m).toBeTruthy();
     expect(
-      (await m.chat([{ role: "human", message: "Hello" }])).message.length
+      (await m.chat([{ role: "human", message: "Hello" }])).message.length,
     ).toBeGreaterThan(0);
   });
 });
@@ -50,7 +50,7 @@ describe("test titan lite chat", () => {
 
     expect(m).toBeTruthy();
     expect(
-      (await m.chat([{ role: "human", message: "Hello" }])).message.length
+      (await m.chat([{ role: "human", message: "Hello" }])).message.length,
     ).toBeGreaterThan(0);
   });
 });
@@ -64,7 +64,7 @@ describe("test titan tg1 chat", () => {
 
     expect(m).toBeTruthy();
     expect(
-      (await m.chat([{ role: "human", message: "Hello" }])).message.length
+      (await m.chat([{ role: "human", message: "Hello" }])).message.length,
     ).toBeGreaterThan(0);
   });
 });

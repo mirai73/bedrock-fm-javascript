@@ -24,21 +24,21 @@ export interface ClaudeParams {
 export class Claude extends BedrockFoundationModel {
   override async chat(
     messages: ChatMessage[],
-    options?: GenerationParams & { modelArgs: ClaudeParams }
+    options?: GenerationParams & { modelArgs: ClaudeParams },
   ): Promise<ChatMessage> {
     return await super.chat(messages, options);
   }
 
   override async generate(
     message: string,
-    options?: GenerationParams & { modelArgs: ClaudeParams }
+    options?: GenerationParams & { modelArgs: ClaudeParams },
   ): Promise<string> {
     return await super.generate(message, options);
   }
 
   prepareBody(
     messages: ChatMessage[],
-    input: GenerationParams & ClaudeParams
+    input: GenerationParams & ClaudeParams,
   ): string {
     const s = [...(input.stopSequences ?? [])];
 
@@ -97,21 +97,21 @@ export class Claude extends BedrockFoundationModel {
 export class Claude3 extends BedrockFoundationModel {
   override async chat(
     messages: ChatMessage[],
-    options?: GenerationParams & { modelArgs?: ClaudeParams }
+    options?: GenerationParams & { modelArgs?: ClaudeParams },
   ): Promise<ChatMessage> {
     return await super.chat(messages, options);
   }
 
   override async generate(
     message: string,
-    options?: GenerationParams & { modelArgs?: ClaudeParams }
+    options?: GenerationParams & { modelArgs?: ClaudeParams },
   ): Promise<string> {
     return await super.generate(message, options);
   }
 
   prepareBody(
     messages: ChatMessage[],
-    input: GenerationParams & ClaudeParams
+    input: GenerationParams & ClaudeParams,
   ): string {
     const s = [...(input.stopSequences ?? [])];
 
