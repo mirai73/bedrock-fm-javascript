@@ -156,3 +156,11 @@ const resp = await fm.generateImage("a nice hike in a forest", {
 
 // resp[0] contains an image URI with image data encoded in base64
 ```
+
+### Prompting StableDiffusion
+
+To prompt stable diffusion you can use the following style:
+
+```
+car, street, neon lights (golden hour:1.4) NEGATIVE: clouds (skyscrapers: 1.4)
+```
