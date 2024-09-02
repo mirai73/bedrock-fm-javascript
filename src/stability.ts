@@ -66,13 +66,13 @@ export class StableDiffusionXL extends BedrockImageGenerationModel {
   override getResults(body: any): string[] {
     return body.artifacts.map(
       (a: { seed: number; base64: string }) =>
-        `data:image/png;base64,${a.base64}`
+        `data:image/png;base64,${a.base64}`,
     );
   }
 
   override prepareBody(
     prompt: string,
-    options: ImageGenerationParams & StableDiffusionParams
+    options: ImageGenerationParams & StableDiffusionParams,
   ): string {
     if (options.imageSize) {
       const [width, heigth] = options.imageSize.split("x");
@@ -89,7 +89,7 @@ export class StableDiffusionXL extends BedrockImageGenerationModel {
 
   private extractWeights(
     prompt?: string,
-    stdWeight: number = 1
+    stdWeight: number = 1,
   ): { text?: string; weight?: number }[] {
     if (!prompt) {
       return [];
@@ -125,7 +125,7 @@ export class StableDiffusionXL extends BedrockImageGenerationModel {
   private parsePrompt(prompt: string): { text?: string; weight?: number }[] {
     const [positive, negative] = prompt.split("NEGATIVE:").map((x) => x.trim());
     return this.extractWeights(positive).concat(
-      this.extractWeights(negative, -1)
+      this.extractWeights(negative, -1),
     );
   }
 }

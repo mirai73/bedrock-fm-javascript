@@ -23,9 +23,9 @@ import {
   GenerationParams,
   ModelID,
   ChatMessage,
-  Models,
 } from "./bedrock";
 import { Mistral } from "./mistral";
+import { Models } from "./models";
 
 export {
   Claude,
@@ -57,7 +57,7 @@ export {
 
 export function fromModelId(
   modelId: ModelID,
-  params?: BedrockFoundationModelParams & GenerationParams
+  params?: BedrockFoundationModelParams & GenerationParams,
 ): BedrockFoundationModel {
   switch (modelId.split("-")[0]) {
     case "anthropic.claude":
@@ -92,7 +92,7 @@ export function fromImageModelId(
   params?: BedrockFoundationModelParams &
     ImageGenerationParams &
     StableDiffusionParams &
-    TitanImageGeneratorParams
+    TitanImageGeneratorParams,
 ): BedrockImageGenerationModel {
   switch (modelId.split("-")[0]) {
     case "amazon.titan":

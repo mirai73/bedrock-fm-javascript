@@ -24,22 +24,22 @@ it("return the right model", async () => {
 it("validates body generation", async () => {
   const fm = new StableDiffusionXL(
     ImageModels.STABILITY_STABLE_DIFFUSION_XL_V1,
-    { client: mockClient }
+    { client: mockClient },
   );
   const body = await fm.prepareBody("a nice view", { width: 512, height: 512 });
   expect(body).toBe(
-    '{"text_prompts":[{"text":"a nice view","weight":1}],"width":512,"height":512}'
+    '{"text_prompts":[{"text":"a nice view","weight":1}],"width":512,"height":512}',
   );
 });
 
 it("validates prompt parsing 1", async () => {
   const fm = new StableDiffusionXL(
     ImageModels.STABILITY_STABLE_DIFFUSION_XL_V1,
-    { client: mockClient }
+    { client: mockClient },
   );
   const body = await fm.prepareBody(
     "a new house, gothic style (photographic scene:1.0), golden hour (national geo style:2)",
-    { imageSize: "1024x1024" }
+    { imageSize: "1024x1024" },
   );
   const bodyJson = JSON.parse(body);
   expect(bodyJson.width).toBe(1024);
@@ -59,11 +59,11 @@ it("validates prompt parsing 1", async () => {
 it("validates prompt parsing 2", async () => {
   const fm = new StableDiffusionXL(
     ImageModels.STABILITY_STABLE_DIFFUSION_XL_V1,
-    { client: mockClient }
+    { client: mockClient },
   );
   const body = await fm.prepareBody(
     "a new house, gothic style, golden hour (national geo style:2) NEGATIVE: low quality (bad hands:1.4)",
-    { imageSize: "1024x1024" }
+    { imageSize: "1024x1024" },
   );
   const bodyJson = JSON.parse(body);
   expect(bodyJson.width).toBe(1024);
@@ -91,7 +91,7 @@ it("validates prompt parsing 2", async () => {
 it("validates the generation", async () => {
   const fm = new StableDiffusionXL(
     ImageModels.STABILITY_STABLE_DIFFUSION_XL_V1,
-    { region: "us-east-1" }
+    { region: "us-east-1" },
   );
 
   const resp = await fm.generateImage("a nice view", {
