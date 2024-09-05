@@ -6,7 +6,9 @@ import { Llama2Chat, Llama3Chat } from "./meta";
 import { TitanImageGenerator, TitanImageGeneratorParams } from "./amazon_image";
 import {
   StableDiffusionXL,
-  StableDiffusionParams,
+  StableDiffusionXLParams,
+  StableDiffusion3,
+  StableDiffusion3Params,
   Sampler,
   StylePreset,
   ClipGuidancePreset,
@@ -15,7 +17,6 @@ import {
 import {
   BedrockImageGenerationModel,
   ImageGenerationParams,
-  ImageModels,
 } from "./bedrock_image_generation";
 import {
   BedrockFoundationModel,
@@ -23,9 +24,9 @@ import {
   GenerationParams,
   ModelID,
   ChatMessage,
-  Models,
 } from "./bedrock";
 import { Mistral } from "./mistral";
+import { Models, ImageModels } from "./models";
 
 export {
   Claude,
@@ -46,7 +47,9 @@ export {
   BedrockFoundationModel,
   Models,
   StableDiffusionXL,
-  StableDiffusionParams,
+  StableDiffusionXLParams,
+  StableDiffusion3,
+  StableDiffusion3Params,
   Sampler,
   StylePreset,
   ClipGuidancePreset,
@@ -91,14 +94,21 @@ export function fromImageModelId(
   modelId: ModelID,
   params?: BedrockFoundationModelParams &
     ImageGenerationParams &
-    StableDiffusionParams &
+    StableDiffusionXLParams &
+    StableDiffusion3Params &
     TitanImageGeneratorParams
 ): BedrockImageGenerationModel {
   switch (modelId.split("-")[0]) {
     case "amazon.titan":
       return new TitanImageGenerator(modelId, params);
     case "stability.stable":
-      return new StableDiffusionXL(modelId, params);
+      if (modelId == "stability.stable-diffusion-xl-v1") {
+        return new StableDiffusionXL(modelId, params);
+      } else {
+        return new StableDiffusion3(modelId, params);
+      }
+    case "stability.sd3":
+      return new StableDiffusion3(modelId, params);
     default:
       throw new Error(`Unknown model ID: ${modelId}`);
   }

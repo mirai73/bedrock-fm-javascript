@@ -53,13 +53,30 @@ export type Sampler =
   | "K_HEUN"
   | "K_LMS";
 
-export interface StableDiffusionParams {
+export interface StableDiffusionXLParams {
   sampler?: string;
   samples?: number;
   style_preset?: StylePreset;
   clip_guidance_preset?: ClipGuidancePreset;
   extras?: any;
   imageSize?: ImageSize;
+}
+
+export type AspectRatio =
+  | "16:9"
+  | "1:1"
+  | "21:9"
+  | "2:3"
+  | "3:2"
+  | "4:5"
+  | "5:4"
+  | "9:16"
+  | "9:21";
+
+export interface StableDiffusion3Params {
+  aspect_ratio?: AspectRatio;
+  negative_prompt?: string;
+  style_preset?: StylePreset;
 }
 
 export class StableDiffusionXL extends BedrockImageGenerationModel {
@@ -70,9 +87,16 @@ export class StableDiffusionXL extends BedrockImageGenerationModel {
     );
   }
 
+  override async generateImage(
+    prompt: string,
+    options: ImageGenerationParams & StableDiffusionXLParams
+  ): Promise<string[]> {
+    return super.generateImage(prompt, options);
+  }
+
   override prepareBody(
     prompt: string,
-    options: ImageGenerationParams & StableDiffusionParams
+    options: ImageGenerationParams & StableDiffusionXLParams
   ): string {
     if (options.imageSize) {
       const [width, heigth] = options.imageSize.split("x");
@@ -127,5 +151,38 @@ export class StableDiffusionXL extends BedrockImageGenerationModel {
     return this.extractWeights(positive).concat(
       this.extractWeights(negative, -1)
     );
+  }
+}
+
+export class StableDiffusion3 extends BedrockImageGenerationModel {
+  override getResults(body: any): string[] {
+    return [`data:image/png;base64,${body.image}`];
+  }
+  override async generateImage(
+    prompt: string,
+    options: ImageGenerationParams & StableDiffusion3Params
+  ): Promise<string[]> {
+    return super.generateImage(prompt, options);
+  }
+  override prepareBody(
+    prompt: string,
+    options: ImageGenerationParams & StableDiffusion3Params
+  ): string {
+    const body = {
+      prompt: prompt,
+      mode: "text-to-image",
+      ...(({
+        seed,
+        aspect_ratio,
+        negative_prompt,
+        style_preset,
+      }: ImageGenerationParams & StableDiffusion3Params) => ({
+        seed,
+        aspect_ratio,
+        negative_prompt,
+        style_preset,
+      }))(options),
+    };
+    return JSON.stringify(body);
   }
 }
