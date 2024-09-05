@@ -2,24 +2,10 @@
 
 export class Models {
   public static readonly AMAZON_TITAN_TG1_LARGE = "amazon.titan-tg1-large";
-  public static readonly AMAZON_TITAN_EMBED_G1_TEXT_02 =
-    "amazon.titan-embed-g1-text-02";
   public static readonly AMAZON_TITAN_TEXT_LITE_V1 =
     "amazon.titan-text-lite-v1";
   public static readonly AMAZON_TITAN_TEXT_EXPRESS_V1 =
     "amazon.titan-text-express-v1";
-  public static readonly AMAZON_TITAN_EMBED_TEXT_V1 =
-    "amazon.titan-embed-text-v1";
-  public static readonly AMAZON_TITAN_EMBED_TEXT_V2_0 =
-    "amazon.titan-embed-text-v2:0";
-  public static readonly AMAZON_TITAN_EMBED_IMAGE_V1 =
-    "amazon.titan-embed-image-v1";
-  public static readonly AMAZON_TITAN_IMAGE_GENERATOR_V1 =
-    "amazon.titan-image-generator-v1";
-  public static readonly AMAZON_TITAN_IMAGE_GENERATOR_V2_0 =
-    "amazon.titan-image-generator-v2:0";
-  public static readonly STABILITY_STABLE_DIFFUSION_XL_V1 =
-    "stability.stable-diffusion-xl-v1";
   public static readonly AI21_J2_GRANDE_INSTRUCT = "ai21.j2-grande-instruct";
   public static readonly AI21_J2_JUMBO_INSTRUCT = "ai21.j2-jumbo-instruct";
   public static readonly ANTHROPIC_CLAUDE_INSTANT_V1 =
@@ -40,9 +26,6 @@ export class Models {
     "cohere.command-r-plus-v1:0";
   public static readonly COHERE_COMMAND_LIGHT_TEXT_V14 =
     "cohere.command-light-text-v14";
-  public static readonly COHERE_EMBED_ENGLISH_V3 = "cohere.embed-english-v3";
-  public static readonly COHERE_EMBED_MULTILINGUAL_V3 =
-    "cohere.embed-multilingual-v3";
   public static readonly META_LLAMA3_8B_INSTRUCT_V1_0 =
     "meta.llama3-8b-instruct-v1:0";
   public static readonly META_LLAMA3_70B_INSTRUCT_V1_0 =
@@ -61,4 +44,18 @@ export class Models {
     "mistral.mistral-large-2402-v1:0";
   public static readonly MISTRAL_MISTRAL_LARGE_2407_V1_0 =
     "mistral.mistral-large-2407-v1:0";
+}
+
+export class ImageModels {
+  public static readonly AMAZON_TITAN_IMAGE_GENERATOR_V1 =
+    "amazon.titan-image-generator-v1";
+  public static readonly AMAZON_TITAN_IMAGE_GENERATOR_V2_0 =
+    "amazon.titan-image-generator-v2:0";
+  public static readonly STABILITY_STABLE_DIFFUSION_XL_V1 =
+    "stability.stable-diffusion-xl-v1";
+  public static readonly STABILITY_SD3_LARGE_V1_0 = "stability.sd3-large-v1:0";
+  public static readonly STABILITY_STABLE_IMAGE_CORE_V1_0 =
+    "stability.stable-image-core-v1:0";
+  public static readonly STABILITY_STABLE_IMAGE_ULTRA_V1_0 =
+    "stability.stable-image-ultra-v1:0";
 }

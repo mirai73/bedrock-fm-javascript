@@ -8,15 +8,6 @@ import {
  */
 export type ModelID = string;
 
-export class ImageModels {
-  public static readonly AMAZON_TITAN_IMAGE_GENERATOR_V1 =
-    "amazon.titan-image-generator-v1";
-  public static readonly AMAZON_TITAN_IMAGE_GENERATOR_V2_0 =
-    "amazon.titan-image-generator-v2:0";
-  public static readonly STABILITY_STABLE_DIFFUSION_XL_V1 =
-    "stability.stable-diffusion-xl-v1";
-}
-
 /**
  * Parameters that can modify the way completions are generated
  */
@@ -75,7 +66,7 @@ export abstract class BedrockImageGenerationModel {
 
   constructor(
     modelId: ModelID,
-    params?: BedrockFoundationModelParams & Partial<ImageGenerationParams>,
+    params?: BedrockFoundationModelParams & Partial<ImageGenerationParams>
   ) {
     this.extraArgs = params?.extraArgs;
     this.modelId = modelId;
@@ -93,7 +84,7 @@ export abstract class BedrockImageGenerationModel {
 
   public async generateImage(
     prompt: string,
-    options: ImageGenerationParams,
+    options: ImageGenerationParams
   ): Promise<string[]> {
     if (!options.seed) {
       options.seed = Math.round(Math.random() * 2 ** 32);
@@ -108,7 +99,7 @@ export abstract class BedrockImageGenerationModel {
 
   private async _generateRaw(
     prompt: string,
-    options: ImageGenerationParams,
+    options: ImageGenerationParams
   ): Promise<any> {
     const body = this.prepareBody(prompt, options);
     const command = new InvokeModelCommand({
