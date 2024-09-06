@@ -145,4 +145,29 @@ it("validates the generation - 3", async () => {
     aspect_ratio: "2:3",
   });
   expect(resp[0]?.includes("base64")).toBeTruthy();
-});
+}, 20000);
+
+it("validates the generation - 3 ultra", async () => {
+  const fm = new StableDiffusion3(
+    ImageModels.STABILITY_STABLE_IMAGE_ULTRA_V1_0,
+    { region: "us-west-2" }
+  );
+
+  const resp = await fm.generateImage("a nice view", {
+    negative_prompt: "clouds",
+    aspect_ratio: "2:3",
+  });
+  expect(resp[0]?.includes("base64")).toBeTruthy();
+}, 20000);
+
+it("validates the generation - 3 large", async () => {
+  const fm = new StableDiffusion3(ImageModels.STABILITY_SD3_LARGE_V1_0, {
+    region: "us-west-2",
+  });
+
+  const resp = await fm.generateImage("a nice view", {
+    negative_prompt: "clouds",
+    aspect_ratio: "2:3",
+  });
+  expect(resp[0]?.includes("base64")).toBeTruthy();
+}, 20000);

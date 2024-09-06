@@ -156,7 +156,7 @@ export class StableDiffusionXL extends BedrockImageGenerationModel {
 
 export class StableDiffusion3 extends BedrockImageGenerationModel {
   override getResults(body: any): string[] {
-    return [`data:image/png;base64,${body.image}`];
+    return [`data:image/png;base64,${body.images[0]}`];
   }
   override async generateImage(
     prompt: string,
