@@ -1,5 +1,4 @@
-import { ChatMessage, Models } from "../src/bedrock";
-import { CommandR, fromModelId } from "../src/main";
+import { CommandR, fromModelId, Models, ChatMessage } from "../src/main";
 
 it("validates the bot with CommandR", async () => {
   const messages: ChatMessage[] = [];
@@ -127,7 +126,7 @@ Unless the user asks for a different style of answer, you should answer in full 
     {
       modelArgs: {},
       rawResponse: true,
-    },
+    }
   );
   console.log(resp);
   expect(resp.message.length).toBeGreaterThan(0);
@@ -174,7 +173,7 @@ Unless the user asks for a different style of answer, you should answer in full 
         raw_prompting: false,
       },
       rawResponse: true,
-    },
+    }
   );
   console.log(resp);
   expect(resp.message.length).toBeGreaterThan(0);
@@ -205,7 +204,7 @@ Unless the user asks for a different style of answer, you should answer in full 
         search_queries_only: true,
       },
       rawResponse: true,
-    },
+    }
   );
   console.log(JSON.stringify(resp), undefined, 2);
 

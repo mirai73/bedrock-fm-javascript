@@ -8,7 +8,6 @@ describe("test generate stream", () => {
     Models.AMAZON_TITAN_TEXT_LITE_V1,
     Models.COHERE_COMMAND_LIGHT_TEXT_V14,
     Models.COHERE_COMMAND_R_V1_0,
-    Models.META_LLAMA2_13B_CHAT_V1,
     Models.META_LLAMA3_8B_INSTRUCT_V1_0,
     Models.MISTRAL_MISTRAL_7B_INSTRUCT_V0_2,
   ].map((name) =>
@@ -24,7 +23,7 @@ describe("test generate stream", () => {
         s += chunk;
       }
       expect(s.length).toBeGreaterThan(0);
-    }),
+    }, 10000)
   );
 });
 
@@ -35,7 +34,7 @@ describe("test chat stream", () => {
     Models.AMAZON_TITAN_TEXT_LITE_V1,
     Models.COHERE_COMMAND_LIGHT_TEXT_V14,
     Models.COHERE_COMMAND_R_V1_0,
-    Models.META_LLAMA2_13B_CHAT_V1,
+
     Models.META_LLAMA3_8B_INSTRUCT_V1_0,
     Models.MISTRAL_MISTRAL_7B_INSTRUCT_V0_2,
   ].map((name) =>
@@ -51,6 +50,6 @@ describe("test chat stream", () => {
         s += chunk;
       }
       expect(s.length).toBeGreaterThan(0);
-    }),
+    }, 10000)
   );
 });

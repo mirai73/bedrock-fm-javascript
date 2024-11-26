@@ -1,7 +1,9 @@
 import { BedrockRuntimeClient } from "@aws-sdk/client-bedrock-runtime";
-import { TitanImageGenerator } from "../src/amazon_image";
-import { ImageModels } from "../src/bedrock_image_generation";
-import { fromImageModelId } from "../src/main";
+import {
+  fromImageModelId,
+  ImageModels,
+  TitanImageGenerator,
+} from "../src/main";
 
 //@ts-ignore
 const mockClient: BedrockRuntimeClient = {
@@ -24,29 +26,29 @@ it("return the right model", async () => {
 it("validates body generation", async () => {
   const fm = new TitanImageGenerator(
     ImageModels.AMAZON_TITAN_IMAGE_GENERATOR_V2_0,
-    { client: mockClient },
+    { client: mockClient }
   );
   const body = await fm.prepareBody("a nice view", { width: 512, height: 512 });
   expect(body).toBe(
-    '{"taskType":"TEXT_IMAGE","textToImageParams":{"text":"a nice view"},"imageGenerationConfig":{"height":512,"width":512}}',
+    '{"taskType":"TEXT_IMAGE","textToImageParams":{"text":"a nice view"},"imageGenerationConfig":{"height":512,"width":512}}'
   );
 });
 
 it("validates body generation base", async () => {
   const fm = new TitanImageGenerator(
     ImageModels.AMAZON_TITAN_IMAGE_GENERATOR_V2_0,
-    { client: mockClient },
+    { client: mockClient }
   );
   const body = await fm.prepareBody("a nice view", {});
   expect(body).toBe(
-    '{"taskType":"TEXT_IMAGE","textToImageParams":{"text":"a nice view"},"imageGenerationConfig":{}}',
+    '{"taskType":"TEXT_IMAGE","textToImageParams":{"text":"a nice view"},"imageGenerationConfig":{}}'
   );
 });
 
 it("validates the generation", async () => {
   const fm = new TitanImageGenerator(
     ImageModels.AMAZON_TITAN_IMAGE_GENERATOR_V1,
-    { region: "us-east-1" },
+    { region: "us-east-1" }
   );
 
   const resp = await fm.generateImage("a nice view", {

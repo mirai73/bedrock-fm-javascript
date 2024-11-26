@@ -26,11 +26,7 @@ async function getModels(
       byOutputModality: modality,
     })
   );
-  return (
-    resp.modelSummaries
-      ?.filter((ms) => ms.modelLifecycle?.status == "ACTIVE")
-      .map((ms) => ms.modelId) ?? []
-  );
+  return resp.modelSummaries?.map((ms) => ms.modelId) ?? [];
 }
 
 (async () => {
@@ -47,7 +43,9 @@ async function getModels(
     const textModels = [
       ...new Set([...textModelsEast, ...textModelsWest]).values(),
     ];
-    const imageModels = [...new Set([...imageModelsEast, ...imageModelsWest])];
+    const imageModels = [
+      ...new Set([...imageModelsEast, ...imageModelsWest]).values(),
+    ];
 
     const textModelStrings = textModels?.map(
       (m) =>

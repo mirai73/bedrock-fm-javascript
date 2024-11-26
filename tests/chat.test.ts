@@ -1,6 +1,5 @@
 import { BedrockRuntimeClient } from "@aws-sdk/client-bedrock-runtime";
-import { fromModelId } from "../src/main";
-import { ChatMessage, Models } from "../src/bedrock";
+import { fromModelId, ChatMessage, Models } from "../src/main";
 
 //@ts-ignore
 const claudeMockClient: BedrockRuntimeClient = {
@@ -138,8 +137,8 @@ it("validates the bot with Llama", async () => {
   messages.push({ role: "human", message: "What is your name?" });
   messages.push({ role: "ai", message: "My name is Bean" });
   messages.push({ role: "human", message: "What did you say your name was?" });
-  const fm = fromModelId("meta.llama2-13b-chat-v1", {
-    region: "us-east-1",
+  const fm = fromModelId(Models.META_LLAMA3_1_8B_INSTRUCT_V1_0, {
+    region: "us-west-2",
   });
   const resp = await fm.chat(messages);
   console.log(resp.message);
@@ -152,13 +151,13 @@ it("validates the bot with Claude Sonnet", async () => {
   messages.push({ role: "human", message: "What is your name?" });
   messages.push({ role: "ai", message: "My name is Bean" });
   messages.push({ role: "human", message: "What did you say your name was?" });
-  const fm = fromModelId("anthropic.claude-3-sonnet-20240229-v1:0", {
+  const fm = fromModelId(Models.ANTHROPIC_CLAUDE_3_SONNET_20240229_V1_0, {
     region: "us-east-1",
   });
   const resp = await fm.chat(messages);
   console.log(resp.message);
   expect(resp.message.length).toBeGreaterThan(0);
-});
+}, 10000);
 
 it("validates the bot with Claude 2.1", async () => {
   const messages: ChatMessage[] = [];

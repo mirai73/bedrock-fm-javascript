@@ -1,6 +1,5 @@
 import { BedrockRuntimeClient } from "@aws-sdk/client-bedrock-runtime";
-import { fromModelId } from "../src/main";
-import { ChatMessage } from "../src/bedrock";
+import { fromModelId, ChatMessage } from "../src/main";
 
 //@ts-ignore
 const claudeMockClient: BedrockRuntimeClient = {
@@ -41,7 +40,7 @@ it("validates the prompt is correctly built", () => {
   });
   const body = fm.prepareBody(messages, {});
   expect(body).toBe(
-    '{"messages":[{"role":"user","content":[{"type":"text","text":"human"},{"type":"image","source":{"type":"base64","media_type":"image/png","data":"iVBO"}}]}],"anthropic_version":"bedrock-2023-05-31","max_tokens":512,"stop_sequences":[],"top_p":0.9,"temperature":0.7}',
+    '{"messages":[{"role":"user","content":[{"type":"text","text":"human"},{"type":"image","source":{"type":"base64","media_type":"image/png","data":"iVBO"}}]}],"anthropic_version":"bedrock-2023-05-31","max_tokens":512,"stop_sequences":[],"top_p":0.9,"temperature":0.7}'
   );
 });
 
