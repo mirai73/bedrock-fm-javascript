@@ -83,20 +83,20 @@ export class StableDiffusionXL extends BedrockImageGenerationModel {
   override getResults(body: any): string[] {
     return body.artifacts.map(
       (a: { seed: number; base64: string }) =>
-        `data:image/png;base64,${a.base64}`
+        `data:image/png;base64,${a.base64}`,
     );
   }
 
   override async generateImage(
     prompt: string,
-    options: ImageGenerationParams & StableDiffusionXLParams
+    options: ImageGenerationParams & StableDiffusionXLParams,
   ): Promise<string[]> {
     return super.generateImage(prompt, options);
   }
 
   override prepareBody(
     prompt: string,
-    options: ImageGenerationParams & StableDiffusionXLParams
+    options: ImageGenerationParams & StableDiffusionXLParams,
   ): string {
     if (options.imageSize) {
       const [width, heigth] = options.imageSize.split("x");
@@ -113,7 +113,7 @@ export class StableDiffusionXL extends BedrockImageGenerationModel {
 
   private extractWeights(
     prompt?: string,
-    stdWeight: number = 1
+    stdWeight: number = 1,
   ): { text?: string; weight?: number }[] {
     if (!prompt) {
       return [];
@@ -149,7 +149,7 @@ export class StableDiffusionXL extends BedrockImageGenerationModel {
   private parsePrompt(prompt: string): { text?: string; weight?: number }[] {
     const [positive, negative] = prompt.split("NEGATIVE:").map((x) => x.trim());
     return this.extractWeights(positive).concat(
-      this.extractWeights(negative, -1)
+      this.extractWeights(negative, -1),
     );
   }
 }
@@ -160,13 +160,13 @@ export class StableDiffusion3 extends BedrockImageGenerationModel {
   }
   override async generateImage(
     prompt: string,
-    options: ImageGenerationParams & StableDiffusion3Params
+    options: ImageGenerationParams & StableDiffusion3Params,
   ): Promise<string[]> {
     return super.generateImage(prompt, options);
   }
   override prepareBody(
     prompt: string,
-    options: ImageGenerationParams & StableDiffusion3Params
+    options: ImageGenerationParams & StableDiffusion3Params,
   ): string {
     const body = {
       prompt: prompt,

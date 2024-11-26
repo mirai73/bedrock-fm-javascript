@@ -7,7 +7,7 @@
     "mangelino"
   ],
   "scripts": {
-    "build:models": "tsc utils/genModelsClass.ts && node utils/genModelsClass.js > ./src/models.ts",
+    "build:models": "tsc && node utils/lib/genModelsClass.js > ./src/models.ts",
     "build": "prettier -w . && tsc",
     "test": "pnpm jest"
   },

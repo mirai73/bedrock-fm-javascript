@@ -60,7 +60,7 @@ export {
 
 export function fromModelId(
   modelId: ModelID,
-  params?: BedrockFoundationModelParams & GenerationParams
+  params?: BedrockFoundationModelParams & GenerationParams,
 ): BedrockFoundationModel {
   switch (modelId.split("-")[0]) {
     case "anthropic.claude":
@@ -96,7 +96,7 @@ export function fromImageModelId(
     ImageGenerationParams &
     StableDiffusionXLParams &
     StableDiffusion3Params &
-    TitanImageGeneratorParams
+    TitanImageGeneratorParams,
 ): BedrockImageGenerationModel {
   switch (modelId.split("-")[0]) {
     case "amazon.titan":
