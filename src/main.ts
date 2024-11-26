@@ -1,5 +1,5 @@
 import { Claude, Claude3, ClaudeParams } from "./anthropic";
-import { Jurassic, JurassicParams, Penalty } from "./ai21";
+import { Jurassic, JurassicParams, Penalty, Jamba } from "./ai21";
 import { Titan } from "./amazon";
 import { Command, CommandR, CommandParams, CommandRParams } from "./cohere";
 import { Llama2Chat, Llama3Chat } from "./meta";
@@ -34,6 +34,7 @@ export {
   ClaudeParams,
   Jurassic,
   JurassicParams,
+  Jamba,
   Penalty,
   Titan,
   Command,
@@ -60,7 +61,7 @@ export {
 
 export function fromModelId(
   modelId: ModelID,
-  params?: BedrockFoundationModelParams & GenerationParams,
+  params?: BedrockFoundationModelParams & GenerationParams
 ): BedrockFoundationModel {
   switch (modelId.split("-")[0]) {
     case "anthropic.claude":
@@ -70,6 +71,8 @@ export function fromModelId(
       return new Claude(modelId, params);
     case "ai21.j2":
       return new Jurassic(modelId, params);
+    case "ai21.jamba":
+      return new Jamba(modelId, params);
     case "amazon.titan":
       return new Titan(modelId, params);
     case "cohere.command":
@@ -96,7 +99,7 @@ export function fromImageModelId(
     ImageGenerationParams &
     StableDiffusionXLParams &
     StableDiffusion3Params &
-    TitanImageGeneratorParams,
+    TitanImageGeneratorParams
 ): BedrockImageGenerationModel {
   switch (modelId.split("-")[0]) {
     case "amazon.titan":

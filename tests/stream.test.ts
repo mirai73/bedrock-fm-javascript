@@ -8,6 +8,7 @@ describe("test generate stream", () => {
     Models.AMAZON_TITAN_TEXT_LITE_V1,
     Models.COHERE_COMMAND_LIGHT_TEXT_V14,
     Models.COHERE_COMMAND_R_V1_0,
+    Models.AI21_JAMBA_1_5_MINI_V1_0,
     Models.META_LLAMA3_8B_INSTRUCT_V1_0,
     Models.MISTRAL_MISTRAL_7B_INSTRUCT_V0_2,
   ].map((name) =>
@@ -34,7 +35,7 @@ describe("test chat stream", () => {
     Models.AMAZON_TITAN_TEXT_LITE_V1,
     Models.COHERE_COMMAND_LIGHT_TEXT_V14,
     Models.COHERE_COMMAND_R_V1_0,
-
+    Models.AI21_JAMBA_1_5_MINI_V1_0,
     Models.META_LLAMA3_8B_INSTRUCT_V1_0,
     Models.MISTRAL_MISTRAL_7B_INSTRUCT_V0_2,
   ].map((name) =>

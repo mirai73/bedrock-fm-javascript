@@ -35,21 +35,21 @@ export interface JurassicParams {
 export class Jurassic extends BedrockFoundationModel {
   override async chat(
     messages: ChatMessage[],
-    options?: GenerationParams & { modelArgs?: JurassicParams },
+    options?: GenerationParams & { modelArgs?: JurassicParams }
   ): Promise<ChatMessage> {
     return await super.chat(messages, options);
   }
 
   override async generate(
     message: string,
-    options?: GenerationParams & { modelArgs?: JurassicParams },
+    options?: GenerationParams & { modelArgs?: JurassicParams }
   ): Promise<string> {
     return await super.generate(message, options);
   }
 
   prepareBody(
     messages: ChatMessage[],
-    input: GenerationParams & JurassicParams,
+    input: GenerationParams & JurassicParams
   ): string {
     const modelArgs = (({
       minTokens,
@@ -83,5 +83,62 @@ export class Jurassic extends BedrockFoundationModel {
 
   getResults(body: string): string {
     return JSON.parse(body).completions.map((c: any) => c.data.text)[0];
+  }
+}
+
+export interface JambaParams {}
+
+function roleMap(role: string): string {
+  if (role == "human") return "user";
+  return role;
+}
+
+export class Jamba extends BedrockFoundationModel {
+  override async chat(
+    messages: ChatMessage[],
+    options?: GenerationParams & { modelArgs?: JambaParams }
+  ): Promise<ChatMessage> {
+    return await super.chat(messages, options);
+  }
+
+  override async generate(
+    message: string,
+    options?: GenerationParams & { modelArgs?: JambaParams }
+  ): Promise<string> {
+    return await super.generate(message, options);
+  }
+
+  prepareBody(
+    messages: ChatMessage[],
+    input: GenerationParams & JambaParams
+  ): string {
+    const modelArgs = (({ response_format, n, documents }) => ({
+      response_format,
+      n,
+      documents,
+    }))((input.modelArgs as any) ?? {});
+    return JSON.stringify({
+      messages: messages.map((m) => ({
+        role: roleMap(m.role),
+        content: m.message,
+      })),
+      max_tokens:
+        input.modelArgs?.max_tokens ??
+        input.maxTokenCount ??
+        this.maxTokenCount,
+      stop: input.modelArgs?.stop ?? input.stopSequences ?? this.stopSequences,
+      temperature:
+        input.modelArgs?.temperature ?? input.temperature ?? this.temperature,
+      ...modelArgs,
+    });
+  }
+
+  getResults(body: string): string {
+    console.log(body);
+    return (
+      JSON.parse(body).choices?.map(
+        (c: any) => c.message?.content ?? c.delta?.content ?? ""
+      )[0] ?? ""
+    );
   }
 }

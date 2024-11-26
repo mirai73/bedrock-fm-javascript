@@ -74,3 +74,31 @@ describe("test ai21 models params", () => {
     expect(resp.message.length).toBeGreaterThan(0);
   });
 });
+
+describe("test ai21 jamba models generate", () => {
+  [Models.AI21_JAMBA_1_5_MINI_V1_0].map((name) =>
+    it("should return true", async () => {
+      const m = fromModelId(name, {
+        region: "us-east-1",
+      });
+
+      expect(m).toBeTruthy();
+      const resp = await m.generate("Hello");
+      expect(resp.length).toBeGreaterThan(0);
+    })
+  );
+});
+
+describe("test  jamba models chat", () => {
+  [Models.AI21_JAMBA_1_5_MINI_V1_0].map((name) =>
+    it("should return true", async () => {
+      const m = fromModelId(name, {
+        region: "us-east-1",
+      });
+
+      expect(m).toBeTruthy();
+      const resp = await m.chat([{ role: "human", message: "Hello" }]);
+      expect(resp.message.length).toBeGreaterThan(0);
+    })
+  );
+});
