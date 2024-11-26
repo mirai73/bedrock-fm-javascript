@@ -9,48 +9,6 @@ import {
  */
 export type ModelID = string;
 
-export class Models {
-  public static readonly AMAZON_TITAN_TG1_LARGE = "amazon.titan-tg1-large";
-  public static readonly AMAZON_TITAN_TEXT_LITE_V1 =
-    "amazon.titan-text-lite-v1";
-  public static readonly AMAZON_TITAN_TEXT_EXPRESS_V1 =
-    "amazon.titan-text-express-v1";
-  public static readonly AMAZON_TITAN_TEXT_PREMIER_V1_0 =
-    "amazon.titan-text-premier-v1:0";
-  public static readonly AI21_J2_GRANDE_INSTRUCT = "ai21.j2-grande-instruct";
-  public static readonly AI21_J2_JUMBO_INSTRUCT = "ai21.j2-jumbo-instruct";
-  public static readonly AI21_J2_MID = "ai21.j2-mid";
-  public static readonly AI21_J2_MID_V1 = "ai21.j2-mid-v1";
-  public static readonly AI21_J2_ULTRA = "ai21.j2-ultra";
-  public static readonly AI21_J2_ULTRA_V1 = "ai21.j2-ultra-v1";
-  public static readonly ANTHROPIC_CLAUDE_INSTANT_V1 =
-    "anthropic.claude-instant-v1";
-  public static readonly ANTHROPIC_CLAUDE_V2 = "anthropic.claude-v2";
-  public static readonly ANTHROPIC_CLAUDE_V2_1 = "anthropic.claude-v2:1";
-  public static readonly ANTHROPIC_CLAUDE_3_SONNET_20240229_V1_0 =
-    "anthropic.claude-3-sonnet-20240229-v1:0";
-  public static readonly ANTHROPIC_CLAUDE_3_HAIKU_20240307_V1_0 =
-    "anthropic.claude-3-haiku-20240307-v1:0";
-  public static readonly COHERE_COMMAND_TEXT_V14 = "cohere.command-text-v14";
-  public static readonly COHERE_COMMAND_LIGHT_TEXT_V14 =
-    "cohere.command-light-text-v14";
-  public static readonly COHERE_COMMAND_R_V1_0 = "cohere.command-r-v1:0";
-  public static readonly COHERE_COMMAND_R_PLUS_V1_0 =
-    "cohere.command-r-plus-v1:0";
-  public static readonly META_LLAMA2_13B_CHAT_V1 = "meta.llama2-13b-chat-v1";
-  public static readonly META_LLAMA2_70B_CHAT_V1 = "meta.llama2-70b-chat-v1";
-  public static readonly META_LLAMA3_8B_INSTRUCT_V1_0 =
-    "meta.llama3-8b-instruct-v1:0";
-  public static readonly META_LLAMA3_70B_INSTRUCT_V1_0 =
-    "meta.llama3-70b-instruct-v1:0";
-  public static readonly MISTRAL_MISTRAL_7B_INSTRUCT_V0_2 =
-    "mistral.mistral-7b-instruct-v0:2";
-  public static readonly MISTRAL_MIXTRAL_8X7B_INSTRUCT_V0_1 =
-    "mistral.mixtral-8x7b-instruct-v0:1";
-  public static readonly MISTRAL_MISTRAL_LARGE_2402_V1_0 =
-    "mistral.mistral-large-2402-v1:0";
-}
-
 /**
  * Parameters that can modify the way completions are generated
  */
@@ -168,7 +126,7 @@ export abstract class BedrockFoundationModel {
 
   constructor(
     modelId: ModelID,
-    params?: BedrockFoundationModelParams & GenerationParams,
+    params?: BedrockFoundationModelParams & GenerationParams
   ) {
     this.extraArgs = params?.modelArgs;
     this.topP = params?.topP ?? 0.9;
@@ -188,7 +146,7 @@ export abstract class BedrockFoundationModel {
 
   public async generate(
     prompt: string,
-    options?: GenerationParams,
+    options?: GenerationParams
   ): Promise<string> {
     const messages: ChatMessage[] = [{ role: "human", message: prompt }];
     const response = await this._generateRaw(messages, options);
@@ -201,7 +159,7 @@ export abstract class BedrockFoundationModel {
 
   private async _generateRaw(
     messages: ChatMessage[],
-    options?: GenerationParams,
+    options?: GenerationParams
   ): Promise<string> {
     const body = this.prepareBody(messages, options ?? {});
     const command = new InvokeModelCommand({
@@ -216,17 +174,17 @@ export abstract class BedrockFoundationModel {
 
   public async generateStream(
     prompt: string,
-    options?: GenerationParams,
+    options?: GenerationParams
   ): Promise<AsyncIterable<string>> {
     return await this._generateStream(
       [{ role: "human", message: prompt }],
-      options,
+      options
     );
   }
 
   public async _generateStream(
     messages: ChatMessage[],
-    options?: GenerationParams,
+    options?: GenerationParams
   ): Promise<AsyncIterable<string>> {
     const body = this.prepareBody(messages, options ?? {});
     const command = new InvokeModelWithResponseStreamCommand({
@@ -247,7 +205,7 @@ export abstract class BedrockFoundationModel {
 
   public async chat(
     messages: ChatMessage[],
-    options?: GenerationParams,
+    options?: GenerationParams
   ): Promise<ChatMessage> {
     if (!validateChatMessages(messages)) {
       throw new Error("Wrong message alternation");
@@ -267,7 +225,7 @@ export abstract class BedrockFoundationModel {
 
   public async chatStream(
     messages: ChatMessage[],
-    options?: GenerationParams,
+    options?: GenerationParams
   ): Promise<AsyncIterable<string>> {
     if (!validateChatMessages(messages)) {
       throw new Error("Wrong message alternation");
@@ -278,7 +236,7 @@ export abstract class BedrockFoundationModel {
 
   abstract prepareBody(
     messages: ChatMessage[],
-    options: GenerationParams,
+    options: GenerationParams
   ): string;
 
   getChatPrompt(messages: ChatMessage[]): ChatMessage[] {
