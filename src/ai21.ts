@@ -4,6 +4,7 @@ import {
   GenerationParams,
 } from "./bedrock";
 
+/** @deprecated Jurassic models have reached end-of-life. Use Jamba instead */
 export interface Penalty {
   scale: number;
   applyToWhitespaces?: boolean;
@@ -13,6 +14,7 @@ export interface Penalty {
   applyToEmojis?: boolean;
 }
 
+/** @deprecated Jurassic models have reached end-of-life. Use Jamba instead */
 export interface JurassicParams {
   temperature?: number;
   maxTokens?: number;
@@ -31,6 +33,8 @@ export interface JurassicParams {
  *
  * For specific model args refer to AI21 documentation
  * https://docs.ai21.com/reference/j2-complete-api-ref#api-parameters
+ *
+ * @deprecated Jurassic models have reached end-of-life. Use Jamba instead
  */
 export class Jurassic extends BedrockFoundationModel {
   override async chat(

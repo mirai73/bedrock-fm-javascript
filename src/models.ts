@@ -5,11 +5,17 @@ export class Models {
   public static readonly AMAZON_TITAN_TEXT_PREMIER_V1_0 = "amazon.titan-text-premier-v1:0";
   public static readonly AMAZON_TITAN_TEXT_LITE_V1 = "amazon.titan-text-lite-v1";
   public static readonly AMAZON_TITAN_TEXT_EXPRESS_V1 = "amazon.titan-text-express-v1";
+  /** @deprecated this model has reached end-of-life */
   public static readonly AI21_J2_GRANDE_INSTRUCT = "ai21.j2-grande-instruct";
+  /** @deprecated this model has reached end-of-life */
   public static readonly AI21_J2_JUMBO_INSTRUCT = "ai21.j2-jumbo-instruct";
+  /** @deprecated this model has reached end-of-life */
   public static readonly AI21_J2_MID = "ai21.j2-mid";
+  /** @deprecated this model has reached end-of-life */
   public static readonly AI21_J2_MID_V1 = "ai21.j2-mid-v1";
+  /** @deprecated this model has reached end-of-life */
   public static readonly AI21_J2_ULTRA = "ai21.j2-ultra";
+  /** @deprecated this model has reached end-of-life */
   public static readonly AI21_J2_ULTRA_V1 = "ai21.j2-ultra-v1";
   public static readonly AI21_JAMBA_INSTRUCT_V1_0 = "ai21.jamba-instruct-v1:0";
   public static readonly AI21_JAMBA_1_5_LARGE_V1_0 = "ai21.jamba-1-5-large-v1:0";
@@ -42,6 +48,7 @@ export class Models {
 export class ImageModels {
   public static readonly AMAZON_TITAN_IMAGE_GENERATOR_V1 = "amazon.titan-image-generator-v1";
   public static readonly AMAZON_TITAN_IMAGE_GENERATOR_V2_0 = "amazon.titan-image-generator-v2:0";
+  /** @deprecated this model has reached end-of-life */
   public static readonly STABILITY_STABLE_DIFFUSION_XL_V1 = "stability.stable-diffusion-xl-v1";
   public static readonly STABILITY_SD3_LARGE_V1_0 = "stability.sd3-large-v1:0";
   public static readonly STABILITY_STABLE_IMAGE_CORE_V1_0 = "stability.stable-image-core-v1:0";

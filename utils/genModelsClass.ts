@@ -19,14 +19,19 @@ export class ImageModels {
 async function getModels(
   client: BedrockClient,
   modality: "TEXT" | "IMAGE"
-): Promise<(string | undefined)[]> {
+): Promise<[string | undefined, string | undefined][]> {
   const resp = await client.send(
     new ListFoundationModelsCommand({
       byInferenceType: "ON_DEMAND",
       byOutputModality: modality,
     })
   );
-  return resp.modelSummaries?.map((ms) => ms.modelId) ?? [];
+  return (
+    resp.modelSummaries?.map((ms) => [
+      ms.modelId,
+      ms.modelLifecycle?.status?.toString(),
+    ]) ?? []
+  );
 }
 
 (async () => {
@@ -41,19 +46,25 @@ async function getModels(
     const imageModelsEast = await getModels(clientEast, "IMAGE");
     //console.log("J", textModels, textModels);
     const textModels = [
-      ...new Set([...textModelsEast, ...textModelsWest]).values(),
-    ];
+      ...new Set([
+        ...textModelsEast.map((m) => JSON.stringify(m)),
+        ...textModelsWest.map((m) => JSON.stringify(m)),
+      ]).values(),
+    ].map((x) => JSON.parse(x));
     const imageModels = [
-      ...new Set([...imageModelsEast, ...imageModelsWest]).values(),
-    ];
+      ...new Set([
+        ...imageModelsEast.map((m) => JSON.stringify(m)),
+        ...imageModelsWest.map((m) => JSON.stringify(m)),
+      ]).values(),
+    ].map((x) => JSON.parse(x));
 
     const textModelStrings = textModels?.map(
       (m) =>
-        `  public static readonly ${m?.replace(/\-/g, "_").replace(/\./g, "_").replace(/\:/g, "_").toUpperCase()} = "${m}";`
+        `  ${m[1] !== "ACTIVE" ? "/** @deprecated this model has reached end-of-life */\n  " : ""}public static readonly ${m[0]?.replace(/\-/g, "_").replace(/\./g, "_").replace(/\:/g, "_").toUpperCase()} = "${m[0]}";`
     );
     const imageModelStrings = imageModels?.map(
       (m) =>
-        `  public static readonly ${m?.replace(/\-/g, "_").replace(/\./g, "_").replace(/\:/g, "_").toUpperCase()} = "${m}";`
+        `  ${m[1] !== "ACTIVE" ? "/** @deprecated this model has reached end-of-life */\n  " : ""}public static readonly ${m[0]?.replace(/\-/g, "_").replace(/\./g, "_").replace(/\:/g, "_").toUpperCase()} = "${m[0]}";`
     );
     if (textModelStrings) {
       output = output.replace("{placeholderText}", textModelStrings.join("\n"));
