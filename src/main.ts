@@ -1,9 +1,13 @@
 import { Claude, Claude3, ClaudeParams } from "./anthropic";
 import { Jurassic, JurassicParams, Penalty, Jamba } from "./ai21";
-import { Titan } from "./amazon";
+import { Titan, Nova } from "./amazon";
 import { Command, CommandR, CommandParams, CommandRParams } from "./cohere";
 import { Llama2Chat, Llama3Chat } from "./meta";
-import { TitanImageGenerator, TitanImageGeneratorParams } from "./amazon_image";
+import {
+  TitanImageGenerator,
+  TitanImageGeneratorParams,
+  NovaCanvas,
+} from "./amazon_image";
 import {
   StableDiffusionXL,
   StableDiffusionXLParams,
@@ -37,6 +41,7 @@ export {
   Jamba,
   Penalty,
   Titan,
+  Nova,
   Command,
   CommandParams,
   CommandR,
@@ -57,6 +62,7 @@ export {
   ImageSize,
   TitanImageGenerator,
   ImageModels,
+  NovaCanvas,
 };
 
 export function fromModelId(
@@ -75,6 +81,8 @@ export function fromModelId(
       return new Jamba(modelId, params);
     case "amazon.titan":
       return new Titan(modelId, params);
+    case "amazon.nova":
+      return new Nova(modelId, params);
     case "cohere.command":
       if (modelId.includes("command-r")) {
         return new CommandR(modelId, params);
@@ -104,6 +112,8 @@ export function fromImageModelId(
   switch (modelId.split("-")[0]) {
     case "amazon.titan":
       return new TitanImageGenerator(modelId, params);
+    case "amazon.nova":
+      return new NovaCanvas(modelId, params);
     case "stability.stable":
       if (modelId == "stability.stable-diffusion-xl-v1") {
         return new StableDiffusionXL(modelId, params);
