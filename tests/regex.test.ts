@@ -28,8 +28,8 @@ it("condition", () => {
 });
 
 it("condition integer", () => {
-  const res = m.getPromptElements("CONDITION(CANNY_EDGE:6)");
-  expect(res.conditionImage).toBe("CANNY_EDGE:6");
+  const res = m.getPromptElements("CONDITION(CANNY_EDGE:1)");
+  expect(res.conditionImage).toBe("CANNY_EDGE:1");
 });
 
 it("similar", () => {
@@ -38,8 +38,8 @@ it("similar", () => {
 });
 
 it("similar with integer", () => {
-  const res = m.getPromptElements("SIMILAR:2");
-  expect(res.similarity).toBe("2");
+  const res = m.getPromptElements("SIMILAR:1");
+  expect(res.similarity).toBe("1");
 });
 
 it("n", () => {

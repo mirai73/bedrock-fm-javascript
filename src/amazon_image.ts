@@ -233,9 +233,7 @@ export class NovaCanvas extends BedrockImageGenerationModel {
     );
     const similarity = prompt.match(/\bSIMILAR:([01]\.?\d{0,2})\b/);
     const numberOfImages = prompt.match(/\bN:([1-5])\b/);
-    const outpaintWithType = prompt.match(
-      /\bOUTPAINT\((DEFAULT|PRECISE)\s+([^\)+])\)/
-    );
+    const outpaintWithType = prompt.match(/\bOUTPAINT\((DEFAULT|PRECISE)\)/);
     const outpaintDefault = prompt.match(/\bOUTPAINT\b/);
     const instructions = prompt
       .replace(negative?.at(0) ?? "", "")
