@@ -2,6 +2,7 @@ import {
   BedrockRuntimeClient,
   InvokeModelCommand,
 } from "@aws-sdk/client-bedrock-runtime";
+
 /**
  * Supported models
  */
@@ -10,7 +11,7 @@ export type ModelID = string;
 /**
  * Parameters that can modify the way completions are generated
  */
-export interface ImageGenerationParams {
+export interface VideoGenerationParams {
   /**
    * The importance of the text prompt in influencing denoising
    */
@@ -55,7 +56,7 @@ export interface BedrockFoundationModelParams {
   };
 }
 
-export abstract class BedrockImageGenerationModel {
+export abstract class BedrockVideoGenerationModel {
   public readonly scale: number;
   public readonly steps: number;
   public readonly extraArgs?: Record<string, any>;
@@ -65,12 +66,12 @@ export abstract class BedrockImageGenerationModel {
 
   constructor(
     modelId: ModelID,
-    params?: BedrockFoundationModelParams & Partial<ImageGenerationParams>
+    params?: BedrockFoundationModelParams & Partial<VideoGenerationParams>
   ) {
     this.extraArgs = params?.extraArgs;
     this.modelId = modelId;
     this.rawResponse = params?.rawResponse ?? false;
-    this.scale = params?.scale ?? 6.0;
+    this.scale = params?.scale ?? 1.0;
     this.steps = params?.steps ?? 20;
 
     this.client =
@@ -83,7 +84,7 @@ export abstract class BedrockImageGenerationModel {
 
   public async generateImage(
     prompt: string,
-    options: ImageGenerationParams
+    options: VideoGenerationParams
   ): Promise<string[]> {
     if (!options.seed) {
       options.seed = Math.round(Math.random() * 2 ** 31);
@@ -98,7 +99,7 @@ export abstract class BedrockImageGenerationModel {
 
   private async _generateRaw(
     prompt: string,
-    options: ImageGenerationParams
+    options: VideoGenerationParams
   ): Promise<any> {
     const body = this.prepareBody(prompt, options);
     const command = new InvokeModelCommand({
@@ -111,7 +112,7 @@ export abstract class BedrockImageGenerationModel {
     return JSON.parse(result.body.transformToString("utf8"));
   }
 
-  abstract prepareBody(prompt: string, options: ImageGenerationParams): string;
+  abstract prepareBody(prompt: string, options: VideoGenerationParams): string;
 
   abstract getResults(body: any): string[];
 }
