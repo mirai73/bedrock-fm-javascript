@@ -75,23 +75,33 @@ export class Nova extends BedrockFoundationModel {
     messages: ChatMessage[],
     input: GenerationParams & { modelArgs: {} }
   ): string {
-    // const modelArgs = (({}) => ({
-    //   // at the moment this model does not support any extra args
-    // }))((input.modelArgs as any) ?? {});
+    const modelArgs = (({ top_k }) => ({
+      top_k,
+      //   // at the moment this model does not support any extra args
+    }))((input.modelArgs as any) ?? {});
     const ROLE_MAP = {
       human: "user",
       ai: "assistant",
       system: "system",
     };
     const body = {
+      schemaVersion: "messages-v1",
       messages: messages
         .filter((m) => m.role !== "system")
         .map((m) => ({
           role: ROLE_MAP[m.role],
-          content: [{ text: m.message }],
+          content: [
+            { text: m.message },
+            ...(m.images ?? []).map((im) => ({
+              image: {
+                format: im.split(";")[0]?.split(":")[1]?.split("/")[1],
+                source: { bytes: im.split(",")[1] },
+              },
+            })),
+          ],
         })),
       inferenceConfig: {
-        maxTokens:
+        max_new_tokens:
           input.modelArgs?.maxTokenCount ??
           input.maxTokenCount ??
           this.maxTokenCount,
@@ -99,10 +109,10 @@ export class Nova extends BedrockFoundationModel {
           input.modelArgs?.stopSequences ??
           input.stopSequences ??
           this.stopSequences,
-        topP: input.modelArgs?.topP ?? input.topP ?? this.topP,
+        top_p: input.modelArgs?.topP ?? input.topP ?? this.topP,
         temperature:
           input.modelArgs?.temperature ?? input.temperature ?? this.temperature,
-        //...modelArgs,
+        ...modelArgs,
       },
     };
     const system = messages
@@ -110,6 +120,7 @@ export class Nova extends BedrockFoundationModel {
       .map((m) => ({
         text: m.message,
       }));
+    console.log(body.messages[0]?.content);
     if (system.length > 0) {
       return JSON.stringify({ ...body, system });
     }

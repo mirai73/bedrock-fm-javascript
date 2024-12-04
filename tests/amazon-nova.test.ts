@@ -13,7 +13,7 @@ describe("test Nova generate", () => {
       });
 
       expect(llm).toBeTruthy();
-      const resp = await llm.generate("Hello");
+      const resp = await llm.generate("Hello", { modelArgs: { top_k: 40 } });
       expect(resp.length).toBeGreaterThan(0);
       expect(resp[0]?.length).toBeGreaterThan(0);
     });

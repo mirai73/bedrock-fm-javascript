@@ -17,19 +17,18 @@ export class ImageModels {
 }`;
 
 async function getModels(
-  client: BedrockClient,
-  modality: "TEXT" | "IMAGE"
-): Promise<[string | undefined, string | undefined][]> {
+  client: BedrockClient
+): Promise<[string | undefined, string | undefined, string[] | undefined][]> {
   const resp = await client.send(
     new ListFoundationModelsCommand({
       byInferenceType: "ON_DEMAND",
-      byOutputModality: modality,
     })
   );
   return (
     resp.modelSummaries?.map((ms) => [
       ms.modelId,
       ms.modelLifecycle?.status?.toString(),
+      ms.outputModalities,
     ]) ?? []
   );
 }
@@ -37,13 +36,27 @@ async function getModels(
 (async () => {
   let output = template;
   try {
-    const textModelsWest = await getModels(clientWest, "TEXT");
+    const allModelsWest = await getModels(clientWest);
 
-    const imageModelsWest = await getModels(clientWest, "IMAGE");
+    const textModelsWest = allModelsWest.filter((m) => m[2]?.includes("TEXT"));
 
-    const textModelsEast = await getModels(clientEast, "TEXT");
+    const imageModelsWest = allModelsWest.filter((m) =>
+      m[2]?.includes("IMAGE")
+    );
+    const videoModelsWest = allModelsWest.filter((m) =>
+      m[2]?.includes("VIDEO")
+    );
 
-    const imageModelsEast = await getModels(clientEast, "IMAGE");
+    const allModelsEast = await getModels(clientEast);
+    const textModelsEast = allModelsEast.filter((m) => m[2]?.includes("TEXT"));
+
+    const imageModelsEast = allModelsEast.filter((m) =>
+      m[2]?.includes("IMAGE")
+    );
+    const videoModelsEast = allModelsEast.filter((m) =>
+      m[2]?.includes("VIDEO")
+    );
+
     //console.log("J", textModels, textModels);
     const textModels = [
       ...new Set([
@@ -57,12 +70,23 @@ async function getModels(
         ...imageModelsWest.map((m) => JSON.stringify(m)),
       ]).values(),
     ].map((x) => JSON.parse(x));
+    const videoModels = [
+      ...new Set([
+        ...videoModelsEast.map((m) => JSON.stringify(m)),
+        ...videoModelsWest.map((m) => JSON.stringify(m)),
+      ]).values(),
+    ].map((x) => JSON.parse(x));
 
     const textModelStrings = textModels?.map(
       (m) =>
         `  ${m[1] !== "ACTIVE" ? "/** @deprecated this model has reached end-of-life */\n  " : ""}public static readonly ${m[0]?.replace(/\-/g, "_").replace(/\./g, "_").replace(/\:/g, "_").toUpperCase()} = "${m[0]}";`
     );
     const imageModelStrings = imageModels?.map(
+      (m) =>
+        `  ${m[1] !== "ACTIVE" ? "/** @deprecated this model has reached end-of-life */\n  " : ""}public static readonly ${m[0]?.replace(/\-/g, "_").replace(/\./g, "_").replace(/\:/g, "_").toUpperCase()} = "${m[0]}";`
+    );
+
+    const videoModelStrings = videoModels?.map(
       (m) =>
         `  ${m[1] !== "ACTIVE" ? "/** @deprecated this model has reached end-of-life */\n  " : ""}public static readonly ${m[0]?.replace(/\-/g, "_").replace(/\./g, "_").replace(/\:/g, "_").toUpperCase()} = "${m[0]}";`
     );
@@ -73,6 +97,13 @@ async function getModels(
       output = output.replace(
         "{placeholderImage}",
         imageModelStrings.join("\n")
+      );
+    }
+
+    if (videoModelStrings) {
+      output = output.replace(
+        "{placeholderVideo}",
+        videoModelStrings.join("\n")
       );
     }
   } catch {}

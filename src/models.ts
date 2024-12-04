@@ -88,3 +88,7 @@ export class ImageModels {
   public static readonly STABILITY_STABLE_IMAGE_ULTRA_V1_0 =
     "stability.stable-image-ultra-v1:0";
 }
+
+export class VideoModels {
+  public static readonly AMAZON_NOVA_REEL_V1_0 = "amazon.nova-reel-v1:0";
+}
