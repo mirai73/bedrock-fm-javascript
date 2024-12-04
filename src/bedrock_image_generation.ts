@@ -2,6 +2,7 @@ import {
   BedrockRuntimeClient,
   InvokeModelCommand,
 } from "@aws-sdk/client-bedrock-runtime";
+import fs from "fs";
 /**
  * Supported models
  */
@@ -20,8 +21,7 @@ export interface ImageGenerationParams {
    * The number of denoising steps to execute to generate an image. Higher values yield better results.
    */
   steps?: number;
-
-  height?: number;
+  size?: { height: number; width: number };
   width?: number;
   seed?: number;
 
@@ -101,6 +101,7 @@ export abstract class BedrockImageGenerationModel {
     options: ImageGenerationParams
   ): Promise<any> {
     const body = this.prepareBody(prompt, options);
+    fs.writeFileSync("dump.json", body);
     const command = new InvokeModelCommand({
       modelId: this.modelId,
       contentType: "application/json",
