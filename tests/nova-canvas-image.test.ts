@@ -88,6 +88,13 @@ it("object", async () => {
   expect(resp[0]?.includes("base64")).toBeTruthy();
 }, 30000);
 
+it("remove", async () => {
+  const resp = await fm.generateImage("MASK(windows)", {
+    image: getTestImage(),
+  });
+  expect(resp[0]?.includes("base64")).toBeTruthy();
+}, 30000);
+
 it("similar", async () => {
   const resp = await fm.generateImage("different landscapes SIMILAR:0.5 N:3", {
     image: getTestImage(),

@@ -109,7 +109,7 @@ export class NovaCanvas extends BedrockImageGenerationModel {
   getBodyFromPrompt(
     prompt: string,
     image?: string
-  ): { body: Record<string, any>; numberOfImages: number } {
+  ): { body: any; numberOfImages: number } {
     const elements = this.getPromptElements(prompt);
     const taskType = this.determineType(elements);
     if (taskType === "TEXT_IMAGE") {
@@ -257,7 +257,7 @@ export class NovaCanvas extends BedrockImageGenerationModel {
       similarity: similarity?.at(1),
       numberOfImages: numberOfImages?.at(1),
       outpaint: outpaintWithType?.at(1) ?? outpaintDefault?.at(0),
-      instructions: instructions,
+      instructions: instructions.length > 0 ? instructions : undefined,
     };
   }
 
@@ -267,7 +267,7 @@ export class NovaCanvas extends BedrockImageGenerationModel {
   ): string {
     // @ts-ignore
     const inferredBody = this.getBodyFromPrompt(
-      prompt,
+      prompt.replace("\n", " "),
       options.image?.split(",")?.at(1)
     );
     const body = {
