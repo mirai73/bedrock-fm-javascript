@@ -229,10 +229,10 @@ export class NovaCanvas extends BedrockImageGenerationModel {
     const colors = prompt.match(/\bCOLORS\(([^\)]+)\)/);
     const removeBackground = prompt.match(/\bREMOVE_BACKGROUND\b/);
     const conditionImage = prompt.match(
-      /\bCONDITION\(((CANNY_EDGE|SEGMENTATION):\d+\.?\d*)\)/
+      /\bCONDITION\(((CANNY_EDGE|SEGMENTATION):[01]\.?\d{0,2})\)/
     );
-    const similarity = prompt.match(/\bSIMILAR:(\d+\.?\d*)\b/);
-    const numberOfImages = prompt.match(/\bN:(\d+)\b/);
+    const similarity = prompt.match(/\bSIMILAR:([01]\.?\d{0,2})\b/);
+    const numberOfImages = prompt.match(/\bN:([1-5])\b/);
     const outpaintWithType = prompt.match(
       /\bOUTPAINT\((DEFAULT|PRECISE)\s+([^\)+])\)/
     );
