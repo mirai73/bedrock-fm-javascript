@@ -30,7 +30,12 @@ import {
   ChatMessage,
 } from "./bedrock";
 import { Mistral } from "./mistral";
-import { Models, ImageModels } from "./models";
+import { Models, ImageModels, VideoModels } from "./models";
+import { NovaReel, NovaReelParams } from "./amazon_video";
+import {
+  BedrockVideoGenerationModel,
+  VideoGenerationParams,
+} from "./bedrock_video_generation";
 
 export {
   Claude,
@@ -63,6 +68,10 @@ export {
   TitanImageGenerator,
   ImageModels,
   NovaCanvas,
+  NovaReel,
+  BedrockVideoGenerationModel,
+  VideoGenerationParams,
+  VideoModels,
 };
 
 export function fromModelId(
@@ -122,6 +131,18 @@ export function fromImageModelId(
       }
     case "stability.sd3":
       return new StableDiffusion3(modelId, params);
+    default:
+      throw new Error(`Unknown model ID: ${modelId}`);
+  }
+}
+
+export function fromVideoModelId(
+  modelId: ModelID,
+  params: VideoGenerationParams & NovaReelParams
+): BedrockVideoGenerationModel {
+  switch (modelId.split("-")[0]) {
+    case "amazon.nova":
+      return new NovaReel(modelId, params);
     default:
       throw new Error(`Unknown model ID: ${modelId}`);
   }
