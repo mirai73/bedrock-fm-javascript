@@ -72,7 +72,7 @@ export abstract class BedrockVideoGenerationModel {
   public async generateVideo(
     prompt: string,
     options: VideoGenerationParams
-  ): Promise<string | undefined> {
+  ): Promise<{ uri?: string; response: unknown } | any> {
     if (!options.seed) {
       options.seed = Math.round(Math.random() * 2 ** 31);
     }
@@ -80,7 +80,7 @@ export abstract class BedrockVideoGenerationModel {
     if (this.rawResponse || (options && options.rawResponse)) {
       return response;
     } else {
-      return this.getResults(response) ?? "";
+      return this.getResults(response);
     }
   }
 
@@ -102,5 +102,8 @@ export abstract class BedrockVideoGenerationModel {
 
   abstract prepareBody(prompt: string, options: VideoGenerationParams): string;
 
-  abstract getResults(body: any, timeout?: number): Promise<string | undefined>;
+  abstract getResults(
+    body: any,
+    timeout?: number
+  ): Promise<{ uri?: string; response: unknown }>;
 }

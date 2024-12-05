@@ -1,4 +1,7 @@
-import { GetAsyncInvokeCommand } from "@aws-sdk/client-bedrock-runtime";
+import {
+  GetAsyncInvokeCommand,
+  GetAsyncInvokeCommandOutput,
+} from "@aws-sdk/client-bedrock-runtime";
 import {
   BedrockVideoGenerationModel,
   VideoGenerationParams,
@@ -10,7 +13,7 @@ export class NovaReel extends BedrockVideoGenerationModel {
   override async getResults(
     invocationArn: any,
     timeout?: number
-  ): Promise<string | undefined> {
+  ): Promise<{ uri?: string; response: GetAsyncInvokeCommandOutput }> {
     console.log(invocationArn);
     return new Promise(async (res, rej) => {
       if (timeout) {
@@ -28,7 +31,10 @@ export class NovaReel extends BedrockVideoGenerationModel {
         );
       }
       if (response.status === "Completed") {
-        res(response.outputDataConfig?.s3OutputDataConfig?.s3Uri);
+        res({
+          uri: response.outputDataConfig?.s3OutputDataConfig?.s3Uri,
+          response,
+        });
       } else rej({ message: response.failureMessage, response });
     });
   }

@@ -3,7 +3,7 @@ import fs from "fs";
 
 const fm = new NovaReel(VideoModels.AMAZON_NOVA_REEL_V1_0, {
   region: "us-east-1",
-  s3Uri: "s3://bedrock-video-generation-us-east-1-hta1ce",
+  s3Uri: process.env.NOVA_REEL_S3,
 });
 
 function getTestImage(): string {
@@ -12,17 +12,17 @@ function getTestImage(): string {
   return `data:image/jpeg;base64,${data}`;
 }
 
-it("generate a video", async () => {
+it("start generate a video and return", async () => {
   const resp = await fm.generateVideo("dolly forward", {
     image: getTestImage(),
     rawResponse: true,
   });
   expect(resp).toContain("arn:aws:bedrock");
-}, 600000);
-
-it("returns success", async () => {
-  const resp = await fm.getResults(
-    "arn:aws:bedrock:us-east-1:699391019698:async-invoke/awgkzrazqjs2"
-  );
-  expect(resp).toContain("s3");
 });
+
+it("generate a video and wait", async () => {
+  const resp = await fm.generateVideo("dolly forward", {
+    image: getTestImage(),
+  });
+  expect(resp.uri).toContain("s3://");
+}, 600000);
