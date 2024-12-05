@@ -229,7 +229,7 @@ const reponse = await fm.generateVideo("dolly forward", {
   image: "data:image/png;base64,...",
 });
 
-console.log(response.uri);
+console.log(response.s3Uri);
 ```
 
 This call can take few minutes to return.
