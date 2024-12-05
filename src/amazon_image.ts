@@ -337,6 +337,9 @@ export class NovaCanvas extends BedrockImageGenerationModel {
       ...inferredBody,
       imageGenerationConfig: inferenceConfig,
     };
+    if (!body.imageGenerationConfig.seed) {
+      body.imageGenerationConfig.seed = Math.round(Math.random() * 2 ** 31);
+    }
     return JSON.stringify(body);
   }
 }

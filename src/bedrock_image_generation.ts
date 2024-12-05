@@ -84,9 +84,6 @@ export abstract class BedrockImageGenerationModel {
     prompt: string,
     options: ImageGenerationParams
   ): Promise<string[]> {
-    if (!options.seed) {
-      options.seed = Math.round(Math.random() * 2 ** 31);
-    }
     const response = await this._generateRaw(prompt, options);
     if (this.rawResponse || (options && options.rawResponse)) {
       return response;

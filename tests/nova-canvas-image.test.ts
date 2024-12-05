@@ -29,9 +29,10 @@ it("validates body generation", async () => {
   });
   const body = await fm.prepareBody("a nice view", {
     size: { width: 512, height: 512 },
+    seed: 300,
   });
   expect(body).toBe(
-    '{"taskType":"TEXT_IMAGE","textToImageParams":{"text":"a nice view"},"imageGenerationConfig":{"height":512,"width":512}}'
+    '{"taskType":"TEXT_IMAGE","textToImageParams":{"text":"a nice view"},"imageGenerationConfig":{"height":512,"width":512,"seed":300}}'
   );
 });
 
@@ -39,16 +40,15 @@ it("validates body generation base", async () => {
   const fm = new NovaCanvas(ImageModels.AMAZON_NOVA_CANVAS_V1_0, {
     client: mockClient,
   });
-  const body = await fm.prepareBody("a nice view", {});
+  const body = await fm.prepareBody("a nice view | seed:86", { seed: 51 });
   expect(body).toBe(
-    '{"taskType":"TEXT_IMAGE","textToImageParams":{"text":"a nice view"},"imageGenerationConfig":{}}'
+    '{"taskType":"TEXT_IMAGE","textToImageParams":{"text":"a nice view"},"imageGenerationConfig":{"seed":86}}'
   );
 });
 
 function getTestImage(): string {
   const bytes = fs.readFileSync("tests/test-image.jpg");
   const data = bytes.toString("base64");
-  console.log(data.slice(0, 20));
   return `data:image/jpeg;base64,${data}`;
 }
 
