@@ -312,7 +312,7 @@ export class NovaCanvas extends BedrockImageGenerationModel {
       };
     }
     const inferredBody = this.getBodyFromPrompt(
-      (promptInstructions ?? prompt).replace("\n", " "),
+      (promptInstructions ?? prompt).replaceAll("\n", " "),
       options.image?.split(",")?.at(1)
     );
 
