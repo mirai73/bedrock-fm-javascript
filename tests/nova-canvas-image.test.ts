@@ -27,7 +27,9 @@ it("validates body generation", async () => {
   const fm = new NovaCanvas(ImageModels.AMAZON_NOVA_CANVAS_V1_0, {
     client: mockClient,
   });
-  const body = await fm.prepareBody("a nice view", { width: 512, height: 512 });
+  const body = await fm.prepareBody("a nice view", {
+    size: { width: 512, height: 512 },
+  });
   expect(body).toBe(
     '{"taskType":"TEXT_IMAGE","textToImageParams":{"text":"a nice view"},"imageGenerationConfig":{"height":512,"width":512}}'
   );
@@ -75,8 +77,10 @@ it("colors", async () => {
 
 it("validates the generation", async () => {
   const resp = await fm.generateImage("a nice view", {
-    width: 512,
-    height: 512,
+    size: {
+      width: 512,
+      height: 512,
+    },
   });
   expect(resp[0]?.includes("base64")).toBeTruthy();
 }, 30000);
@@ -106,6 +110,18 @@ it("similar", async () => {
 it("outpaint", async () => {
   const resp = await fm.generateImage("a large barge MASK(houses) OUTPAINT", {
     image: getTestImage(),
+  });
+  expect(resp.length).toBe(1);
+  expect(resp[0]?.includes("base64")).toBeTruthy();
+}, 30000);
+
+it("bare", async () => {
+  const resp = await fm.generateImage("MASK(houses) OUTPAINT", {
+    image: getTestImage(),
+    size: {
+      width: 1024,
+      height: 1024,
+    },
   });
   expect(resp.length).toBe(1);
   expect(resp[0]?.includes("base64")).toBeTruthy();

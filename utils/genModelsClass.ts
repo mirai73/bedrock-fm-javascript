@@ -14,6 +14,10 @@ export class Models {
 
 export class ImageModels {
 {placeholderImage}
+}
+
+export class VideoModels {
+{placeholderVideo}
 }`;
 
 async function getModels(

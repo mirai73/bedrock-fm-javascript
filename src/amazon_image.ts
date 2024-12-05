@@ -25,8 +25,8 @@ export class TitanImageGenerator extends BedrockImageGenerationModel {
       },
       imageGenerationConfig: {
         numberOfImages: options.numberOfImages,
-        height: options.height,
-        width: options.width,
+        height: options.size?.height,
+        width: options.size?.width,
         cfgScale: options.scale,
         seed: options.seed,
       },
@@ -261,21 +261,50 @@ export class NovaCanvas extends BedrockImageGenerationModel {
     };
   }
 
+  capSizes(x: number, y: number): [number, number] {
+    if (x < 320) {
+      y = (y * 320) / x;
+      x = 320;
+    }
+    if (y > 4096) {
+      x = (x * y) / 4096;
+      y = 4096;
+    }
+    return [x, y];
+  }
+
   override prepareBody(
     prompt: string,
     options: ImageGenerationParams & NovaParams
   ): string {
-    // @ts-ignore
     const inferredBody = this.getBodyFromPrompt(
       prompt.replace("\n", " "),
       options.image?.split(",")?.at(1)
     );
+
+    if (options.size) {
+      let { height, width } = options.size;
+      if (height > width && height / width > 4) {
+        height = width * 4;
+      }
+      if (height < width && width / height > 4) {
+        width = height * 4;
+      }
+
+      if (width <= height) {
+        [width, height] = this.capSizes(width, height);
+      } else {
+        [height, width] = this.capSizes(height, width);
+      }
+      height = Math.floor(height / 16) * 16;
+      width = Math.floor(width / 16) * 16;
+    }
     const body = {
       ...inferredBody.body,
       imageGenerationConfig: {
         numberOfImages: options.numberOfImages ?? inferredBody.numberOfImages,
-        height: options.height,
-        width: options.width,
+        height: options.size?.height,
+        width: options.size?.width,
         cfgScale: options.scale,
         seed: options.seed,
       },

@@ -27,7 +27,7 @@
     "typescript": "^5.5.4"
   },
   "dependencies": {
-    "@aws-sdk/client-bedrock-runtime": "^3.637.0"
+    "@aws-sdk/client-bedrock-runtime": "^3.705.0"
   },
   "files": [
     "lib",
