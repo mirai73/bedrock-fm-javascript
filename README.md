@@ -143,7 +143,7 @@ fm.chat([role: "user", message: "Hello"]).then((r: ChatMessage) => {console.log(
 You can use this library to generate images from Text.
 
 ```ts
-import { ImageModels, fromImageModelId } from "@mirai73/bedrock-fm";
+import { ImageModels, StableDiffusionXL } from "@mirai73/bedrock-fm";
 
 const fm = new StableDiffusionXL(ImageModels.STABILITY_STABLE_DIFFUSION_XL_V1, {
   region: "us-east-1",
@@ -163,4 +163,81 @@ To prompt stable diffusion you can use the following style:
 
 ```
 car, street, neon lights (golden hour:1.4) NEGATIVE: clouds (skyscrapers: 1.4)
+```
+
+### Prompting Nova Canvas
+
+Nova Canvas supports multiple generative modes. In order to simplify the use of such modes, this
+library exposes extensions to the textual prompt.
+
+For example to generate an image you can use the following prompt:
+
+`house on the hills, facing south, dusk NEGATIVE(clouds, trees)`
+
+```ts
+import { ImageModels, NovaCanvas } from "@mirai73/bedrock-fm";
+
+const fm = new NovaCanvas(ImageModels.AMAZON_NOVA_CANVAS_V1_0, {
+  region: "us-east-1",
+});
+
+const resp = await fm.generateImage(
+  "house on the hills, facing south, dusk NEGATIVE(clouds, trees) | size:512x512, seed:5"
+);
+
+// resp contains one or more image
+```
+
+The `NEGATIVE` instruction translates to Nova `negativeText` generation parameter. Based on the instructions, the library determines the type of generation to use.
+
+Supported tags are:
+
+- **NEGATIVE(\<text\>)**: defines the negative text. Can be used in all modalities
+
+- **SIMILARITY:\<float>** : triggers the generation of similar images to the reference one. An image must be provided
+
+- **CONDITION(CANNY_EDGES|SEGMENTATION:\<strength>)**: creates an images conditioned on another image with a given strength.
+  An image must be provided
+
+- **REMOVE_BACKGROUD**: removes the background of the image
+
+- **MASK(\<text>)**: define a mask prompt and trigger the INPAINTING mode.
+  If no other prompt is defined it will remove the object described by the mask, otherwise will replace it
+  An image must be provided
+
+- **OUTPAINT(DEFAULT|PRECISE)**: truggers outpainting more and must be used with MASK. An image must be also provided
+
+- **COLORS(_#000000_ _#AABBCC_)**: defines a list of colors to guide the image generation. If specified will override any other mode
+  an image must be provided
+
+You can also specify inference parameter to control the generation. Use a `|` (vertical pipe) at the end of the instructions and add the specific parameter keys and values.
+
+For example:
+
+```
+<instructions> | size:320x320, seed:4, scale:4, n:6
+```
+
+# Video Generation
+
+This library supports video generation via Nova Reel.
+
+```ts
+const fm = NovaReel(Models.VideoModels.AMAZON_NOVA_REEL_V1_0, {});
+
+const reponse = await fm.generateVideo("dolly forward", {
+  image: "data:image/png;base64,...",
+});
+
+console.log(response.uri);
+```
+
+This call can take few minutes to return.
+
+If you want to check for the completion of the generation yourself, you can execute the same command by passing `rawOutput: true` as paramter. It will then return the inference id arn.
+
+You can use that value to check for the completion via:
+
+```ts
+await fm.getResult(inferenceId);
 ```
