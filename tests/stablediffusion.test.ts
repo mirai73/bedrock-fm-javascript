@@ -50,7 +50,9 @@ it("validates body generation", async () => {
     ImageModels.STABILITY_STABLE_DIFFUSION_XL_V1,
     { client: mockClient }
   );
-  const body = await fm.prepareBody("a nice view", { width: 512, height: 512 });
+  const body = await fm.prepareBody("a nice view", {
+    size: { width: 512, height: 512 },
+  });
   expect(body).toBe(
     '{"text_prompts":[{"text":"a nice view","weight":1}],"width":512,"height":512}'
   );
@@ -61,8 +63,13 @@ it("validates body generation - 3", async () => {
     ImageModels.STABILITY_STABLE_IMAGE_CORE_V1_0,
     { client: mockClient }
   );
-  const body = await fm.prepareBody("a nice view", { width: 512, height: 512 });
-  expect(body).toBe('{"prompt":"a nice view","mode":"text-to-image"}');
+  const body = await fm.prepareBody("a nice view", {
+    size: { width: 512, height: 512 },
+    seed: 234,
+  });
+  expect(body).toBe(
+    '{"prompt":"a nice view","mode":"text-to-image","seed":234}'
+  );
 });
 
 it("validates prompt parsing 1", async () => {
@@ -128,8 +135,7 @@ it("validates the generation", async () => {
   );
 
   const resp = await fm.generateImage("a nice view", {
-    width: 512,
-    height: 512,
+    size: { width: 512, height: 512 },
   });
   expect(resp[0]?.includes("base64")).toBeTruthy();
 });

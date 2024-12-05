@@ -98,17 +98,20 @@ export class StableDiffusionXL extends BedrockImageGenerationModel {
     prompt: string,
     options: ImageGenerationParams & StableDiffusionXLParams
   ): string {
-    let size: { width: number; height: number } | undefined;
-    if (options.imageSize) {
-      const [width, heigth] = options.imageSize.split("x");
+    let { size, ...otherOptions } = options;
+    if (otherOptions.imageSize) {
+      const [width, heigth] = otherOptions.imageSize.split("x");
       size = { width: parseInt(width!), height: parseInt(heigth!) };
+      let { imageSize, ...remainingOptions } = otherOptions;
+      otherOptions = remainingOptions;
     }
+
     const textPrompts = this.parsePrompt(prompt);
     const body = {
       text_prompts: textPrompts,
       width: size?.width,
       height: size?.height,
-      ...options,
+      ...otherOptions,
     };
     return JSON.stringify(body);
   }
@@ -170,6 +173,9 @@ export class StableDiffusion3 extends BedrockImageGenerationModel {
     prompt: string,
     options: ImageGenerationParams & StableDiffusion3Params
   ): string {
+    if (!options.seed) {
+      options.seed = Math.round(Math.random() * 2 ** 31);
+    }
     const body = {
       prompt: prompt,
       mode: "text-to-image",
