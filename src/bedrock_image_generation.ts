@@ -2,7 +2,6 @@ import {
   BedrockRuntimeClient,
   InvokeModelCommand,
 } from "@aws-sdk/client-bedrock-runtime";
-import fs from "fs";
 /**
  * Supported models
  */
@@ -101,7 +100,6 @@ export abstract class BedrockImageGenerationModel {
     options: ImageGenerationParams
   ): Promise<any> {
     const body = this.prepareBody(prompt, options);
-    fs.writeFileSync("dump.json", body);
     const command = new InvokeModelCommand({
       modelId: this.modelId,
       contentType: "application/json",

@@ -100,9 +100,12 @@ it("remove", async () => {
 }, 30000);
 
 it("similar", async () => {
-  const resp = await fm.generateImage("different landscapes SIMILAR:0.5 N:3", {
-    image: getTestImage(),
-  });
+  const resp = await fm.generateImage(
+    "different landscapes SIMILAR:0.5|n:3, size:320x320, seed:5",
+    {
+      image: getTestImage(),
+    }
+  );
   expect(resp.length).toBe(3);
   expect(resp[0]?.includes("base64")).toBeTruthy();
 }, 30000);
