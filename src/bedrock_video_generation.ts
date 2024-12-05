@@ -1,6 +1,6 @@
 import {
   BedrockRuntimeClient,
-  InvokeModelCommand,
+  StartAsyncInvokeCommand,
 } from "@aws-sdk/client-bedrock-runtime";
 
 /**
@@ -12,26 +12,16 @@ export type ModelID = string;
  * Parameters that can modify the way completions are generated
  */
 export interface VideoGenerationParams {
-  /**
-   * The importance of the text prompt in influencing denoising
-   */
-  scale?: number;
-
-  /**
-   * The number of denoising steps to execute to generate an image. Higher values yield better results.
-   */
-  steps?: number;
-
-  height?: number;
-  width?: number;
+  image?: string;
+  durationSeconds?: 6;
+  fps?: 24;
+  dimesion?: "1280x720";
   seed?: number;
-
-  extraArgs?: Record<string, any>;
-
   /**
    * Returns the raw response from the InvokeModel call
    */
   rawResponse?: boolean;
+  s3Uri?: string;
 }
 
 export interface BedrockFoundationModelParams {
@@ -57,22 +47,19 @@ export interface BedrockFoundationModelParams {
 }
 
 export abstract class BedrockVideoGenerationModel {
-  public readonly scale: number;
-  public readonly steps: number;
   public readonly extraArgs?: Record<string, any>;
   readonly client: BedrockRuntimeClient;
   public readonly modelId: string;
   public readonly rawResponse: boolean;
+  params?: BedrockFoundationModelParams & Partial<VideoGenerationParams>;
 
   constructor(
     modelId: ModelID,
     params?: BedrockFoundationModelParams & Partial<VideoGenerationParams>
   ) {
-    this.extraArgs = params?.extraArgs;
     this.modelId = modelId;
     this.rawResponse = params?.rawResponse ?? false;
-    this.scale = params?.scale ?? 1.0;
-    this.steps = params?.steps ?? 20;
+    this.params = params;
 
     this.client =
       params?.client ??
@@ -82,10 +69,10 @@ export abstract class BedrockVideoGenerationModel {
       });
   }
 
-  public async generateImage(
+  public async generateVideo(
     prompt: string,
     options: VideoGenerationParams
-  ): Promise<string[]> {
+  ): Promise<{ uri?: string; response: unknown } | any> {
     if (!options.seed) {
       options.seed = Math.round(Math.random() * 2 ** 31);
     }
@@ -93,7 +80,7 @@ export abstract class BedrockVideoGenerationModel {
     if (this.rawResponse || (options && options.rawResponse)) {
       return response;
     } else {
-      return this.getResults(response) ?? "";
+      return this.getResults(response);
     }
   }
 
@@ -102,17 +89,21 @@ export abstract class BedrockVideoGenerationModel {
     options: VideoGenerationParams
   ): Promise<any> {
     const body = this.prepareBody(prompt, options);
-    const command = new InvokeModelCommand({
+    const command = new StartAsyncInvokeCommand({
       modelId: this.modelId,
-      contentType: "application/json",
-      body: body,
-      accept: "application/json",
+      modelInput: body,
+      outputDataConfig: {
+        s3OutputDataConfig: { s3Uri: options.s3Uri ?? this.params?.s3Uri },
+      },
     });
     const result = await this.client.send(command);
-    return JSON.parse(result.body.transformToString("utf8"));
+    return result.invocationArn;
   }
 
   abstract prepareBody(prompt: string, options: VideoGenerationParams): string;
 
-  abstract getResults(body: any): string[];
+  abstract getResults(
+    body: any,
+    timeout?: number
+  ): Promise<{ uri?: string; response: unknown }>;
 }
