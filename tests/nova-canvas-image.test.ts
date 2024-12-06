@@ -5,6 +5,13 @@ import fs from "fs";
 const fm = new NovaCanvas(ImageModels.AMAZON_NOVA_CANVAS_V1_0, {
   region: "us-east-1",
 });
+
+function getTestImage(): string {
+  const bytes = fs.readFileSync("tests/test-image.jpg");
+  const data = bytes.toString("base64");
+  return `data:image/jpeg;base64,${data}`;
+}
+
 //@ts-ignore
 const mockClient: BedrockRuntimeClient = {
   send: () => ({
@@ -46,12 +53,6 @@ it("validates body generation base", async () => {
   );
 });
 
-function getTestImage(): string {
-  const bytes = fs.readFileSync("tests/test-image.jpg");
-  const data = bytes.toString("base64");
-  return `data:image/jpeg;base64,${data}`;
-}
-
 it("image gen with conditioning text", async () => {
   const resp = await fm.generateImage(
     "a lanscape with mountains CONDITION(CANNY_EDGE:0.7)",
@@ -76,7 +77,7 @@ it("colors", async () => {
 }, 30000);
 
 it("validates the generation", async () => {
-  const resp = await fm.generateImage("a nice view", {
+  const resp = await fm.generateImage("a nice view | size:768x1024, seed:34", {
     size: {
       width: 512,
       height: 512,

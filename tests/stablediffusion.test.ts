@@ -5,6 +5,13 @@ import {
   fromImageModelId,
   StableDiffusion3,
 } from "../src/main";
+import fs from "fs";
+
+function getTestImage(): string {
+  const bytes = fs.readFileSync("tests/test-image.jpg");
+  const data = bytes.toString("base64");
+  return `data:image/jpeg;base64,${data}`;
+}
 
 //@ts-ignore
 const mockClient: BedrockRuntimeClient = {
@@ -177,3 +184,25 @@ it("validates the generation - 3 large", async () => {
   });
   expect(resp[0]?.includes("base64")).toBeTruthy();
 }, 20000);
+
+describe("prompt", () => {
+  const fm = new StableDiffusion3(ImageModels.STABILITY_SD3_LARGE_V1_0, {
+    region: "us-west-2",
+  });
+
+  it("works", async () => {
+    const resp = await fm.generateImage(
+      "a nice view NEGATIVE(clouds) | aspect_ratio=2:3, seed=4",
+      {}
+    );
+    expect(resp[0]?.includes("base64")).toBeTruthy();
+  }, 20000);
+
+  it("image", async () => {
+    const resp = await fm.generateImage(
+      "a nice view NEGATIVE(clouds) | seed=4, strength=0.2",
+      { image: getTestImage() }
+    );
+    expect(resp[0]?.includes("base64")).toBeTruthy();
+  }, 20000);
+});
