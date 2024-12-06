@@ -138,7 +138,7 @@ export function fromImageModelId(
 
 export function fromVideoModelId(
   modelId: ModelID,
-  params: VideoGenerationParams & NovaReelParams
+  params: BedrockFoundationModelParams & VideoGenerationParams & NovaReelParams
 ): BedrockVideoGenerationModel {
   switch (modelId.split("-")[0]) {
     case "amazon.nova":
