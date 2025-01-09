@@ -26,3 +26,12 @@ it("generate a video and wait", async () => {
   });
   expect(resp.uri).toContain("s3://");
 }, 600000);
+
+it("generate a video from text", async () => {
+  expect(fm.params?.s3Uri).toBe(process.env.NOVA_REEL_S3);
+  const resp = await fm.generateVideo(
+    "a dog walking on a dirty path, camera dolly forward",
+    { rawResponse: true }
+  );
+  expect(resp).toContain("arn:aws:bedrock");
+});
