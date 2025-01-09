@@ -23,26 +23,6 @@ export type StylePreset =
   | "pixel-art"
   | "tile-texture";
 
-const validStyles = [
-  "3d-model",
-  "analog-film",
-  "anime",
-  "cinematic",
-  "comic-book",
-  "digital-art",
-  "enhance",
-  "fantasy-art",
-  "isometric",
-  "line-art",
-  "low-poly",
-  "modeling-compound",
-  "neon-punk",
-  "origami",
-  "photographic",
-  "pixel-art",
-  "tile-texture",
-];
-
 const validAspectRatios = [
   "1:1",
   "16:9",
@@ -109,8 +89,8 @@ export type AspectRatio =
 export interface StableDiffusion3Params {
   aspect_ratio?: AspectRatio;
   negative_prompt?: string;
-  style_preset?: StylePreset;
   image?: string;
+  strength?: number;
 }
 
 export class StableDiffusionXL extends BedrockImageGenerationModel {
@@ -228,31 +208,13 @@ export class StableDiffusion3 extends BedrockImageGenerationModel {
       if (key === undefined || val === undefined) {
         throw new Error(`Invalid config element ${e}`);
       }
-      if (isNaN(parseInt(val))) {
-        throw new Error(`Value is not an integer in element ${e}`);
-      }
-      if (
-        ![
-          "style_preset",
-          "seed",
-          "aspect_ratio",
-          "cfg_scale",
-          "strength",
-        ].includes(key)
-      ) {
+      if (!["seed", "aspect_ratio", "cfg_scale", "strength"].includes(key)) {
         throw new Error(`Invalid key in element ${e}`);
       }
       if (key === "aspect_ratio") {
         if (!validAspectRatios.includes(val)) {
           throw new Error(
             `Invalid aspect ratio ${val}. Should be one of ${validAspectRatios.join(", ")}`
-          );
-        }
-      }
-      if (key === "style_preset") {
-        if (!validStyles.includes(val)) {
-          throw new Error(
-            `Invalid style ${val}. Should be one of ${validStyles.join(", ")}`
           );
         }
       }
@@ -277,8 +239,9 @@ export class StableDiffusion3 extends BedrockImageGenerationModel {
     const [promptInstructions, inferenceConfigString] = prompt.split("|");
     let inferenceConfig = {
       aspect_ratio: options.aspect_ratio,
-      style_preset: options.style_preset,
       seed: options.seed,
+      cfg_scale: options.scale,
+      strength: options.strength,
     };
     if (inferenceConfigString) {
       inferenceConfig = {

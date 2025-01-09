@@ -25,7 +25,7 @@ export class NovaReel extends BedrockVideoGenerationModel {
         new GetAsyncInvokeCommand({ invocationArn: invocationArn })
       );
       while (response.status === "InProgress") {
-        await new Promise((r) => setTimeout(r, 1));
+        await new Promise((r) => setTimeout(r, 1000));
         response = await this.client.send(
           new GetAsyncInvokeCommand({ invocationArn: invocationArn })
         );
@@ -47,17 +47,19 @@ export class NovaReel extends BedrockVideoGenerationModel {
       taskType: "TEXT_VIDEO",
       textToVideoParams: {
         text: prompt,
-        images: [
-          {
-            format: options.image
-              ?.split(";")[0]
-              ?.split(":")
-              ?.at(1)
-              ?.split("/")
-              .at(1),
-            source: { bytes: options.image?.split(",").at(1) },
-          },
-        ],
+        images: options.image
+          ? [
+              {
+                format: options.image
+                  ?.split(";")[0]
+                  ?.split(":")
+                  ?.at(1)
+                  ?.split("/")
+                  .at(1),
+                source: { bytes: options.image?.split(",").at(1) },
+              },
+            ]
+          : undefined,
       },
       videoGenerationConfig: {
         durationSeconds: 6,

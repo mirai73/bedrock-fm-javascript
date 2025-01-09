@@ -185,7 +185,7 @@ it("validates the generation - 3 large", async () => {
   expect(resp[0]?.includes("base64")).toBeTruthy();
 }, 20000);
 
-describe("prompt", () => {
+describe("sd3large prompt", () => {
   const fm = new StableDiffusion3(ImageModels.STABILITY_SD3_LARGE_V1_0, {
     region: "us-west-2",
   });
@@ -201,6 +201,31 @@ describe("prompt", () => {
   it("image", async () => {
     const resp = await fm.generateImage(
       "a nice view NEGATIVE(clouds) | seed=4, strength=0.2",
+      { image: getTestImage() }
+    );
+    expect(resp[0]?.includes("base64")).toBeTruthy();
+  }, 20000);
+});
+
+describe("sdcore prompt", () => {
+  const fm = new StableDiffusion3(
+    ImageModels.STABILITY_STABLE_IMAGE_CORE_V1_0,
+    {
+      region: "us-west-2",
+    }
+  );
+
+  it("works", async () => {
+    const resp = await fm.generateImage(
+      "a nice view NEGATIVE(clouds) | aspect_ratio=2:3, seed=4",
+      {}
+    );
+    expect(resp[0]?.includes("base64")).toBeTruthy();
+  }, 20000);
+
+  it("image", async () => {
+    const resp = await fm.generateImage(
+      "a nice view NEGATIVE(clouds) | seed=4",
       { image: getTestImage() }
     );
     expect(resp[0]?.includes("base64")).toBeTruthy();
