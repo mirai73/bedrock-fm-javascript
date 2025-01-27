@@ -7,14 +7,26 @@ import {
   VideoGenerationParams,
 } from "./bedrock_video_generation";
 
-export interface NovaReelParams {
-  fps?: 24;
-  dimesion?: "1280x720";
-  seed?: number;
-  image?: string;
+export type RayAspectRatio =
+  | "1:1"
+  | "5:4"
+  | "3:2"
+  | "16:9"
+  | "21:9"
+  | "4:5"
+  | "2:3"
+  | "9:16"
+  | "9:21";
+
+export type RayResolution = "720p" | "540p";
+
+export interface RayParams {
+  loop?: boolean;
+  aspectRatio?: RayAspectRatio;
+  resolution?: RayResolution;
 }
 
-export class NovaReel extends BedrockVideoGenerationModel {
+export class Ray extends BedrockVideoGenerationModel {
   override async getResults(
     invocationArn: any,
     timeout?: number
@@ -46,42 +58,19 @@ export class NovaReel extends BedrockVideoGenerationModel {
 
   override prepareModelInput(
     prompt: string,
-    options: VideoGenerationParams & NovaReelParams
+    options: VideoGenerationParams & RayParams
   ): any {
-    if (!options.seed) {
-      options.seed = Math.round(Math.random() * 2 ** 31);
-    }
     const body = {
-      taskType: "TEXT_VIDEO",
-      textToVideoParams: {
-        text: prompt,
-        images: options.image
-          ? [
-              {
-                format: options.image
-                  ?.split(";")[0]
-                  ?.split(":")
-                  ?.at(1)
-                  ?.split("/")
-                  .at(1),
-                source: { bytes: options.image?.split(",").at(1) },
-              },
-            ]
-          : undefined,
-      },
-      videoGenerationConfig: {
-        durationSeconds: 6,
-        fps: 24,
-        dimension: "1280x720",
-        seed: options.seed,
-      },
+      prompt,
+      duration: `${options.durationSeconds ?? 5}s`,
+      loop: options.loop,
+      aspect_ratio: options.aspectRatio,
+      resolution: options.resolution,
     };
     return body;
   }
 
-  public override generateVideo<
-    T extends VideoGenerationParams & NovaReelParams,
-  >(
+  public override generateVideo<T extends VideoGenerationParams & RayParams>(
     prompt: string,
     options: T
   ): Promise<{ uri?: string; response: unknown } | any> {

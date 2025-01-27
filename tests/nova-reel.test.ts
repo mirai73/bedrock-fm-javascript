@@ -3,7 +3,7 @@ import fs from "fs";
 
 const fm = new NovaReel(VideoModels.AMAZON_NOVA_REEL_V1_0, {
   region: "us-east-1",
-  s3Uri: process.env.NOVA_REEL_S3,
+  s3Uri: process.env.VIDEO_BUCKET_S3,
 });
 
 function getTestImage(): string {
@@ -28,7 +28,7 @@ it("generate a video and wait", async () => {
 }, 600000);
 
 it("generate a video from text", async () => {
-  expect(fm.params?.s3Uri).toBe(process.env.NOVA_REEL_S3);
+  expect(fm.params?.s3Uri).toBe(process.env.VIDEO_BUCKET_S3);
   const resp = await fm.generateVideo(
     "a dog walking on a dirty path, camera dolly forward",
     { rawResponse: true }

@@ -144,9 +144,9 @@ export abstract class BedrockFoundationModel {
       });
   }
 
-  public async generate(
+  public async generate<T extends GenerationParams>(
     prompt: string,
-    options?: GenerationParams
+    options?: T
   ): Promise<string> {
     const messages: ChatMessage[] = [{ role: "human", message: prompt }];
     const response = await this._generateRaw(messages, options);
@@ -172,9 +172,9 @@ export abstract class BedrockFoundationModel {
     return result.body.transformToString("utf8");
   }
 
-  public async generateStream(
+  public async generateStream<T extends GenerationParams>(
     prompt: string,
-    options?: GenerationParams
+    options?: T
   ): Promise<AsyncIterable<string>> {
     return await this._generateStream(
       [{ role: "human", message: prompt }],
@@ -203,9 +203,9 @@ export abstract class BedrockFoundationModel {
     })();
   }
 
-  public async chat(
+  public async chat<T extends GenerationParams>(
     messages: ChatMessage[],
-    options?: GenerationParams
+    options?: T
   ): Promise<ChatMessage> {
     if (!validateChatMessages(messages)) {
       throw new Error("Wrong message alternation");
@@ -223,9 +223,9 @@ export abstract class BedrockFoundationModel {
     };
   }
 
-  public async chatStream(
+  public async chatStream<T extends GenerationParams>(
     messages: ChatMessage[],
-    options?: GenerationParams
+    options?: T
   ): Promise<AsyncIterable<string>> {
     if (!validateChatMessages(messages)) {
       throw new Error("Wrong message alternation");
