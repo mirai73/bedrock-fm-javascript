@@ -1,5 +1,6 @@
 import { Claude, Claude3, ClaudeParams } from "./anthropic";
 import { Jurassic, JurassicParams, Penalty, Jamba } from "./ai21";
+import { Ray, RayAspectRatio, RayParams, RayResolution } from "./luma";
 import { Titan, Nova } from "./amazon";
 import { Command, CommandR, CommandParams, CommandRParams } from "./cohere";
 import { Llama2Chat, Llama3Chat } from "./meta";
@@ -72,6 +73,9 @@ export {
   BedrockVideoGenerationModel,
   VideoGenerationParams,
   VideoModels,
+  Ray,
+  RayAspectRatio,
+  RayResolution,
 };
 
 export function fromModelId(
@@ -104,7 +108,6 @@ export function fromModelId(
     case "mistral.mistral":
     case "mistral.mixtral":
       return new Mistral(modelId, params);
-
     default:
       throw new Error(`Unknown model ID: ${modelId}`);
   }
@@ -138,11 +141,16 @@ export function fromImageModelId(
 
 export function fromVideoModelId(
   modelId: ModelID,
-  params: BedrockFoundationModelParams & VideoGenerationParams & NovaReelParams
+  params: BedrockFoundationModelParams &
+    VideoGenerationParams &
+    NovaReelParams &
+    RayParams
 ): BedrockVideoGenerationModel {
   switch (modelId.split("-")[0]) {
     case "amazon.nova":
       return new NovaReel(modelId, params);
+    case "luma.ray":
+      return new Ray(modelId, params);
     default:
       throw new Error(`Unknown model ID: ${modelId}`);
   }

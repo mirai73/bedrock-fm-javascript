@@ -57,10 +57,14 @@ export class ImageModels {
   /** @deprecated this model has reached end-of-life */
   public static readonly STABILITY_STABLE_DIFFUSION_XL_V1 = "stability.stable-diffusion-xl-v1";
   public static readonly STABILITY_SD3_LARGE_V1_0 = "stability.sd3-large-v1:0";
+  public static readonly STABILITY_SD3_5_LARGE_V1_0 = "stability.sd3-5-large-v1:0";
   public static readonly STABILITY_STABLE_IMAGE_CORE_V1_0 = "stability.stable-image-core-v1:0";
+  public static readonly STABILITY_STABLE_IMAGE_CORE_V1_1 = "stability.stable-image-core-v1:1";
   public static readonly STABILITY_STABLE_IMAGE_ULTRA_V1_0 = "stability.stable-image-ultra-v1:0";
+  public static readonly STABILITY_STABLE_IMAGE_ULTRA_V1_1 = "stability.stable-image-ultra-v1:1";
 }
 
 export class VideoModels {
   public static readonly AMAZON_NOVA_REEL_V1_0 = "amazon.nova-reel-v1:0";
+  public static readonly LUMA_RAY_V2_0 = "luma.ray-v2:0";
 }

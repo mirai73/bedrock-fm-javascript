@@ -22,23 +22,21 @@ export interface ClaudeParams {
  * }```
  */
 export class Claude extends BedrockFoundationModel {
-  override async chat(
-    messages: ChatMessage[],
-    options?: GenerationParams & { modelArgs: ClaudeParams },
-  ): Promise<ChatMessage> {
+  override async chat<
+    T extends GenerationParams & { modelArgs?: ClaudeParams },
+  >(messages: ChatMessage[], options?: T): Promise<ChatMessage> {
     return await super.chat(messages, options);
   }
 
-  override async generate(
-    message: string,
-    options?: GenerationParams & { modelArgs: ClaudeParams },
-  ): Promise<string> {
+  override async generate<
+    T extends GenerationParams & { modelArgs?: ClaudeParams },
+  >(message: string, options?: T): Promise<string> {
     return await super.generate(message, options);
   }
 
   prepareBody(
     messages: ChatMessage[],
-    input: GenerationParams & ClaudeParams,
+    input: GenerationParams & ClaudeParams
   ): string {
     const s = [...(input.stopSequences ?? [])];
 
@@ -97,21 +95,20 @@ export class Claude extends BedrockFoundationModel {
 export class Claude3 extends BedrockFoundationModel {
   override async chat(
     messages: ChatMessage[],
-    options?: GenerationParams & { modelArgs?: ClaudeParams },
+    options?: GenerationParams & { modelArgs?: ClaudeParams }
   ): Promise<ChatMessage> {
     return await super.chat(messages, options);
   }
 
-  override async generate(
-    message: string,
-    options?: GenerationParams & { modelArgs?: ClaudeParams },
-  ): Promise<string> {
+  override async generate<
+    T extends GenerationParams & { modelArgs?: ClaudeParams },
+  >(message: string, options?: T): Promise<string> {
     return await super.generate(message, options);
   }
 
   prepareBody(
     messages: ChatMessage[],
-    input: GenerationParams & ClaudeParams,
+    input: GenerationParams & ClaudeParams
   ): string {
     const s = [...(input.stopSequences ?? [])];
 

@@ -12,11 +12,8 @@ export type ModelID = string;
  * Parameters that can modify the way completions are generated
  */
 export interface VideoGenerationParams {
-  image?: string;
-  durationSeconds?: 6;
-  fps?: 24;
-  dimesion?: "1280x720";
-  seed?: number;
+  durationSeconds?: 6 | 5 | 9;
+
   /**
    * Returns the raw response from the InvokeModel call
    */
@@ -69,13 +66,10 @@ export abstract class BedrockVideoGenerationModel {
       });
   }
 
-  public async generateVideo(
+  public async generateVideo<T extends VideoGenerationParams>(
     prompt: string,
-    options: VideoGenerationParams
+    options: T
   ): Promise<{ uri?: string; response: unknown } | any> {
-    if (!options.seed) {
-      options.seed = Math.round(Math.random() * 2 ** 31);
-    }
     const response = await this._generateRaw(prompt, options);
     if (this.rawResponse || (options && options.rawResponse)) {
       return response;
@@ -88,7 +82,7 @@ export abstract class BedrockVideoGenerationModel {
     prompt: string,
     options: VideoGenerationParams
   ): Promise<any> {
-    const body = this.prepareBody(prompt, options);
+    const body = this.prepareModelInput(prompt, options);
     const command = new StartAsyncInvokeCommand({
       modelId: this.modelId,
       modelInput: body,
@@ -100,7 +94,10 @@ export abstract class BedrockVideoGenerationModel {
     return result.invocationArn;
   }
 
-  abstract prepareBody(prompt: string, options: VideoGenerationParams): string;
+  abstract prepareModelInput(
+    prompt: string,
+    options: VideoGenerationParams
+  ): string;
 
   abstract getResults(
     body: any,
