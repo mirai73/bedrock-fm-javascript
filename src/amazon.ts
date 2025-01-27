@@ -120,7 +120,6 @@ export class Nova extends BedrockFoundationModel {
       .map((m) => ({
         text: m.message,
       }));
-    console.log(body.messages[0]?.content);
     if (system.length > 0) {
       return JSON.stringify({ ...body, system });
     }

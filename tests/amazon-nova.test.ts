@@ -7,7 +7,7 @@ describe("test Nova generate", () => {
     //Models.AMAZON_NOVA_PRO_V1_0,
   ].forEach((m) => {
     it(`model ${m} works in generate mode`, async () => {
-      const llm = new Nova(m, {
+      const llm = fromModelId(m, {
         region: "us-east-1",
         stopSequences: [],
       });
@@ -29,7 +29,6 @@ describe("test Nova chat", () => {
     it(`model ${m} works in chat mode`, async () => {
       const llm = new Nova(m, {
         region: "us-east-1",
-        stopSequences: [],
       });
 
       expect(llm).toBeTruthy();
