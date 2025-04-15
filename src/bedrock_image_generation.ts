@@ -64,7 +64,7 @@ export abstract class BedrockImageGenerationModel {
 
   constructor(
     modelId: ModelID,
-    params?: BedrockFoundationModelParams & Partial<ImageGenerationParams>
+    params?: BedrockFoundationModelParams & Partial<ImageGenerationParams>,
   ) {
     this.extraArgs = params?.extraArgs;
     this.modelId = modelId;
@@ -82,7 +82,7 @@ export abstract class BedrockImageGenerationModel {
 
   public async generateImage(
     prompt: string,
-    options: ImageGenerationParams
+    options: ImageGenerationParams,
   ): Promise<string[]> {
     const response = await this._generateRaw(prompt, options);
     if (this.rawResponse || (options && options.rawResponse)) {
@@ -94,7 +94,7 @@ export abstract class BedrockImageGenerationModel {
 
   private async _generateRaw(
     prompt: string,
-    options: ImageGenerationParams
+    options: ImageGenerationParams,
   ): Promise<any> {
     const body = this.prepareBody(prompt, options);
     const command = new InvokeModelCommand({

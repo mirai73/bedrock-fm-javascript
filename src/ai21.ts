@@ -39,21 +39,21 @@ export interface JurassicParams {
 export class Jurassic extends BedrockFoundationModel {
   override async chat(
     messages: ChatMessage[],
-    options?: GenerationParams & { modelArgs?: JurassicParams }
+    options?: GenerationParams & { modelArgs?: JurassicParams },
   ): Promise<ChatMessage> {
     return await super.chat(messages, options);
   }
 
   override async generate(
     message: string,
-    options?: GenerationParams & { modelArgs?: JurassicParams }
+    options?: GenerationParams & { modelArgs?: JurassicParams },
   ): Promise<string> {
     return await super.generate(message, options);
   }
 
   prepareBody(
     messages: ChatMessage[],
-    input: GenerationParams & JurassicParams
+    input: GenerationParams & JurassicParams,
   ): string {
     const modelArgs = (({
       minTokens,
@@ -100,21 +100,21 @@ function roleMap(role: string): string {
 export class Jamba extends BedrockFoundationModel {
   override async chat(
     messages: ChatMessage[],
-    options?: GenerationParams & { modelArgs?: JambaParams }
+    options?: GenerationParams & { modelArgs?: JambaParams },
   ): Promise<ChatMessage> {
     return await super.chat(messages, options);
   }
 
   override async generate(
     message: string,
-    options?: GenerationParams & { modelArgs?: JambaParams }
+    options?: GenerationParams & { modelArgs?: JambaParams },
   ): Promise<string> {
     return await super.generate(message, options);
   }
 
   prepareBody(
     messages: ChatMessage[],
-    input: GenerationParams & JambaParams
+    input: GenerationParams & JambaParams,
   ): string {
     const modelArgs = (({ response_format, n, documents }) => ({
       response_format,
@@ -141,7 +141,7 @@ export class Jamba extends BedrockFoundationModel {
     console.log(body);
     return (
       JSON.parse(body).choices?.map(
-        (c: any) => c.message?.content ?? c.delta?.content ?? ""
+        (c: any) => c.message?.content ?? c.delta?.content ?? "",
       )[0] ?? ""
     );
   }

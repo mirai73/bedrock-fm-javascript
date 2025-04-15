@@ -20,6 +20,26 @@ describe("test Nova generate", () => {
   });
 });
 
+describe("test Nova generate with fromModelId and inf profile", () => {
+  [
+    Models.AMAZON_NOVA_LITE_V1_0,
+    Models.AMAZON_NOVA_MICRO_V1_0,
+    //Models.AMAZON_NOVA_PRO_V1_0,
+  ].forEach((m) => {
+    it(`model ${m} works in generate mode`, async () => {
+      const llm = fromModelId("us." + m, {
+        region: "us-east-1",
+        stopSequences: [],
+      });
+
+      expect(llm).toBeTruthy();
+      const resp = await llm.generate("Hello", { modelArgs: { top_k: 40 } });
+      expect(resp.length).toBeGreaterThan(0);
+      expect(resp[0]?.length).toBeGreaterThan(0);
+    });
+  });
+});
+
 describe("test Nova chat", () => {
   [
     Models.AMAZON_NOVA_LITE_V1_0,
@@ -33,7 +53,22 @@ describe("test Nova chat", () => {
 
       expect(llm).toBeTruthy();
       expect(
-        (await llm.chat([{ role: "human", message: "Hello" }])).message.length
+        (await llm.chat([{ role: "human", message: "Hello" }])).message.length,
+      ).toBeGreaterThan(0);
+    });
+  });
+});
+
+describe("test Nova chat with inference profile", () => {
+  ["us." + Models.AMAZON_NOVA_LITE_V1_0].forEach((m) => {
+    it(`model ${m} works in chat mode`, async () => {
+      const llm = new Nova(m, {
+        region: "us-east-1",
+      });
+
+      expect(llm).toBeTruthy();
+      expect(
+        (await llm.chat([{ role: "human", message: "Hello" }])).message.length,
       ).toBeGreaterThan(0);
     });
   });
@@ -58,7 +93,7 @@ describe("test Nova chat with system", () => {
             { role: "system", message: "You are a pirate" },
             { role: "human", message: "Hello" },
           ])
-        ).message.length
+        ).message.length,
       ).toBeGreaterThan(0);
     });
   });
@@ -98,7 +133,7 @@ describe("test Nova chat streaming", () => {
 
       expect(llm).toBeTruthy();
       expect(
-        (await llm.chat([{ role: "human", message: "Hello" }])).message.length
+        (await llm.chat([{ role: "human", message: "Hello" }])).message.length,
       ).toBeGreaterThan(0);
     });
   });
@@ -122,7 +157,7 @@ describe("test Nova chat stream", () => {
         s += chunk;
       }
       expect(s.length).toBeGreaterThan(0);
-    }, 10000)
+    }, 10000),
   );
 });
 
@@ -144,6 +179,6 @@ describe("test Nova generate stream", () => {
         s += chunk;
       }
       expect(s.length).toBeGreaterThan(0);
-    }, 10000)
+    }, 10000),
   );
 });

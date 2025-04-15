@@ -15,7 +15,7 @@ export class TitanImageGenerator extends BedrockImageGenerationModel {
 
   override prepareBody(
     prompt: string,
-    options: ImageGenerationParams & TitanImageGeneratorParams
+    options: ImageGenerationParams & TitanImageGeneratorParams,
   ): string {
     const body = {
       taskType: "TEXT_IMAGE",
@@ -83,7 +83,7 @@ export class NovaCanvas extends BedrockImageGenerationModel {
 
   override async generateImage(
     prompt: string,
-    options: ImageGenerationParams & NovaParams
+    options: ImageGenerationParams & NovaParams,
   ): Promise<string[]> {
     return await super.generateImage(prompt, options);
   }
@@ -120,7 +120,7 @@ export class NovaCanvas extends BedrockImageGenerationModel {
             negativeText: elements.negative,
             controlMode: elements.conditionImage.split(":")[0],
             controlStrength: parseFloat(
-              elements.conditionImage.split(":")?.at(1) ?? "0"
+              elements.conditionImage.split(":")?.at(1) ?? "0",
             ),
             conditionImage: image,
           },
@@ -207,7 +207,7 @@ export class NovaCanvas extends BedrockImageGenerationModel {
     const colors = prompt.match(/\bCOLORS\(([^\)]+)\)/);
     const removeBackground = prompt.match(/\bREMOVE_BACKGROUND\b/);
     const conditionImage = prompt.match(
-      /\bCONDITION\(((CANNY_EDGE|SEGMENTATION):[01]\.?\d{0,2})\)/
+      /\bCONDITION\(((CANNY_EDGE|SEGMENTATION):[01]\.?\d{0,2})\)/,
     );
     const similarity = prompt.match(/\bSIMILAR:([01]\.?\d{0,2})\b/);
     const outpaintWithType = prompt.match(/\bOUTPAINT\((DEFAULT|PRECISE)\)/);
@@ -295,7 +295,7 @@ export class NovaCanvas extends BedrockImageGenerationModel {
 
   override prepareBody(
     prompt: string,
-    options: ImageGenerationParams & NovaParams
+    options: ImageGenerationParams & NovaParams,
   ): string {
     const [promptInstructions, inferenceConfigString] = prompt.split("|");
     let inferenceConfig = {
@@ -313,7 +313,7 @@ export class NovaCanvas extends BedrockImageGenerationModel {
     }
     const inferredBody = this.getBodyFromPrompt(
       (promptInstructions ?? prompt).replaceAll("\n", " "),
-      options.image?.split(",")?.at(1)
+      options.image?.split(",")?.at(1),
     );
 
     if (options.size) {

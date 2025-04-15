@@ -50,7 +50,7 @@ it("outpaint", () => {
 it("support a complex prompt", () => {
   const res = m.getBodyFromPrompt(
     "OUTPAINT N:2 SIMILAR:0.5 CONDITION(CANNY_EDGE:0.2) COLORS(#000000) NEGATIVE(dogs) REMOVE_BACKGROUND MASK(bird)",
-    ""
+    "",
   );
   expect(res.body.taskType).toBe("COLOR_GUIDED_GENERATION");
 });
@@ -58,7 +58,7 @@ it("support a complex prompt", () => {
 it("retrieves the instructions a complex prompt", () => {
   const res = m.getBodyFromPrompt(
     "  a nice view of the sea OUTPAINT N:2 SIMILAR:0.5 with a dog running CONDITION(CANNY_EDGE:0.2) COLORS(#000000) NEGATIVE(dogs) really cool REMOVE_BACKGROUND MASK(bird)",
-    ""
+    "",
   );
   expect(res.body.taskType).toBe("COLOR_GUIDED_GENERATION");
 });

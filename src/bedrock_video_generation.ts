@@ -52,7 +52,7 @@ export abstract class BedrockVideoGenerationModel {
 
   constructor(
     modelId: ModelID,
-    params?: BedrockFoundationModelParams & Partial<VideoGenerationParams>
+    params?: BedrockFoundationModelParams & Partial<VideoGenerationParams>,
   ) {
     this.modelId = modelId;
     this.rawResponse = params?.rawResponse ?? false;
@@ -68,7 +68,7 @@ export abstract class BedrockVideoGenerationModel {
 
   public async generateVideo<T extends VideoGenerationParams>(
     prompt: string,
-    options: T
+    options: T,
   ): Promise<{ uri?: string; response: unknown } | any> {
     const response = await this._generateRaw(prompt, options);
     if (this.rawResponse || (options && options.rawResponse)) {
@@ -80,7 +80,7 @@ export abstract class BedrockVideoGenerationModel {
 
   private async _generateRaw(
     prompt: string,
-    options: VideoGenerationParams
+    options: VideoGenerationParams,
   ): Promise<any> {
     const body = this.prepareModelInput(prompt, options);
     const command = new StartAsyncInvokeCommand({
@@ -96,11 +96,11 @@ export abstract class BedrockVideoGenerationModel {
 
   abstract prepareModelInput(
     prompt: string,
-    options: VideoGenerationParams
+    options: VideoGenerationParams,
   ): string;
 
   abstract getResults(
     body: any,
-    timeout?: number
+    timeout?: number,
   ): Promise<{ uri?: string; response: unknown }>;
 }
