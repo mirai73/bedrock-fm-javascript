@@ -80,9 +80,13 @@ export {
 
 export function fromModelId(
   modelId: ModelID,
-  params?: BedrockFoundationModelParams & GenerationParams
+  params?: BedrockFoundationModelParams & GenerationParams,
 ): BedrockFoundationModel {
-  switch (modelId.split("-")[0]) {
+  let _modelId = modelId;
+  if (modelId.startsWith("us.") || modelId.startsWith("eu.")) {
+    _modelId = modelId.substring(3);
+  }
+  switch (_modelId.split("-")[0]) {
     case "anthropic.claude":
       if (modelId.includes("claude-3")) {
         return new Claude3(modelId, params);
@@ -119,7 +123,7 @@ export function fromImageModelId(
     ImageGenerationParams &
     StableDiffusionXLParams &
     StableDiffusion3Params &
-    TitanImageGeneratorParams
+    TitanImageGeneratorParams,
 ): BedrockImageGenerationModel {
   switch (modelId.split("-")[0]) {
     case "amazon.titan":
@@ -144,7 +148,7 @@ export function fromVideoModelId(
   params: BedrockFoundationModelParams &
     VideoGenerationParams &
     NovaReelParams &
-    RayParams
+    RayParams,
 ): BedrockVideoGenerationModel {
   switch (modelId.split("-")[0]) {
     case "amazon.nova":

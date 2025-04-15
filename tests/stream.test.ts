@@ -24,7 +24,7 @@ describe("test generate stream", () => {
         s += chunk;
       }
       expect(s.length).toBeGreaterThan(0);
-    }, 10000)
+    }, 10000),
   );
 });
 
@@ -51,6 +51,6 @@ describe("test chat stream", () => {
         s += chunk;
       }
       expect(s.length).toBeGreaterThan(0);
-    }, 10000)
+    }, 10000),
   );
 });

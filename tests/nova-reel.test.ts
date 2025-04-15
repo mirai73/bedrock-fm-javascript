@@ -31,7 +31,7 @@ it("generate a video from text", async () => {
   expect(fm.params?.s3Uri).toBe(process.env.VIDEO_BUCKET_S3);
   const resp = await fm.generateVideo(
     "a dog walking on a dirty path, camera dolly forward",
-    { rawResponse: true }
+    { rawResponse: true },
   );
   expect(resp).toContain("arn:aws:bedrock");
 });

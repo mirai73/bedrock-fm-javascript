@@ -10,7 +10,7 @@ describe("test ai21 models generate", () => {
       expect(m).toBeTruthy();
       const resp = await m.generate("Hello");
       expect(resp.length).toBeGreaterThan(0);
-    })
+    }),
   );
 });
 
@@ -24,7 +24,7 @@ describe("test ai21 models chat", () => {
       expect(m).toBeTruthy();
       const resp = await m.chat([{ role: "human", message: "Hello" }]);
       expect(resp.message.length).toBeGreaterThan(0);
-    })
+    }),
   );
 });
 
@@ -39,7 +39,7 @@ describe("test ai21 models raw response", () => {
       expect(m).toBeTruthy();
       const resp = await m.chat([{ role: "human", message: "Hello" }]);
       expect(resp.metadata).toBeTruthy();
-    })
+    }),
   );
 });
 
@@ -85,7 +85,7 @@ describe("test ai21 jamba models generate", () => {
       expect(m).toBeTruthy();
       const resp = await m.generate("Hello");
       expect(resp.length).toBeGreaterThan(0);
-    })
+    }),
   );
 });
 
@@ -99,6 +99,6 @@ describe("test  jamba models chat", () => {
       expect(m).toBeTruthy();
       const resp = await m.chat([{ role: "human", message: "Hello" }]);
       expect(resp.message.length).toBeGreaterThan(0);
-    })
+    }),
   );
 });

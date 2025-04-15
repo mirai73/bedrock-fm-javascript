@@ -21,19 +21,22 @@ export class VideoModels {
 }`;
 
 async function getModels(
-  client: BedrockClient
+  client: BedrockClient,
 ): Promise<[string | undefined, string | undefined, string[] | undefined][]> {
-  const resp = await client.send(
-    new ListFoundationModelsCommand({
-      byInferenceType: "ON_DEMAND",
-    })
-  );
+  const resp = await client.send(new ListFoundationModelsCommand());
   return (
-    resp.modelSummaries?.map((ms) => [
-      ms.modelId,
-      ms.modelLifecycle?.status?.toString(),
-      ms.outputModalities,
-    ]) ?? []
+    resp.modelSummaries
+      ?.filter(
+        (ms) =>
+          ms.inferenceTypesSupported?.includes("ON_DEMAND") ||
+          //@ts-ignore
+          ms.inferenceTypesSupported?.includes("INFERENCE_PROFILE"),
+      )
+      .map((ms) => [
+        ms.modelId,
+        ms.modelLifecycle?.status?.toString(),
+        ms.outputModalities,
+      ]) ?? []
   );
 }
 
@@ -45,20 +48,20 @@ async function getModels(
     const textModelsWest = allModelsWest.filter((m) => m[2]?.includes("TEXT"));
 
     const imageModelsWest = allModelsWest.filter((m) =>
-      m[2]?.includes("IMAGE")
+      m[2]?.includes("IMAGE"),
     );
     const videoModelsWest = allModelsWest.filter((m) =>
-      m[2]?.includes("VIDEO")
+      m[2]?.includes("VIDEO"),
     );
 
     const allModelsEast = await getModels(clientEast);
     const textModelsEast = allModelsEast.filter((m) => m[2]?.includes("TEXT"));
 
     const imageModelsEast = allModelsEast.filter((m) =>
-      m[2]?.includes("IMAGE")
+      m[2]?.includes("IMAGE"),
     );
     const videoModelsEast = allModelsEast.filter((m) =>
-      m[2]?.includes("VIDEO")
+      m[2]?.includes("VIDEO"),
     );
 
     //console.log("J", textModels, textModels);
@@ -83,16 +86,16 @@ async function getModels(
 
     const textModelStrings = textModels?.map(
       (m) =>
-        `  ${m[1] !== "ACTIVE" ? "/** @deprecated this model has reached end-of-life */\n  " : ""}public static readonly ${m[0]?.replace(/\-/g, "_").replace(/\./g, "_").replace(/\:/g, "_").toUpperCase()} = "${m[0]}";`
+        `  ${m[1] !== "ACTIVE" ? "/** @deprecated this model has reached end-of-life */\n  " : ""}public static readonly ${m[0]?.replace(/\-/g, "_").replace(/\./g, "_").replace(/\:/g, "_").toUpperCase()} = "${m[0]}";`,
     );
     const imageModelStrings = imageModels?.map(
       (m) =>
-        `  ${m[1] !== "ACTIVE" ? "/** @deprecated this model has reached end-of-life */\n  " : ""}public static readonly ${m[0]?.replace(/\-/g, "_").replace(/\./g, "_").replace(/\:/g, "_").toUpperCase()} = "${m[0]}";`
+        `  ${m[1] !== "ACTIVE" ? "/** @deprecated this model has reached end-of-life */\n  " : ""}public static readonly ${m[0]?.replace(/\-/g, "_").replace(/\./g, "_").replace(/\:/g, "_").toUpperCase()} = "${m[0]}";`,
     );
 
     const videoModelStrings = videoModels?.map(
       (m) =>
-        `  ${m[1] !== "ACTIVE" ? "/** @deprecated this model has reached end-of-life */\n  " : ""}public static readonly ${m[0]?.replace(/\-/g, "_").replace(/\./g, "_").replace(/\:/g, "_").toUpperCase()} = "${m[0]}";`
+        `  ${m[1] !== "ACTIVE" ? "/** @deprecated this model has reached end-of-life */\n  " : ""}public static readonly ${m[0]?.replace(/\-/g, "_").replace(/\./g, "_").replace(/\:/g, "_").toUpperCase()} = "${m[0]}";`,
     );
     if (textModelStrings) {
       output = output.replace("{placeholderText}", textModelStrings.join("\n"));
@@ -100,14 +103,14 @@ async function getModels(
     if (imageModelStrings) {
       output = output.replace(
         "{placeholderImage}",
-        imageModelStrings.join("\n")
+        imageModelStrings.join("\n"),
       );
     }
 
     if (videoModelStrings) {
       output = output.replace(
         "{placeholderVideo}",
-        videoModelStrings.join("\n")
+        videoModelStrings.join("\n"),
       );
     }
   } catch {}

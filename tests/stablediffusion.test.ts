@@ -55,38 +55,38 @@ it("return the right model - 3 ", async () => {
 it("validates body generation", async () => {
   const fm = new StableDiffusionXL(
     ImageModels.STABILITY_STABLE_DIFFUSION_XL_V1,
-    { client: mockClient }
+    { client: mockClient },
   );
   const body = await fm.prepareBody("a nice view", {
     size: { width: 512, height: 512 },
   });
   expect(body).toBe(
-    '{"text_prompts":[{"text":"a nice view","weight":1}],"width":512,"height":512}'
+    '{"text_prompts":[{"text":"a nice view","weight":1}],"width":512,"height":512}',
   );
 });
 
 it("validates body generation - 3", async () => {
   const fm = new StableDiffusion3(
     ImageModels.STABILITY_STABLE_IMAGE_CORE_V1_0,
-    { client: mockClient }
+    { client: mockClient },
   );
   const body = await fm.prepareBody("a nice view", {
     size: { width: 512, height: 512 },
     seed: 234,
   });
   expect(body).toBe(
-    '{"prompt":"a nice view","mode":"text-to-image","seed":234}'
+    '{"prompt":"a nice view","mode":"text-to-image","seed":234}',
   );
 });
 
 it("validates prompt parsing 1", async () => {
   const fm = new StableDiffusionXL(
     ImageModels.STABILITY_STABLE_DIFFUSION_XL_V1,
-    { client: mockClient }
+    { client: mockClient },
   );
   const body = await fm.prepareBody(
     "a new house, gothic style (photographic scene:1.0), golden hour (national geo style:2)",
-    { imageSize: "1024x1024" }
+    { imageSize: "1024x1024" },
   );
   const bodyJson = JSON.parse(body);
   expect(bodyJson.width).toBe(1024);
@@ -106,11 +106,11 @@ it("validates prompt parsing 1", async () => {
 it("validates prompt parsing 2", async () => {
   const fm = new StableDiffusionXL(
     ImageModels.STABILITY_STABLE_DIFFUSION_XL_V1,
-    { client: mockClient }
+    { client: mockClient },
   );
   const body = await fm.prepareBody(
     "a new house, gothic style, golden hour (national geo style:2) NEGATIVE: low quality (bad hands:1.4)",
-    { imageSize: "1024x1024" }
+    { imageSize: "1024x1024" },
   );
   const bodyJson = JSON.parse(body);
   expect(bodyJson.width).toBe(1024);
@@ -138,7 +138,7 @@ it("validates prompt parsing 2", async () => {
 it("validates the generation", async () => {
   const fm = new StableDiffusionXL(
     ImageModels.STABILITY_STABLE_DIFFUSION_XL_V1,
-    { region: "us-east-1" }
+    { region: "us-east-1" },
   );
 
   const resp = await fm.generateImage("a nice view", {
@@ -150,7 +150,7 @@ it("validates the generation", async () => {
 it("validates the generation - 3", async () => {
   const fm = new StableDiffusion3(
     ImageModels.STABILITY_STABLE_IMAGE_CORE_V1_0,
-    { region: "us-west-2" }
+    { region: "us-west-2" },
   );
 
   const resp = await fm.generateImage("a nice view", {
@@ -163,7 +163,7 @@ it("validates the generation - 3", async () => {
 it("validates the generation - 3 ultra", async () => {
   const fm = new StableDiffusion3(
     ImageModels.STABILITY_STABLE_IMAGE_ULTRA_V1_0,
-    { region: "us-west-2" }
+    { region: "us-west-2" },
   );
 
   const resp = await fm.generateImage("a nice view", {
@@ -193,7 +193,7 @@ describe("sd3large prompt", () => {
   it("works", async () => {
     const resp = await fm.generateImage(
       "a nice view NEGATIVE(clouds) | aspect_ratio=2:3, seed=4",
-      {}
+      {},
     );
     expect(resp[0]?.includes("base64")).toBeTruthy();
   }, 20000);
@@ -201,7 +201,7 @@ describe("sd3large prompt", () => {
   it("image", async () => {
     const resp = await fm.generateImage(
       "a nice view NEGATIVE(clouds) | seed=4, strength=0.2",
-      { image: getTestImage() }
+      { image: getTestImage() },
     );
     expect(resp[0]?.includes("base64")).toBeTruthy();
   }, 20000);
@@ -212,13 +212,13 @@ describe("sdcore prompt", () => {
     ImageModels.STABILITY_STABLE_IMAGE_CORE_V1_0,
     {
       region: "us-west-2",
-    }
+    },
   );
 
   it("works", async () => {
     const resp = await fm.generateImage(
       "a nice view NEGATIVE(clouds) | aspect_ratio=2:3, seed=4",
-      {}
+      {},
     );
     expect(resp[0]?.includes("base64")).toBeTruthy();
   }, 20000);
@@ -226,7 +226,7 @@ describe("sdcore prompt", () => {
   it("image", async () => {
     const resp = await fm.generateImage(
       "a nice view NEGATIVE(clouds) | seed=4",
-      { image: getTestImage() }
+      { image: getTestImage() },
     );
     expect(resp[0]?.includes("base64")).toBeTruthy();
   }, 20000);

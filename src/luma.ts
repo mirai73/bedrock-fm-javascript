@@ -29,7 +29,7 @@ export interface RayParams {
 export class Ray extends BedrockVideoGenerationModel {
   override async getResults(
     invocationArn: any,
-    timeout?: number
+    timeout?: number,
   ): Promise<{ uri?: string; response: GetAsyncInvokeCommandOutput }> {
     console.log(invocationArn);
     return new Promise(async (res, rej) => {
@@ -39,12 +39,12 @@ export class Ray extends BedrockVideoGenerationModel {
         }, timeout);
       }
       let response = await this.client.send(
-        new GetAsyncInvokeCommand({ invocationArn: invocationArn })
+        new GetAsyncInvokeCommand({ invocationArn: invocationArn }),
       );
       while (response.status === "InProgress") {
         await new Promise((r) => setTimeout(r, 1000));
         response = await this.client.send(
-          new GetAsyncInvokeCommand({ invocationArn: invocationArn })
+          new GetAsyncInvokeCommand({ invocationArn: invocationArn }),
         );
       }
       if (response.status === "Completed") {
@@ -58,7 +58,7 @@ export class Ray extends BedrockVideoGenerationModel {
 
   override prepareModelInput(
     prompt: string,
-    options: VideoGenerationParams & RayParams
+    options: VideoGenerationParams & RayParams,
   ): any {
     const body = {
       prompt,
@@ -72,7 +72,7 @@ export class Ray extends BedrockVideoGenerationModel {
 
   public override generateVideo<T extends VideoGenerationParams & RayParams>(
     prompt: string,
-    options: T
+    options: T,
   ): Promise<{ uri?: string; response: unknown } | any> {
     return super.generateVideo(prompt, options);
   }

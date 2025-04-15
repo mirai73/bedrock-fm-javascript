@@ -182,7 +182,7 @@ const fm = new NovaCanvas(ImageModels.AMAZON_NOVA_CANVAS_V1_0, {
 });
 
 const resp = await fm.generateImage(
-  "house on the hills, facing south, dusk NEGATIVE(clouds, trees) | size:512x512, seed:5"
+  "house on the hills, facing south, dusk NEGATIVE(clouds, trees) | size:512x512, seed:5",
 );
 
 // resp contains one or more image
