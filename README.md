@@ -193,7 +193,7 @@ const fm = new NovaCanvas(ImageModels.AMAZON_NOVA_CANVAS_V1_0, {
 });
 
 const resp = await fm.generateImage(
-  "house on the hills, facing south, dusk NEGATIVE(clouds, trees) | size:512x512, seed:5"
+  "house on the hills, facing south, dusk NEGATIVE(clouds, trees) | size:512x512, seed:5",
 );
 
 // resp contains one or more image
@@ -210,7 +210,7 @@ Supported tags are:
 - **CONDITION(CANNY_EDGES|SEGMENTATION:\<strength>)**: creates an images conditioned on another image with a given strength.
   An image must be provided
 
-- **REMOVE_BACKGROUD**: removes the background of the image
+- **REMOVE_BACKGROUND**: removes the background of the image
 
 - **MASK(\<text>)**: define a mask prompt and trigger the INPAINTING mode.
   If no other prompt is defined it will remove the object described by the mask, otherwise will replace it
