@@ -170,15 +170,19 @@ export class NovaCanvas extends BedrockImageGenerationModel {
       };
     }
     if (taskType === "COLOR_GUIDED_GENERATION") {
-      if (
-        elements.colors
-          ?.split(" ")
-          .map((c) => c.match(/#[A-F0-9]{6}/)?.at(0))
-          .filter((x) => x === undefined) ??
-        [].length > 0
-      ) {
-        throw new Error(`Invalid color ${elements.colors}`);
-      }
+      // const invalid_colors =
+      //   elements.colors
+      //     ?.toUpperCase()
+      //     ?.split(" ")
+      //     .map((c) => c.match(/#[A-F0-9]{6}/g)?.at(0))
+      //     .filter((x) => x === undefined) ?? [];
+      // if (invalid_colors.length > 0) {
+      //   throw new Error(
+      //     `Invalid colors /${invalid_colors}/ ${elements.colors
+      //       ?.toUpperCase()
+      //       ?.split(" ")}`
+      //   );
+      // }
 
       return {
         taskType,
