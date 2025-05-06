@@ -157,13 +157,24 @@ const resp = await fm.generateImage("a nice hike in a forest", {
 // resp[0] contains an image URI with image data encoded in base64
 ```
 
-### Prompting StableDiffusion
+### Prompting StableDiffusion XL
 
 To prompt stable diffusion you can use the following style:
 
 ```
 car, street, neon lights (golden hour:1.4) NEGATIVE: clouds (skyscrapers: 1.4)
 ```
+
+### Prompting Stable Diffusion SD 3 models
+
+For Stable Diffusion 3 models, you should use a descriptive prompt with the possibility to provide a negative prompts by adding `NEGATIVE(<your negative prompt>)`.
+
+You can also pass additional configuration paramters to the model, by specifying a comma separate list of `key=value` pairs, separated by `|` from the text prompt. Valid values can be found in [Stability AI API documentation](https://platform.stability.ai/docs/api-reference#tag/Generate/paths/~1v2beta~1stable-image~1generate~1ultra/post). Note that models hosted in Bedrock do not support all the parameters.
+
+- **seed=\<int32>**: the seed to be used to generate the image
+- **aspect_ratio=\<enum>**: one of the supported aspect ratios
+- **strength=\<float>**: a value between 0 and 1 for the strenght of the prompts. This value is required when using image-to-image mode, ie when an image is passed in the `generate` call.
+- **output_format=\<enum>**: the image format of the output
 
 ### Prompting Nova Canvas
 
@@ -182,7 +193,7 @@ const fm = new NovaCanvas(ImageModels.AMAZON_NOVA_CANVAS_V1_0, {
 });
 
 const resp = await fm.generateImage(
-  "house on the hills, facing south, dusk NEGATIVE(clouds, trees) | size:512x512, seed:5",
+  "house on the hills, facing south, dusk NEGATIVE(clouds, trees) | size:512x512, seed:5"
 );
 
 // resp contains one or more image
