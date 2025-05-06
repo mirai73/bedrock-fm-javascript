@@ -97,20 +97,20 @@ export class StableDiffusionXL extends BedrockImageGenerationModel {
   override getResults(body: any): string[] {
     return body.artifacts.map(
       (a: { seed: number; base64: string }) =>
-        `data:image/png;base64,${a.base64}`,
+        `data:image/png;base64,${a.base64}`
     );
   }
 
   override async generateImage(
     prompt: string,
-    options: ImageGenerationParams & StableDiffusionXLParams,
+    options: ImageGenerationParams & StableDiffusionXLParams
   ): Promise<string[]> {
     return super.generateImage(prompt, options);
   }
 
   override prepareBody(
     prompt: string,
-    options: ImageGenerationParams & StableDiffusionXLParams,
+    options: ImageGenerationParams & StableDiffusionXLParams
   ): string {
     let { size, ...otherOptions } = options;
     if (otherOptions.imageSize) {
@@ -132,7 +132,7 @@ export class StableDiffusionXL extends BedrockImageGenerationModel {
 
   private extractWeights(
     prompt?: string,
-    stdWeight: number = 1,
+    stdWeight: number = 1
   ): { text?: string; weight?: number }[] {
     if (!prompt) {
       return [];
@@ -168,7 +168,7 @@ export class StableDiffusionXL extends BedrockImageGenerationModel {
   private parsePrompt(prompt: string): { text?: string; weight?: number }[] {
     const [positive, negative] = prompt.split("NEGATIVE:").map((x) => x.trim());
     return this.extractWeights(positive).concat(
-      this.extractWeights(negative, -1),
+      this.extractWeights(negative, -1)
     );
   }
 }
@@ -180,7 +180,7 @@ export class StableDiffusion3 extends BedrockImageGenerationModel {
 
   override async generateImage(
     prompt: string,
-    options: ImageGenerationParams & StableDiffusion3Params,
+    options: ImageGenerationParams & StableDiffusion3Params
   ): Promise<string[]> {
     return super.generateImage(prompt, options);
   }
@@ -208,13 +208,21 @@ export class StableDiffusion3 extends BedrockImageGenerationModel {
       if (key === undefined || val === undefined) {
         throw new Error(`Invalid config element ${e}`);
       }
-      if (!["seed", "aspect_ratio", "cfg_scale", "strength"].includes(key)) {
+      if (
+        ![
+          "seed",
+          "aspect_ratio",
+          "cfg_scale",
+          "strength",
+          "output_format",
+        ].includes(key)
+      ) {
         throw new Error(`Invalid key in element ${e}`);
       }
       if (key === "aspect_ratio") {
         if (!validAspectRatios.includes(val)) {
           throw new Error(
-            `Invalid aspect ratio ${val}. Should be one of ${validAspectRatios.join(", ")}`,
+            `Invalid aspect ratio ${val}. Should be one of ${validAspectRatios.join(", ")}`
           );
         }
       }
@@ -231,7 +239,7 @@ export class StableDiffusion3 extends BedrockImageGenerationModel {
 
   override prepareBody(
     prompt: string,
-    options: ImageGenerationParams & StableDiffusion3Params,
+    options: ImageGenerationParams & StableDiffusion3Params
   ): string {
     if (!options.seed) {
       options.seed = Math.round(Math.random() * 2 ** 31);
@@ -250,20 +258,25 @@ export class StableDiffusion3 extends BedrockImageGenerationModel {
       };
     }
     const elements = this.getPromptElements(
-      (promptInstructions ?? prompt).replaceAll("\n", " "),
+      (promptInstructions ?? prompt).replaceAll("\n", " ")
     );
 
     const body = {
       prompt: elements.instructions ?? prompt,
       mode:
-        this.modelId === ImageModels.STABILITY_SD3_LARGE_V1_0 && options.image
+        [
+          ImageModels.STABILITY_SD3_LARGE_V1_0,
+          ImageModels.STABILITY_SD3_5_LARGE_V1_0,
+        ].includes(this.modelId) && options.image
           ? "image-to-image"
           : "text-to-image",
       negative_prompt: elements.negative ?? options.negative_prompt,
-      image:
-        this.modelId === ImageModels.STABILITY_SD3_LARGE_V1_0
-          ? options.image
-          : undefined,
+      image: [
+        ImageModels.STABILITY_SD3_LARGE_V1_0,
+        ImageModels.STABILITY_SD3_5_LARGE_V1_0,
+      ].includes(this.modelId)
+        ? options.image?.split(",").at(1)
+        : undefined,
       ...inferenceConfig,
     };
 
