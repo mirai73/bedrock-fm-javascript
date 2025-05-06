@@ -209,13 +209,7 @@ export class StableDiffusion3 extends BedrockImageGenerationModel {
         throw new Error(`Invalid config element ${e}`);
       }
       if (
-        ![
-          "seed",
-          "aspect_ratio",
-          "cfg_scale",
-          "strength",
-          "output_format",
-        ].includes(key)
+        !["seed", "aspect_ratio", "strength", "output_format"].includes(key)
       ) {
         throw new Error(`Invalid key in element ${e}`);
       }
