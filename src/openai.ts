@@ -56,7 +56,14 @@ export class GptOss extends BedrockFoundationModel {
     messages: ChatMessage[],
     input: GenerationParams & GptOssParams
   ): string {
-    const { system, ...modelArgs } = (input.modelArgs as any) ?? {};
+    const {
+      system,
+      stop,
+      top_p,
+      temperature,
+      max_completion_tokens,
+      ...modelArgs
+    } = (input.modelArgs as any) ?? {};
 
     let model_messages = messages.map((m) => ({
       role: RoleMap[m.role],
@@ -68,16 +75,10 @@ export class GptOss extends BedrockFoundationModel {
     return JSON.stringify({
       messages: model_messages,
       max_completion_tokens:
-        input.modelArgs?.max_tokens ??
-        input.maxTokenCount ??
-        this.maxTokenCount,
-      stop:
-        input.modelArgs?.stop_sequences ??
-        input.stopSequences ??
-        this.stopSequences,
-      top_p: input.modelArgs?.p ?? input.topP ?? this.topP,
-      temperature:
-        input.modelArgs?.temperature ?? input.temperature ?? this.temperature,
+        max_completion_tokens ?? input.maxTokenCount ?? this.maxTokenCount,
+      stop: stop ?? input.stopSequences ?? this.stopSequences,
+      top_p: top_p ?? input.topP ?? this.topP,
+      temperature: temperature ?? input.temperature ?? this.temperature,
       ...modelArgs,
     });
   }

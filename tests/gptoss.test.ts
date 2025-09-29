@@ -100,3 +100,31 @@ it("validates generate with GptOss and additional params", async () => {
   console.log(JSON.stringify(resp, undefined, 2));
   expect(resp.message.length).toBeGreaterThan(0);
 });
+
+it("validates the bot with GptOSS and functions", async () => {
+  const messages: ChatMessage[] = [];
+  messages.push({
+    role: "human",
+    message: "What is time right now?",
+  });
+  const fm = new GptOss(Models.OPENAI_GPT_OSS_20B_1_0, {
+    region: "us-east-1",
+  });
+  const resp = await fm.chat(messages, {
+    modelArgs: {
+      tools: [
+        {
+          type: "function",
+          function: {
+            name: "current_time",
+            description: "Gets the current time",
+            parameters: {},
+          },
+        },
+      ],
+    },
+    rawResponse: true,
+  });
+  console.log(JSON.stringify(resp));
+  expect((resp.metadata as any).choices[0].finish_reason).toBe("tool_calls");
+});

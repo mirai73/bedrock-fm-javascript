@@ -5,6 +5,7 @@ import { Titan, Nova } from "./amazon";
 import { Command, CommandR, CommandParams, CommandRParams } from "./cohere";
 import { Llama2Chat, Llama3Chat } from "./meta";
 import { GptOss } from "./openai";
+import { Qwen3 } from "./qwen";
 import {
   TitanImageGenerator,
   TitanImageGeneratorParams,
@@ -56,6 +57,7 @@ export {
   Llama2Chat,
   Llama3Chat,
   GptOss,
+  Qwen3,
   Mistral,
   ChatMessage,
   BedrockFoundationModel,
@@ -120,6 +122,8 @@ export function fromModelId(
       return new Mistral(modelId, params);
     case "openai.gpt":
       return new GptOss(modelId, params);
+    case "qwen.qwen3":
+      return new Qwen3(modelId, params);
     default:
       throw new Error(`Unknown model ID: ${modelId}`);
   }
