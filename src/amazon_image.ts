@@ -15,7 +15,7 @@ export class TitanImageGenerator extends BedrockImageGenerationModel {
 
   override prepareBody(
     prompt: string,
-    options: ImageGenerationParams & TitanImageGeneratorParams,
+    options: ImageGenerationParams & TitanImageGeneratorParams
   ): string {
     const body = {
       taskType: "TEXT_IMAGE",
@@ -41,10 +41,11 @@ type TaskType =
   | "OUTPAINTING"
   | "INPAINTING"
   | "BACKGROUND_REMOVAL"
-  | "TEXT_IMAGE";
+  | "TEXT_IMAGE"
+  | "VIRTUAL_TRY_ON";
 
 export interface NovaParams {
-  image?: string;
+  images?: string[];
   numberOfImages?: number;
   conditionImage?: string;
   quality?: "standard" | "premium";
@@ -83,7 +84,7 @@ export class NovaCanvas extends BedrockImageGenerationModel {
 
   override async generateImage(
     prompt: string,
-    options: ImageGenerationParams & NovaParams,
+    options: ImageGenerationParams & NovaParams
   ): Promise<string[]> {
     return await super.generateImage(prompt, options);
   }
@@ -98,17 +99,20 @@ export class NovaCanvas extends BedrockImageGenerationModel {
     if (elements.outpaint) {
       return "OUTPAINTING";
     }
-    if (elements.mask) {
+    if (elements.mask && !elements.virtualTryOn) {
       return "INPAINTING";
     }
     if (elements.removeBackground) {
       return "BACKGROUND_REMOVAL";
     }
+    if (elements.virtualTryOn) {
+      return "VIRTUAL_TRY_ON";
+    }
     return "TEXT_IMAGE";
   }
 
   // @ts-ignore
-  getBodyFromPrompt(prompt: string, image?: string): any {
+  getBodyFromPrompt(prompt: string, images?: (string | undefined)[]): any {
     const elements = this.getPromptElements(prompt);
     const taskType = this.determineType(elements);
     if (taskType === "TEXT_IMAGE") {
@@ -120,9 +124,10 @@ export class NovaCanvas extends BedrockImageGenerationModel {
             negativeText: elements.negative,
             controlMode: elements.conditionImage.split(":")[0],
             controlStrength: parseFloat(
-              elements.conditionImage.split(":")?.at(1) ?? "0",
+              elements.conditionImage.split(":")?.at(1) ?? "0"
             ),
-            conditionImage: image,
+            conditionImage: images?.at(0),
+            style: elements.style,
           },
         };
       }
@@ -141,7 +146,7 @@ export class NovaCanvas extends BedrockImageGenerationModel {
           text: elements.instructions,
           negativeText: elements.negative,
           similarityStrength: parseFloat(elements.similarity ?? "0.5"),
-          images: [image],
+          images: images,
         },
       };
     }
@@ -152,7 +157,7 @@ export class NovaCanvas extends BedrockImageGenerationModel {
           maskPrompt: elements.mask,
           negativeText: elements.negative,
           text: elements.instructions,
-          image,
+          image: images?.at(0),
         },
       };
     }
@@ -163,7 +168,7 @@ export class NovaCanvas extends BedrockImageGenerationModel {
           text: elements.instructions,
           maskPrompt: elements.mask,
           negativeText: elements.negative,
-          image,
+          image: images?.at(0),
           outPaintingMode:
             elements.outpaint === "OUTPAINT" ? "DEFAULT" : elements.outpaint,
         },
@@ -190,7 +195,7 @@ export class NovaCanvas extends BedrockImageGenerationModel {
           text: elements.instructions,
           colors: elements.colors?.split(" ").map((c) => c.trim()),
           negativeText: elements.negative,
-          referenceImage: image,
+          referenceImage: images?.at(0),
         },
       };
     }
@@ -198,7 +203,38 @@ export class NovaCanvas extends BedrockImageGenerationModel {
       return {
         taskType,
         backgroundRemovalParams: {
-          image,
+          image: images?.at(0),
+        },
+      };
+    }
+    if (taskType === "VIRTUAL_TRY_ON") {
+      return {
+        taskType,
+        virtualTryOnParams: {
+          sourceImage: images?.at(0),
+          referenceImage: images?.at(1),
+          maskType: elements.maskType,
+          garmentBasedMask:
+            elements.maskType === "GARMENT"
+              ? {
+                  maskShape: elements.maskShape ?? "DEFAULT",
+                  garmentClass: elements.garmentClass,
+                  garmentStyling: elements.garmentStyling,
+                }
+              : undefined,
+          promptBasedMask:
+            elements.maskType === "PROMPT"
+              ? {
+                  maskShape: elements.maskShape ?? "DEFAULT",
+                  maskPrompt: elements.mask,
+                }
+              : undefined,
+          mergeStyle: elements.mergeStyle,
+          maskExclusions: {
+            preserveBodyPose: elements.preserveBodyPose,
+            preserveHands: elements.preserveHands,
+            preserveFace: elements.preserveFace,
+          },
         },
       };
     }
@@ -208,35 +244,89 @@ export class NovaCanvas extends BedrockImageGenerationModel {
   getPromptElements(prompt: string) {
     const negative = prompt.match(/\bNEGATIVE\(([^\)]+)\)/);
     const mask = prompt.match(/\bMASK\(([^\)]+)\)/);
+    const maskType = prompt.match(/\bMASK_TYPE\((IMAGE|GARMENT|PROMPT)\)/);
+    const style = prompt.match(/\bSTYLE\(([^\)]+)\)/);
+    /* "UPPER_BODY" | "LOWER_BODY" |
+        "FULL_BODY" | "FOOTWEAR" | "LONG_SLEEVE_SHIRT" |
+        "SHORT_SLEEVE_SHIRT" | "NO_SLEEVE_SHIRT" |
+        "OTHER_UPPER_BODY" | "LONG_PANTS" | "SHORT_PANTS" |
+        "OTHER_LOWER_BODY" | "LONG_DRESS" | "SHORT_DRESS" |
+        "FULL_BODY_OUTFIT" | "OTHER_FULL_BODY" | "SHOES" |
+        "BOOTS" | "OTHER_FOOTWEAR", */
+    const garmentClass = prompt.match(/\bGARMENT_CLASS\(([^\)]+)\)/);
     const colors = prompt.match(/\bCOLORS\(([^\)]+)\)/);
     const removeBackground = prompt.match(/\bREMOVE_BACKGROUND\b/);
+    const virtualTryOn = prompt.match(/\bVIRTUAL_TRY_ON\b/);
     const conditionImage = prompt.match(
-      /\bCONDITION\(((CANNY_EDGE|SEGMENTATION):[01]\.?\d{0,2})\)/,
+      /\bCONDITION\(((CANNY_EDGE|SEGMENTATION):[01]\.?\d{0,2})\)/
     );
     const similarity = prompt.match(/\bSIMILAR:([01]\.?\d{0,2})\b/);
     const outpaintWithType = prompt.match(/\bOUTPAINT\((DEFAULT|PRECISE)\)/);
     const outpaintDefault = prompt.match(/\bOUTPAINT\b/);
+    const mergeStyle = prompt.match(
+      /\bMERGE_STYLE\((BALANCED|SEAMLESS|DEFAULT)\)/
+    ); // "BALANCED" | "SEAMLESS" | "DETAILED"
+    const maskShape = prompt.match(
+      /\bMASK_SHAPE\((BOUNDING_BOX|CONTOUR|DEFAULT)\)/
+    ); // BOUNDING_BOX" | "CONTOUR" | "DEFAULT"
+    const preserveBodyPose = prompt.match(/\bBODY_(ON|OFF)/);
+    const preserveHands = prompt.match(/\bHANDS_(ON|OFF)/);
+    const preserveFace = prompt.match(/\bFACE_(ON|OFF)/);
+    const longSleeveStyle = prompt.match(/\bSLEEVE_(DOWN|UP)/);
+    const tuckingStyle = prompt.match(/\b(UNTUCKED|TUCKED)/);
+    const outerLayerStyle = prompt.match(/\bOUTER_(CLOSED|OPEN)/);
+
     const instructions = prompt
       .replace(negative?.at(0) ?? "", "")
       .replace(mask?.at(0) ?? "", "")
+      .replace(style?.at(0) ?? "", "")
+      .replace(garmentClass?.at(0) ?? "", "")
       .replace(colors?.at(0) ?? "", "")
       .replace(removeBackground?.at(0) ?? "", "")
+      .replace(virtualTryOn?.at(0) ?? "", "")
       .replace(conditionImage?.at(0) ?? "", "")
       .replace(similarity?.at(0) ?? "", "")
       .replace(outpaintWithType?.at(0) ?? "", "")
       .replace(outpaintDefault?.at(0) ?? "", "")
+      .replace(mergeStyle?.at(0) ?? "", "")
+      .replace(maskType?.at(0) ?? "", "")
+      .replace(preserveHands?.at(0) ?? "", "")
+      .replace(maskShape?.at(0) ?? "", "")
+      .replace(preserveBodyPose?.at(0) ?? "", "")
+      .replace(preserveFace?.at(0) ?? "", "")
+      .replace(longSleeveStyle?.at(0) ?? "", "")
+      .replace(outerLayerStyle?.at(0) ?? "", "")
+      .replace(tuckingStyle?.at(0) ?? "", "")
       .replaceAll(/\s+/g, " ")
       .trim();
 
+    let garmentStyling: undefined | any = {
+      longSleeveStyle: longSleeveStyle?.at(0),
+      tuckingStyle: tuckingStyle?.at(0),
+      outerLayerStyle: outerLayerStyle?.at(1),
+    };
+    if (Object.values(garmentStyling).filter((x) => !!x).length === 0) {
+      garmentStyling = undefined;
+    }
     return {
       negative: negative?.at(1),
       mask: mask?.at(1),
+      style: style?.at(1),
+      garmentClass: garmentClass?.at(1),
       colors: colors?.at(1),
       removeBackground: removeBackground?.at(0),
+      virtualTryOn: virtualTryOn?.at(0),
       conditionImage: conditionImage?.at(1),
       similarity: similarity?.at(1),
       outpaint: outpaintWithType?.at(1) ?? outpaintDefault?.at(0),
       instructions: instructions.length > 0 ? instructions : undefined,
+      mergeStyle: mergeStyle?.at(1),
+      maskType: maskType?.at(1),
+      preserveHands: preserveHands?.at(1) ?? "DEFAULT",
+      preserveBodyPose: preserveBodyPose?.at(1) ?? "DEFAULT",
+      preserveFace: preserveFace?.at(1) ?? "DEFAULT",
+      garmentStyling,
+      maskShape: maskShape?.at(1),
     };
   }
 
@@ -299,7 +389,7 @@ export class NovaCanvas extends BedrockImageGenerationModel {
 
   override prepareBody(
     prompt: string,
-    options: ImageGenerationParams & NovaParams,
+    options: ImageGenerationParams & NovaParams
   ): string {
     const [promptInstructions, inferenceConfigString] = prompt.split("|");
     let inferenceConfig = {
@@ -317,7 +407,7 @@ export class NovaCanvas extends BedrockImageGenerationModel {
     }
     const inferredBody = this.getBodyFromPrompt(
       (promptInstructions ?? prompt).replaceAll("\n", " "),
-      options.image?.split(",")?.at(1),
+      options.images?.map((im) => im.split(",")?.at(1))
     );
 
     if (options.size) {
