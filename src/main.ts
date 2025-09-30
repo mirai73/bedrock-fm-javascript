@@ -4,6 +4,8 @@ import { Ray, RayAspectRatio, RayParams, RayResolution } from "./luma";
 import { Titan, Nova } from "./amazon";
 import { Command, CommandR, CommandParams, CommandRParams } from "./cohere";
 import { Llama2Chat, Llama3Chat } from "./meta";
+import { GptOss } from "./openai";
+import { Qwen3 } from "./qwen";
 import {
   TitanImageGenerator,
   TitanImageGeneratorParams,
@@ -54,6 +56,8 @@ export {
   CommandRParams,
   Llama2Chat,
   Llama3Chat,
+  GptOss,
+  Qwen3,
   Mistral,
   ChatMessage,
   BedrockFoundationModel,
@@ -80,11 +84,15 @@ export {
 
 export function fromModelId(
   modelId: ModelID,
-  params?: BedrockFoundationModelParams & GenerationParams,
+  params?: BedrockFoundationModelParams & GenerationParams
 ): BedrockFoundationModel {
   let _modelId = modelId;
-  if (modelId.startsWith("us.") || modelId.startsWith("eu.")) {
-    _modelId = modelId.substring(3);
+  if (
+    modelId.startsWith("us.") ||
+    modelId.startsWith("eu.") ||
+    modelId.startsWith("apac.")
+  ) {
+    _modelId = modelId.split(".").slice(1).join(".");
   }
   switch (_modelId.split("-")[0]) {
     case "anthropic.claude":
@@ -112,6 +120,10 @@ export function fromModelId(
     case "mistral.mistral":
     case "mistral.mixtral":
       return new Mistral(modelId, params);
+    case "openai.gpt":
+      return new GptOss(modelId, params);
+    case "qwen.qwen3":
+      return new Qwen3(modelId, params);
     default:
       throw new Error(`Unknown model ID: ${modelId}`);
   }
@@ -123,7 +135,7 @@ export function fromImageModelId(
     ImageGenerationParams &
     StableDiffusionXLParams &
     StableDiffusion3Params &
-    TitanImageGeneratorParams,
+    TitanImageGeneratorParams
 ): BedrockImageGenerationModel {
   switch (modelId.split("-")[0]) {
     case "amazon.titan":
@@ -148,7 +160,7 @@ export function fromVideoModelId(
   params: BedrockFoundationModelParams &
     VideoGenerationParams &
     NovaReelParams &
-    RayParams,
+    RayParams
 ): BedrockVideoGenerationModel {
   switch (modelId.split("-")[0]) {
     case "amazon.nova":
