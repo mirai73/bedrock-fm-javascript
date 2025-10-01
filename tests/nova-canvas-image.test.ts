@@ -43,6 +43,19 @@ it("validates body generation", async () => {
   );
 });
 
+it("validates body generation with style", async () => {
+  const fm = new NovaCanvas(ImageModels.AMAZON_NOVA_CANVAS_V1_0, {
+    client: mockClient,
+  });
+  const body = await fm.prepareBody("a nice view STYLE(PHOTOREALISM)", {
+    size: { width: 512, height: 512 },
+    seed: 300,
+  });
+  expect(body).toBe(
+    '{"taskType":"TEXT_IMAGE","textToImageParams":{"text":"a nice view","style":"PHOTOREALISM"},"imageGenerationConfig":{"height":512,"width":512,"seed":300}}'
+  );
+});
+
 it("validates body generation base", async () => {
   const fm = new NovaCanvas(ImageModels.AMAZON_NOVA_CANVAS_V1_0, {
     client: mockClient,
