@@ -136,6 +136,7 @@ export class NovaCanvas extends BedrockImageGenerationModel {
         textToImageParams: {
           text: elements.instructions,
           negativeText: elements.negative,
+          style: elements.style,
         },
       };
     }
