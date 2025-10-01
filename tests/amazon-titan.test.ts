@@ -21,21 +21,7 @@ describe("test titan chat", () => {
 
     expect(m).toBeTruthy();
     expect(
-      (await m.chat([{ role: "human", message: "Hello" }])).message.length,
-    ).toBeGreaterThan(0);
-  });
-});
-
-describe("test titan premier chat", () => {
-  it("should return true", async () => {
-    const m = new Titan(Models.AMAZON_TITAN_TEXT_PREMIER_V1_0, {
-      region: "us-east-1",
-      stopSequences: [],
-    });
-
-    expect(m).toBeTruthy();
-    expect(
-      (await m.chat([{ role: "human", message: "Hello" }])).message.length,
+      (await m.chat([{ role: "human", message: "Hello" }])).message.length
     ).toBeGreaterThan(0);
   });
 });
@@ -49,7 +35,7 @@ describe("test titan lite chat", () => {
 
     expect(m).toBeTruthy();
     expect(
-      (await m.chat([{ role: "human", message: "Hello" }])).message.length,
+      (await m.chat([{ role: "human", message: "Hello" }])).message.length
     ).toBeGreaterThan(0);
   });
 });
@@ -63,7 +49,7 @@ describe("test titan tg1 chat", () => {
 
     expect(m).toBeTruthy();
     expect(
-      (await m.chat([{ role: "human", message: "Hello" }])).message.length,
+      (await m.chat([{ role: "human", message: "Hello" }])).message.length
     ).toBeGreaterThan(0);
   });
 });

@@ -49,14 +49,14 @@ it("outpaint", () => {
 
 it("support a complex prompt", () => {
   const res = m.getBodyFromPrompt(
-    "OUTPAINT N:2 SIMILAR:0.5 CONDITION(CANNY_EDGE:0.2) COLORS(#000000) NEGATIVE(dogs) REMOVE_BACKGROUND MASK(bird)"
+    "OUTPAINT N:2 SIMILAR:0.5 CONDITION(CANNY_EDGE:0.2) COLORS(#000000) NEGATIVE(dogs) REMOVE_BACKGROUND MASK(bird)",
   );
   expect(res.taskType).toBe("COLOR_GUIDED_GENERATION");
 });
 
 it("retrieves the instructions a complex prompt", () => {
   const res = m.getBodyFromPrompt(
-    "  a nice view of the sea OUTPAINT N:2 SIMILAR:0.5 with a dog running CONDITION(CANNY_EDGE:0.2) COLORS(#000000) NEGATIVE(dogs) really cool REMOVE_BACKGROUND MASK(bird)"
+    "  a nice view of the sea OUTPAINT N:2 SIMILAR:0.5 with a dog running CONDITION(CANNY_EDGE:0.2) COLORS(#000000) NEGATIVE(dogs) really cool REMOVE_BACKGROUND MASK(bird)",
   );
   expect(res.taskType).toBe("COLOR_GUIDED_GENERATION");
 });
@@ -70,7 +70,7 @@ it("virtual try on options", () => {
   const res = m.getBodyFromPrompt(
     `VIRTUAL_TRY_ON MASK_TYPE(GARMENT) MASK_SHAPE(CONTOUR) 
     GARMENT_CLASS(OTHER_UPPER_BODY) SLEEVE_DOWN TUCKED OUTER_CLOSED BODY_OFF HANDS_ON MERGE_STYLE(SEAMLESS)`,
-    ["vQQQ", "vQQQ"]
+    ["vQQQ", "vQQQ"],
   );
   expect(res).toMatchObject({
     taskType: "VIRTUAL_TRY_ON",
@@ -101,7 +101,7 @@ it("virtual try on options defaults", () => {
   const res = m.getBodyFromPrompt(
     `VIRTUAL_TRY_ON MASK_TYPE(PROMPT) MASK(A palm)
     MERGE_STYLE(SEAMLESS)`,
-    ["vQQQ", "vQQQ"]
+    ["vQQQ", "vQQQ"],
   );
   expect(res).toMatchObject({
     taskType: "VIRTUAL_TRY_ON",

@@ -1,16 +1,12 @@
 import { Claude, Claude3, ClaudeParams } from "./anthropic";
-import { Jurassic, JurassicParams, Penalty, Jamba } from "./ai21";
+import { Jamba } from "./ai21";
 import { Ray, RayAspectRatio, RayParams, RayResolution } from "./luma";
 import { Titan, Nova } from "./amazon";
 import { Command, CommandR, CommandParams, CommandRParams } from "./cohere";
 import { Llama2Chat, Llama3Chat } from "./meta";
-import { GptOss } from "./openai";
-import { Qwen3 } from "./qwen";
-import {
-  TitanImageGenerator,
-  TitanImageGeneratorParams,
-  NovaCanvas,
-} from "./amazon_image";
+import { GptOss, GptOssParams } from "./openai";
+import { Qwen3, Qwen3Params } from "./qwen";
+import { NovaCanvas, NovaParams } from "./amazon_image";
 import {
   StableDiffusionXL,
   StableDiffusionXLParams,
@@ -44,10 +40,7 @@ export {
   Claude,
   Claude3,
   ClaudeParams,
-  Jurassic,
-  JurassicParams,
   Jamba,
-  Penalty,
   Titan,
   Nova,
   Command,
@@ -57,7 +50,9 @@ export {
   Llama2Chat,
   Llama3Chat,
   GptOss,
+  GptOssParams,
   Qwen3,
+  Qwen3Params,
   Mistral,
   ChatMessage,
   BedrockFoundationModel,
@@ -70,8 +65,8 @@ export {
   StylePreset,
   ClipGuidancePreset,
   ImageSize,
-  TitanImageGenerator,
   ImageModels,
+  NovaParams,
   NovaCanvas,
   NovaReel,
   BedrockVideoGenerationModel,
@@ -100,8 +95,6 @@ export function fromModelId(
         return new Claude3(modelId, params);
       }
       return new Claude(modelId, params);
-    case "ai21.j2":
-      return new Jurassic(modelId, params);
     case "ai21.jamba":
       return new Jamba(modelId, params);
     case "amazon.titan":
@@ -134,12 +127,9 @@ export function fromImageModelId(
   params?: BedrockFoundationModelParams &
     ImageGenerationParams &
     StableDiffusionXLParams &
-    StableDiffusion3Params &
-    TitanImageGeneratorParams
+    StableDiffusion3Params
 ): BedrockImageGenerationModel {
   switch (modelId.split("-")[0]) {
-    case "amazon.titan":
-      return new TitanImageGenerator(modelId, params);
     case "amazon.nova":
       return new NovaCanvas(modelId, params);
     case "stability.stable":

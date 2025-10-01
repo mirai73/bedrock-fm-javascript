@@ -4,9 +4,7 @@ import { Models, fromModelId } from "../src/main";
 describe("test generate stream", () => {
   [
     Models.ANTHROPIC_CLAUDE_3_HAIKU_20240307_V1_0,
-    Models.ANTHROPIC_CLAUDE_INSTANT_V1,
     Models.AMAZON_TITAN_TEXT_LITE_V1,
-    Models.COHERE_COMMAND_LIGHT_TEXT_V14,
     Models.COHERE_COMMAND_R_V1_0,
     Models.AI21_JAMBA_1_5_MINI_V1_0,
     Models.META_LLAMA3_8B_INSTRUCT_V1_0,
@@ -24,16 +22,16 @@ describe("test generate stream", () => {
         s += chunk;
       }
       expect(s.length).toBeGreaterThan(0);
-    }, 10000),
+    }, 10000)
   );
 });
 
 describe("test chat stream", () => {
   [
     Models.ANTHROPIC_CLAUDE_3_HAIKU_20240307_V1_0,
-    Models.ANTHROPIC_CLAUDE_INSTANT_V1,
+
     Models.AMAZON_TITAN_TEXT_LITE_V1,
-    Models.COHERE_COMMAND_LIGHT_TEXT_V14,
+
     Models.COHERE_COMMAND_R_V1_0,
     Models.AI21_JAMBA_1_5_MINI_V1_0,
     Models.META_LLAMA3_8B_INSTRUCT_V1_0,
@@ -51,6 +49,6 @@ describe("test chat stream", () => {
         s += chunk;
       }
       expect(s.length).toBeGreaterThan(0);
-    }, 10000),
+    }, 10000)
   );
 });

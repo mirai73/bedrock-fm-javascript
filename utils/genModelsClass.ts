@@ -86,16 +86,40 @@ async function getModels(
 
     const textModelStrings = textModels?.map(
       (m) =>
-        `  ${m[1] !== "ACTIVE" ? "/** @deprecated this model has reached end-of-life */\n  " : ""}public static readonly ${m[0]?.replace(/\-/g, "_").replace(/\./g, "_").replace(/\:/g, "_").toUpperCase()} = "${m[0]}";`,
+        `  ${
+          m[1] !== "ACTIVE"
+            ? "/** @deprecated this model has reached end-of-life */\n  "
+            : ""
+        }public static readonly ${m[0]
+          ?.replace(/\-/g, "_")
+          .replace(/\./g, "_")
+          .replace(/\:/g, "_")
+          .toUpperCase()} = "${m[0]}";`,
     );
     const imageModelStrings = imageModels?.map(
       (m) =>
-        `  ${m[1] !== "ACTIVE" ? "/** @deprecated this model has reached end-of-life */\n  " : ""}public static readonly ${m[0]?.replace(/\-/g, "_").replace(/\./g, "_").replace(/\:/g, "_").toUpperCase()} = "${m[0]}";`,
+        `  ${
+          m[1] !== "ACTIVE"
+            ? "/** @deprecated this model has reached end-of-life */\n  "
+            : ""
+        }public static readonly ${m[0]
+          ?.replace(/\-/g, "_")
+          .replace(/\./g, "_")
+          .replace(/\:/g, "_")
+          .toUpperCase()} = "${m[0]}";`,
     );
 
     const videoModelStrings = videoModels?.map(
       (m) =>
-        `  ${m[1] !== "ACTIVE" ? "/** @deprecated this model has reached end-of-life */\n  " : ""}public static readonly ${m[0]?.replace(/\-/g, "_").replace(/\./g, "_").replace(/\:/g, "_").toUpperCase()} = "${m[0]}";`,
+        `  ${
+          m[1] !== "ACTIVE"
+            ? "/** @deprecated this model has reached end-of-life */\n  "
+            : ""
+        }public static readonly ${m[0]
+          ?.replace(/\-/g, "_")
+          .replace(/\./g, "_")
+          .replace(/\:/g, "_")
+          .toUpperCase()} = "${m[0]}";`,
     );
     if (textModelStrings) {
       output = output.replace("{placeholderText}", textModelStrings.join("\n"));
