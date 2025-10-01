@@ -330,8 +330,8 @@ it("return body for Claude < 3", async () => {
   });
 });
 
-it("return body for ai21", async () => {
-  const fm = fromModelId("ai21.j2-ultra-v1", {
+it("return body for Claude 3", async () => {
+  const fm = fromModelId(Models.ANTHROPIC_CLAUDE_SONNET_4_5_20250929_V1_0, {
     client: titanMockClient,
   });
   const body = fm.prepareBody(
@@ -343,19 +343,21 @@ it("return body for ai21", async () => {
     {
       temperature: 1.0,
       topP: 1,
-      maxTokenCount: 50,
-      stopSequences: ["A", "B"],
-      modelArgs: { minTokens: 20 },
+      stopSequences: [],
     }
   );
   // Assert
   expect(JSON.parse(body)).toStrictEqual({
-    prompt: "H",
-    maxTokens: 50,
-    stopSequences: ["A", "B"],
+    messages: [
+      { role: "user", content: "H" },
+      { role: "assistant", content: "A" },
+    ],
+    system: "S",
+    anthropic_version: "bedrock-2023-05-31",
+    max_tokens: 512,
+    stop_sequences: [],
+    top_p: 1,
     temperature: 1,
-    topP: 1,
-    minTokens: 20,
   });
 });
 

@@ -40,7 +40,16 @@ export class Claude extends BedrockFoundationModel {
   ): string {
     const s = [...(input.stopSequences ?? [])];
 
-    const { top_p, stop_sequences, max_tokens, ...modelArgs } = input;
+    const {
+      top_p,
+      stop_sequences,
+      stopSequences,
+      max_tokens,
+      topP,
+      temperature,
+      maxTokenCount,
+      ...modelArgs
+    } = input;
 
     return JSON.stringify({
       messages: messages
@@ -51,11 +60,10 @@ export class Claude extends BedrockFoundationModel {
         })),
       system: messages.filter((m) => m.role === "system")[0]?.message,
       anthropic_version: "bedrock-2023-05-31",
-      max_tokens: max_tokens ?? input.maxTokenCount ?? this.maxTokenCount,
-      stop_sequences:
-        input.modelArgs?.stop_sequences ?? s ?? this.stopSequences,
-      top_p: top_p ?? input.topP ?? this.topP,
-      temperature: input.temperature ?? this.temperature,
+      max_tokens: max_tokens ?? maxTokenCount ?? this.maxTokenCount,
+      stop_sequences: stop_sequences ?? s ?? this.stopSequences,
+      top_p: top_p ?? topP ?? this.topP,
+      temperature: temperature ?? this.temperature,
       ...modelArgs,
     });
   }
