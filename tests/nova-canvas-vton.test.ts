@@ -28,7 +28,7 @@ const mockClient: BedrockRuntimeClient = {
 it("vton replace", async () => {
   const resp = await fm.generateImage(
     "VIRTUAL_TRY_ON MASK_TYPE(GARMENT) GARMENT_CLASS(UPPER_BODY)",
-    { images: getTestImages() }
+    { images: getTestImages() },
   );
   expect(resp[0]?.includes("base64")).toBeTruthy();
   const data = resp[0]?.split(",")[1];

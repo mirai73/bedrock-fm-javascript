@@ -36,13 +36,11 @@ export class Claude extends BedrockFoundationModel {
 
   prepareBody(
     messages: ChatMessage[],
-    input: GenerationParams & ClaudeParams,
+    input: GenerationParams & ClaudeParams
   ): string {
     const s = [...(input.stopSequences ?? [])];
 
-    const modelArgs = (({ top_k }) => ({
-      top_k,
-    }))((input.modelArgs as any) ?? {});
+    const { top_p, stop_sequences, max_tokens, ...modelArgs } = input;
 
     return JSON.stringify({
       messages: messages
@@ -53,15 +51,11 @@ export class Claude extends BedrockFoundationModel {
         })),
       system: messages.filter((m) => m.role === "system")[0]?.message,
       anthropic_version: "bedrock-2023-05-31",
-      max_tokens:
-        input.modelArgs?.max_tokens ??
-        input.maxTokenCount ??
-        this.maxTokenCount,
+      max_tokens: max_tokens ?? input.maxTokenCount ?? this.maxTokenCount,
       stop_sequences:
         input.modelArgs?.stop_sequences ?? s ?? this.stopSequences,
-      top_p: input.modelArgs?.top_p ?? input.topP ?? this.topP,
-      temperature:
-        input.modelArgs?.temperature ?? input.temperature ?? this.temperature,
+      top_p: top_p ?? input.topP ?? this.topP,
+      temperature: input.temperature ?? this.temperature,
       ...modelArgs,
     });
   }
@@ -95,7 +89,7 @@ export class Claude extends BedrockFoundationModel {
 export class Claude3 extends BedrockFoundationModel {
   override async chat(
     messages: ChatMessage[],
-    options?: GenerationParams & { modelArgs?: ClaudeParams },
+    options?: GenerationParams & { modelArgs?: ClaudeParams }
   ): Promise<ChatMessage> {
     return await super.chat(messages, options);
   }
@@ -108,7 +102,7 @@ export class Claude3 extends BedrockFoundationModel {
 
   prepareBody(
     messages: ChatMessage[],
-    input: GenerationParams & ClaudeParams,
+    input: GenerationParams & ClaudeParams
   ): string {
     const s = [...(input.stopSequences ?? [])];
 

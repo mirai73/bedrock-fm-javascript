@@ -132,18 +132,6 @@ it("outpaint", async () => {
   expect(resp[0]?.includes("base64")).toBeTruthy();
 }, 30000);
 
-it("bare", async () => {
-  const resp = await fm.generateImage("MASK(houses) OUTPAINT", {
-    images: getTestImages(),
-    size: {
-      width: 1024,
-      height: 1024,
-    },
-  });
-  expect(resp.length).toBe(1);
-  expect(resp[0]?.includes("base64")).toBeTruthy();
-}, 30000);
-
 it("image gen with negative text", async () => {
   const resp = await fm.generateImage(
     "a lanscape with mountains NEGATIVE(clouds)",

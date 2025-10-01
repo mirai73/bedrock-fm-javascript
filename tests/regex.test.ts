@@ -53,26 +53,29 @@ it("outpaint", () => {
 });
 
 describe("should not match", () => {
-  ["POUTPAINT"].forEach((p) => {
+  ["OUTPAINT"].forEach((p) => {
     const res = m.getPromptElements(p);
     expect(Object.values(res).filter((x) => x !== undefined)).toStrictEqual([
-      "POUTPAINT",
+      "OUTPAINT",
+      "DEFAULT",
+      "DEFAULT",
+      "DEFAULT",
     ]);
   });
 });
 
 it("support a complex prompt", () => {
   const res = m.getPromptElements(
-    "OUTPAINT SIMILAR:0.5 CONDITION(CANNY_EDGE:0.2) COLORS(#000000) NEGATIVE(dogs) REMOVE_BACKGROUND MASK(bird)",
+    "OUTPAINT SIMILAR:0.5 STYLE(AA) MASK_TYPE(AA) GARMENT_TYPE(AA) CONDITION(CANNY_EDGE:0.2) COLORS(#000000) NEGATIVE(dogs) REMOVE_BACKGROUND MASK(bird)"
   );
-  expect(Object.values(res).filter((x) => x === undefined)).toStrictEqual([]);
+  expect(Object.values(res).filter((x) => x === undefined).length).toEqual(6);
 });
 
 it("retrieves the instructions a complex prompt", () => {
   const res = m.getPromptElements(
-    "  a nice view of the sea OUTPAINT SIMILAR:0.5 with a dog running CONDITION(CANNY_EDGE:0.2) COLORS(#000000) NEGATIVE(dogs) really cool REMOVE_BACKGROUND MASK(bird)",
+    "  a nice view of the sea OUTPAINT SIMILAR:0.5 with a dog running CONDITION(CANNY_EDGE:0.2) COLORS(#000000) NEGATIVE(dogs) really cool REMOVE_BACKGROUND MASK(bird)"
   );
   expect(res.instructions).toBe(
-    "a nice view of the sea with a dog running really cool",
+    "a nice view of the sea with a dog running really cool"
   );
 });

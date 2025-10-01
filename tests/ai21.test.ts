@@ -1,51 +1,54 @@
-import { Jurassic, fromModelId, Models } from "../src/main";
+import { Jamba, fromModelId, Models } from "../src/main";
 
 describe("test ai21 models generate", () => {
-  [Models.AI21_J2_MID_V1, Models.AI21_J2_ULTRA_V1].map((name) =>
-    it("should return true", async () => {
-      const m = fromModelId(name, {
-        region: "us-east-1",
-      });
+  [Models.AI21_JAMBA_1_5_LARGE_V1_0, Models.AI21_JAMBA_1_5_MINI_V1_0].map(
+    (name) =>
+      it("should return true", async () => {
+        const m = fromModelId(name, {
+          region: "us-east-1",
+        });
 
-      expect(m).toBeTruthy();
-      const resp = await m.generate("Hello");
-      expect(resp.length).toBeGreaterThan(0);
-    }),
+        expect(m).toBeTruthy();
+        const resp = await m.generate("Hello");
+        expect(resp.length).toBeGreaterThan(0);
+      })
   );
 });
 
 describe("test ai21 models chat", () => {
-  [Models.AI21_J2_MID_V1, Models.AI21_J2_ULTRA_V1].map((name) =>
-    it("should return true", async () => {
-      const m = fromModelId(name, {
-        region: "us-east-1",
-      });
+  [Models.AI21_JAMBA_1_5_LARGE_V1_0, Models.AI21_JAMBA_1_5_MINI_V1_0].map(
+    (name) =>
+      it("should return true", async () => {
+        const m = fromModelId(name, {
+          region: "us-east-1",
+        });
 
-      expect(m).toBeTruthy();
-      const resp = await m.chat([{ role: "human", message: "Hello" }]);
-      expect(resp.message.length).toBeGreaterThan(0);
-    }),
+        expect(m).toBeTruthy();
+        const resp = await m.chat([{ role: "human", message: "Hello" }]);
+        expect(resp.message.length).toBeGreaterThan(0);
+      })
   );
 });
 
 describe("test ai21 models raw response", () => {
-  [Models.AI21_J2_MID_V1].map((name) =>
-    it("should return true", async () => {
-      const m = fromModelId(name, {
-        region: "us-east-1",
-        rawResponse: true,
-      });
+  [Models.AI21_JAMBA_1_5_LARGE_V1_0, Models.AI21_JAMBA_1_5_MINI_V1_0].map(
+    (name) =>
+      it("should return true", async () => {
+        const m = fromModelId(name, {
+          region: "us-east-1",
+          rawResponse: true,
+        });
 
-      expect(m).toBeTruthy();
-      const resp = await m.chat([{ role: "human", message: "Hello" }]);
-      expect(resp.metadata).toBeTruthy();
-    }),
+        expect(m).toBeTruthy();
+        const resp = await m.chat([{ role: "human", message: "Hello" }]);
+        expect(resp.metadata).toBeTruthy();
+      })
   );
 });
 
 describe("test ai21 models params", () => {
   it("should return true", async () => {
-    const m = new Jurassic(Models.AI21_J2_ULTRA_V1, {
+    const m = new Jamba(Models.AI21_JAMBA_1_5_MINI_V1_0, {
       region: "us-east-1",
     });
 
@@ -85,7 +88,7 @@ describe("test ai21 jamba models generate", () => {
       expect(m).toBeTruthy();
       const resp = await m.generate("Hello");
       expect(resp.length).toBeGreaterThan(0);
-    }),
+    })
   );
 });
 
@@ -99,6 +102,6 @@ describe("test  jamba models chat", () => {
       expect(m).toBeTruthy();
       const resp = await m.chat([{ role: "human", message: "Hello" }]);
       expect(resp.message.length).toBeGreaterThan(0);
-    }),
+    })
   );
 });

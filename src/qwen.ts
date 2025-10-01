@@ -25,21 +25,21 @@ const RoleMap = {
 export class Qwen3 extends BedrockFoundationModel {
   override async chat(
     messages: ChatMessage[],
-    options?: GenerationParams & { modelArgs?: Qwen3Params }
+    options?: GenerationParams & { modelArgs?: Qwen3Params },
   ): Promise<ChatMessage> {
     return await super.chat(messages, options);
   }
 
   override async generate(
     message: string,
-    options?: GenerationParams & { modelArgs?: Qwen3Params }
+    options?: GenerationParams & { modelArgs?: Qwen3Params },
   ): Promise<string> {
     return await super.generate(message, options);
   }
 
   prepareBody(
     messages: ChatMessage[],
-    input: GenerationParams & Qwen3Params
+    input: GenerationParams & Qwen3Params,
   ): string {
     const { top_p, temperature, max_tokens, ...modelArgs } =
       (input.modelArgs as any) ?? {};

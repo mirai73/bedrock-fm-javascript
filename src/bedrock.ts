@@ -115,7 +115,7 @@ function validateChatMessages(messages: ChatMessage[]): boolean {
 }
 
 export abstract class BedrockFoundationModel {
-  public readonly topP: number;
+  public readonly topP?: number;
   public readonly temperature: number;
   public readonly maxTokenCount: number;
   public readonly stopSequences: string[];
@@ -126,10 +126,10 @@ export abstract class BedrockFoundationModel {
 
   constructor(
     modelId: ModelID,
-    params?: BedrockFoundationModelParams & GenerationParams,
+    params?: BedrockFoundationModelParams & GenerationParams
   ) {
     this.extraArgs = params?.modelArgs;
-    this.topP = params?.topP ?? 0.9;
+    this.topP = params?.topP;
     this.temperature = params?.temperature ?? 0.7;
     this.maxTokenCount = params?.maxTokenCount ?? 512;
     this.stopSequences = params?.stopSequences ?? [];
@@ -146,7 +146,7 @@ export abstract class BedrockFoundationModel {
 
   public async generate<T extends GenerationParams>(
     prompt: string,
-    options?: T,
+    options?: T
   ): Promise<string> {
     const messages: ChatMessage[] = [{ role: "human", message: prompt }];
     const response = await this._generateRaw(messages, options);
@@ -159,7 +159,7 @@ export abstract class BedrockFoundationModel {
 
   private async _generateRaw(
     messages: ChatMessage[],
-    options?: GenerationParams,
+    options?: GenerationParams
   ): Promise<string> {
     const body = this.prepareBody(messages, options ?? {});
     const command = new InvokeModelCommand({
@@ -174,17 +174,17 @@ export abstract class BedrockFoundationModel {
 
   public async generateStream<T extends GenerationParams>(
     prompt: string,
-    options?: T,
+    options?: T
   ): Promise<AsyncIterable<string>> {
     return await this._generateStream(
       [{ role: "human", message: prompt }],
-      options,
+      options
     );
   }
 
   public async _generateStream(
     messages: ChatMessage[],
-    options?: GenerationParams,
+    options?: GenerationParams
   ): Promise<AsyncIterable<string>> {
     const body = this.prepareBody(messages, options ?? {});
     const command = new InvokeModelWithResponseStreamCommand({
@@ -205,7 +205,7 @@ export abstract class BedrockFoundationModel {
 
   public async chat<T extends GenerationParams>(
     messages: ChatMessage[],
-    options?: T,
+    options?: T
   ): Promise<ChatMessage> {
     if (!validateChatMessages(messages)) {
       throw new Error("Wrong message alternation");
@@ -225,7 +225,7 @@ export abstract class BedrockFoundationModel {
 
   public async chatStream<T extends GenerationParams>(
     messages: ChatMessage[],
-    options?: T,
+    options?: T
   ): Promise<AsyncIterable<string>> {
     if (!validateChatMessages(messages)) {
       throw new Error("Wrong message alternation");
@@ -236,7 +236,7 @@ export abstract class BedrockFoundationModel {
 
   abstract prepareBody(
     messages: ChatMessage[],
-    options: GenerationParams,
+    options: GenerationParams
   ): string;
 
   getChatPrompt(messages: ChatMessage[]): ChatMessage[] {

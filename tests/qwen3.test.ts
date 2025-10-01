@@ -69,7 +69,7 @@ it("validates the bot with qwen3 coder", async () => {
     "A rust program to calculate fibonacci and the instructions to create the project and run it",
     {
       maxTokenCount: 2000,
-    }
+    },
   );
   console.log(resp);
   expect(resp.length).toBeGreaterThan(0);

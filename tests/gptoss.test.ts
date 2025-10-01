@@ -95,7 +95,7 @@ it("validates generate with GptOss and additional params", async () => {
         reasoning_effort: "low",
       },
       rawResponse: true,
-    }
+    },
   );
   console.log(JSON.stringify(resp, undefined, 2));
   expect(resp.message.length).toBeGreaterThan(0);

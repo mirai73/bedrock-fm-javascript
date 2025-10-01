@@ -6,6 +6,8 @@ export class Models {
   public static readonly OPENAI_GPT_OSS_120B_1_0 = "openai.gpt-oss-120b-1:0";
   public static readonly TWELVELABS_PEGASUS_1_2_V1_0 =
     "twelvelabs.pegasus-1-2-v1:0";
+  public static readonly ANTHROPIC_CLAUDE_SONNET_4_5_20250929_V1_0 =
+    "anthropic.claude-sonnet-4-5-20250929-v1:0";
   public static readonly QWEN_QWEN3_CODER_30B_A3B_V1_0 =
     "qwen.qwen3-coder-30b-a3b-v1:0";
   public static readonly QWEN_QWEN3_32B_V1_0 = "qwen.qwen3-32b-v1:0";
@@ -45,6 +47,7 @@ export class Models {
   public static readonly COHERE_COMMAND_R_V1_0 = "cohere.command-r-v1:0";
   public static readonly COHERE_COMMAND_R_PLUS_V1_0 =
     "cohere.command-r-plus-v1:0";
+  public static readonly COHERE_RERANK_V3_5_0 = "cohere.rerank-v3-5:0";
   public static readonly DEEPSEEK_R1_V1_0 = "deepseek.r1-v1:0";
   public static readonly META_LLAMA3_8B_INSTRUCT_V1_0 =
     "meta.llama3-8b-instruct-v1:0";
@@ -84,7 +87,6 @@ export class Models {
     "qwen.qwen3-235b-a22b-2507-v1:0";
   public static readonly DEEPSEEK_V3_V1_0 = "deepseek.v3-v1:0";
   public static readonly AMAZON_RERANK_V1_0 = "amazon.rerank-v1:0";
-  public static readonly COHERE_RERANK_V3_5_0 = "cohere.rerank-v3-5:0";
   public static readonly META_LLAMA3_1_405B_INSTRUCT_V1_0 =
     "meta.llama3-1-405b-instruct-v1:0";
   public static readonly MISTRAL_MISTRAL_LARGE_2407_V1_0 =
