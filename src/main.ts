@@ -1,9 +1,9 @@
-import { Claude, Claude3, ClaudeParams } from "./anthropic";
+import { Claude, ClaudeParams } from "./anthropic";
 import { Jamba } from "./ai21";
 import { Ray, RayAspectRatio, RayParams, RayResolution } from "./luma";
 import { Titan, Nova } from "./amazon";
 import { Command, CommandR, CommandParams, CommandRParams } from "./cohere";
-import { Llama2Chat, Llama3Chat } from "./meta";
+import { Llama3Chat } from "./meta";
 import { GptOss, GptOssParams } from "./openai";
 import { Qwen3, Qwen3Params } from "./qwen";
 import { NovaCanvas, NovaParams } from "./amazon_image";
@@ -37,8 +37,7 @@ import {
 } from "./bedrock_video_generation";
 
 export {
-  Claude,
-  Claude3,
+  Claude as Claude3,
   ClaudeParams,
   Jamba,
   Titan,
@@ -47,7 +46,6 @@ export {
   CommandParams,
   CommandR,
   CommandRParams,
-  Llama2Chat,
   Llama3Chat,
   GptOss,
   GptOssParams,
@@ -91,9 +89,6 @@ export function fromModelId(
   }
   switch (_modelId.split("-")[0]) {
     case "anthropic.claude":
-      if (modelId.includes("claude-3")) {
-        return new Claude3(modelId, params);
-      }
       return new Claude(modelId, params);
     case "ai21.jamba":
       return new Jamba(modelId, params);
@@ -106,9 +101,9 @@ export function fromModelId(
         return new CommandR(modelId, params);
       }
       return new Command(modelId, params);
-    case "meta.llama2":
-      return new Llama2Chat(modelId, params);
     case "meta.llama3":
+      return new Llama3Chat(modelId, params);
+    case "meta.llama4":
       return new Llama3Chat(modelId, params);
     case "mistral.mistral":
     case "mistral.mixtral":

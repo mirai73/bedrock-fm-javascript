@@ -5,12 +5,11 @@ import {
 } from "./bedrock";
 
 export interface Qwen3Params {
-  enableThinking?: boolean;
+  reasoning_effort?: "low" | "medium" | "high";
   top_p?: number;
-  top_k?: number;
-  max_tokens?: number;
+  max_completion_tokens?: number;
   temperature?: number;
-  presence_penalty?: number;
+  tools?: any[];
 }
 
 const RoleMap = {
@@ -25,24 +24,25 @@ const RoleMap = {
 export class Qwen3 extends BedrockFoundationModel {
   override async chat(
     messages: ChatMessage[],
-    options?: GenerationParams & { modelArgs?: Qwen3Params },
+    options?: GenerationParams & { modelArgs?: Qwen3Params }
   ): Promise<ChatMessage> {
     return await super.chat(messages, options);
   }
 
   override async generate(
     message: string,
-    options?: GenerationParams & { modelArgs?: Qwen3Params },
+    options?: GenerationParams & { modelArgs?: Qwen3Params }
   ): Promise<string> {
     return await super.generate(message, options);
   }
 
   prepareBody(
     messages: ChatMessage[],
-    input: GenerationParams & Qwen3Params,
+    input: GenerationParams & Qwen3Params
   ): string {
-    const { top_p, temperature, max_tokens, ...modelArgs } =
-      (input.modelArgs as any) ?? {};
+    const modelArgs = (({ top_k }) => ({
+      top_k,
+    }))((input.modelArgs as any) ?? {});
 
     let model_messages = messages.map((m) => ({
       role: RoleMap[m.role],
@@ -52,17 +52,22 @@ export class Qwen3 extends BedrockFoundationModel {
     return JSON.stringify({
       messages: model_messages,
       max_tokens:
-        input.modelArgs?.max_tokens ??
-        input.maxTokenCount ??
+        input.modelArgs?.max_completion_tokens ??
+        input.max_completion_tokens ??
         this.maxTokenCount,
-      top_p: input.modelArgs?.p ?? input.topP ?? this.topP,
+      top_p: input.modelArgs?.top_p ?? input.top_p ?? this.topP,
       temperature:
         input.modelArgs?.temperature ?? input.temperature ?? this.temperature,
+      tools: input.modelArgs?.tools ?? input.tools,
+      reasoning_effort:
+        input.modelArgs?.reasoning_effort ?? input.reasoning_effort,
       ...modelArgs,
     });
   }
 
   getResults(body: string): string {
-    return JSON.parse(body).choices.map((g: any) => g.message.content)[0];
+    return JSON.parse(body).choices.map(
+      (g: any) => g.delta?.content ?? g.message?.content ?? ""
+    )[0];
   }
 }
