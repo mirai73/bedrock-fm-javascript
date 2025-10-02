@@ -69,8 +69,33 @@ it("validates the bot with qwen3 coder", async () => {
     "A rust program to calculate fibonacci and the instructions to create the project and run it",
     {
       maxTokenCount: 2000,
-    },
+    }
   );
+  console.log(resp);
+  expect(resp.length).toBeGreaterThan(0);
+}, 30000);
+
+it("validates thinking with qwen3  ", async () => {
+  const fm = fromModelId(Models.QWEN_QWEN3_32B_V1_0, {
+    region: "us-east-1",
+  });
+  const resp = await fm.generate("What is the capital of italy?", {
+    modelArgs: { reasoning_effort: "high" },
+  });
+  console.log(resp);
+  expect(resp.length).toBeGreaterThan(0);
+}, 30000);
+
+it("validates model params with qwen3 models ", async () => {
+  const fm = new Qwen3(Models.QWEN_QWEN3_32B_V1_0, {
+    region: "us-east-1",
+  });
+  const resp = await fm.generate("What is the capital of italy?", {
+    modelArgs: {
+      top_p: 1,
+      presence_penalty: 1,
+    },
+  });
   console.log(resp);
   expect(resp.length).toBeGreaterThan(0);
 }, 30000);

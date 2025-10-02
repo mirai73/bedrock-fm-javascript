@@ -40,21 +40,21 @@ const RoleMap = {
 export class GptOss extends BedrockFoundationModel {
   override async chat(
     messages: ChatMessage[],
-    options?: GenerationParams & { modelArgs?: GptOssParams },
+    options?: GenerationParams & { modelArgs?: GptOssParams }
   ): Promise<ChatMessage> {
     return await super.chat(messages, options);
   }
 
   override async generate(
     message: string,
-    options?: GenerationParams & { modelArgs?: GptOssParams },
+    options?: GenerationParams & { modelArgs?: GptOssParams }
   ): Promise<string> {
     return await super.generate(message, options);
   }
 
   prepareBody(
     messages: ChatMessage[],
-    input: GenerationParams & GptOssParams,
+    input: GenerationParams & GptOssParams
   ): string {
     const {
       system,
@@ -85,7 +85,7 @@ export class GptOss extends BedrockFoundationModel {
 
   getResults(body: string): string {
     return JSON.parse(body).choices.map(
-      (g: any) => g.message.content.split("</reasoning>")[1],
+      (g: any) => g.delta?.content ?? g.message?.content ?? ""
     )[0];
   }
 }

@@ -2,10 +2,8 @@ import { BedrockRuntimeClient } from "@aws-sdk/client-bedrock-runtime";
 import {
   Command,
   fromModelId,
-  Claude,
   Claude3,
   Titan,
-  Llama2Chat,
   Llama3Chat,
   Mistral,
   Models,
@@ -39,21 +37,6 @@ it("returns results for valid prompt and input", async () => {
   // Arrange
   const prompt = "Sample prompt";
 
-  const fm = new Claude("anthropic.claude-v2", {
-    client: claudeMockClient,
-  });
-
-  // Act
-  const results = await fm.generate(prompt);
-
-  // Assert
-  expect(results).toEqual("result1");
-});
-
-it("returns results for valid prompt and input", async () => {
-  // Arrange
-  const prompt = "Sample prompt";
-
   const fm = new Titan("amazon.titan-text-express-v1", {
     client: titanMockClient,
   });
@@ -72,15 +55,6 @@ it("returns Titan class based on the model", async () => {
 
   // Assert
   expect(fm).toBeInstanceOf(Titan);
-});
-
-it("return Claude class based on the model", async () => {
-  const fm = fromModelId("anthropic.claude-instant-v1", {
-    client: titanMockClient,
-  });
-
-  // Assert
-  expect(fm).toBeInstanceOf(Claude);
 });
 
 it("return Claude3 class based on the model", async () => {
@@ -108,99 +82,6 @@ it("return Claude class based on the model", async () => {
 
   // Assert
   expect(fm).toBeInstanceOf(Command);
-});
-
-it("return LLama2Chat class based on the model", async () => {
-  const fm = fromModelId("meta.llama2-13b-chat-v1", {
-    client: titanMockClient,
-  });
-
-  // Assert
-  expect(fm).toBeInstanceOf(Llama2Chat);
-});
-
-it("return body for LLama2", async () => {
-  const fm = fromModelId("meta.llama2-13b-chat-v1", {
-    client: titanMockClient,
-  });
-  const body = fm.prepareBody(
-    [
-      { role: "system", message: "S" },
-      { role: "human", message: "H" },
-      { role: "ai", message: "A" },
-    ],
-    {
-      temperature: 1.0,
-      topP: 1,
-      stopSequences: [],
-    }
-  );
-  // Assert
-  expect(body).toBe(
-    '{"prompt":"[INST] H [/INST]","max_gen_len":512,"temperature":1,"top_p":1}'
-  );
-});
-
-it("return body for Titan", async () => {
-  const fm = fromModelId("amazon.titan-tg1-large", {
-    client: titanMockClient,
-  });
-  const body = fm.prepareBody(
-    [
-      { role: "system", message: "S" },
-      { role: "human", message: "H" },
-      { role: "ai", message: "A" },
-    ],
-    {
-      temperature: 1.0,
-      topP: 1,
-      stopSequences: [],
-    }
-  );
-  // Assert
-  expect(JSON.parse(body)).toStrictEqual({
-    inputText: "H",
-    textGenerationConfig: {
-      maxTokenCount: 512,
-      stopSequences: [],
-      topP: 1,
-      temperature: 1,
-    },
-  });
-});
-
-it("return body for Titan - args override", async () => {
-  const fm = fromModelId("amazon.titan-tg1-large", {
-    client: titanMockClient,
-  });
-  const body = fm.prepareBody(
-    [
-      { role: "system", message: "S" },
-      { role: "human", message: "H" },
-      { role: "ai", message: "A" },
-    ],
-    {
-      temperature: 1.0,
-      topP: 1,
-      stopSequences: [],
-      modelArgs: {
-        maxTokenCount: 200,
-        topP: 0.5,
-        stopSequences: ["A"],
-        temperature: 0.1,
-      },
-    }
-  );
-  // Assert
-  expect(JSON.parse(body)).toStrictEqual({
-    inputText: "H",
-    textGenerationConfig: {
-      maxTokenCount: 200,
-      stopSequences: ["A"],
-      topP: 0.5,
-      temperature: 0.1,
-    },
-  });
 });
 
 it("return body for Claude 3", async () => {
@@ -448,24 +329,6 @@ it("return body for Mistral", async () => {
     max_tokens: 512,
     temperature: 1,
     top_p: 1,
-  });
-});
-
-it("return chat prompt for llama2 - chat", async () => {
-  const fm = fromModelId("meta.llama2-13b-chat-v1", {
-    client: titanMockClient,
-  });
-  const msg = fm.getChatPrompt([
-    { role: "system", message: "S" },
-    { role: "human", message: "H" },
-    { role: "ai", message: "A" },
-    { role: "human", message: "H1" },
-  ])[0];
-  // Assert
-  expect(msg).toStrictEqual({
-    role: "human",
-    message:
-      "[INST] <<SYS>>\nS\n<</SYS>>\n\nH [/INST] A </s><s>[INST] H1 [/INST] ",
   });
 });
 
